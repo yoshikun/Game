@@ -1,6 +1,7 @@
-#Mon Dec 09 19:28:55 CST 2013
+#Mon Dec 09 19:30:43 CST 2013
 warnBeforeUpgradingProjects=false
 fbBuildID=349722
 eclipse.preferences.version=1
 workspaceFXPUUID=1392a945-b0e6-4995-95c2-82b68ac2f090
+com.adobe.flexbuilder.project.sdkToUseWhenImporting=
 flexBuilderVersion=4.7.0.349722

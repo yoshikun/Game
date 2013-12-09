@@ -2,7 +2,7 @@
 <launchConfiguration type="com.adobe.flexbuilder.debug.launchConfigurationType.flash">
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_APPLICATION" value="src/IGO.as"/>
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_PROJECT" value="IGO"/>
-<stringAttribute key="com.adobe.flexbuilder.debug.ATTR_RUN_URL" value="G:\GitHub\Game\client\IGO\bin-debug\IGO.swf"/>
+<stringAttribute key="com.adobe.flexbuilder.debug.ATTR_RUN_URL" value="E:\GitHub\Game\client\IGO\bin-debug\IGO.swf"/>
 <booleanAttribute key="com.adobe.flexbuilder.debug.ATTR_USE_DEFAULT_URLS" value="false"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/IGO"/>

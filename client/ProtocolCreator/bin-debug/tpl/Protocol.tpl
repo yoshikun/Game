@@ -1,12 +1,12 @@
 package net
 {
-    import com.yile.framework.net.IProtocol;
-    import com.yile.framework.net.IResponse;
+    import com.yo.net.IProtocol;
+    import com.yo.net.IResponse;
 	{{#data}}
-	import com.yile.games.doll.net.response.{{subPath}}.{{responseClassName}};
+	import net.response.{{subPath}}.{{responseClassName}};
 	{{/data}}
 	{{#data}}{{#requestClassName}}
-	import com.yile.games.doll.net.request.{{subPath}}.{{requestClassName}};
+	import net.request.{{subPath}}.{{requestClassName}};
 	{{/requestClassName}}{{/data}}
 	
 	public class Protocol implements IProtocol

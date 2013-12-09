@@ -5,7 +5,7 @@
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_AIR_SECURITY_POLICY_FILE" value="security-policies/default.xml"/>
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_APPLICATION" value="src/ProtocolCreator.mxml"/>
 <stringAttribute key="com.adobe.flexbuilder.debug.ATTR_PROJECT" value="ProtocolCreator"/>
-<stringAttribute key="com.adobe.flexbuilder.debug.ATTR_RUN_URL" value="file:/G:/GitHub/Game/client/ProtocolCreator/bin-debug/ProtocolCreator-app.xml"/>
+<stringAttribute key="com.adobe.flexbuilder.debug.ATTR_RUN_URL" value="file:/E:/GitHub/Game/client/ProtocolCreator/bin-debug/ProtocolCreator-app.xml"/>
 <booleanAttribute key="com.adobe.flexbuilder.debug.ATTR_USE_DEFAULT_URLS" value="true"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/ProtocolCreator"/>
