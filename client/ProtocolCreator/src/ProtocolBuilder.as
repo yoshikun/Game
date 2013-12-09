@@ -24,21 +24,20 @@ package
 			_dataArr = [];
 			_paramsDic = new Dictionary();
 			
-			for each(var cmd:CommandObj in cmds){
+			var cmd:CommandObj;
+			
+			for each(cmd in cmds){
 				var len:int = cmd.params.length;
-				for (var i:int = 0; i < len; i++){
+				for(var i:int = 0; i < len; i++){
 					var param:Param = cmd.params[i];
 					_paramsDic[param.isServerToClint ? param.responseClassName : param.requestClassName] = param;
 				}
 			}
 			
 			var url:String = PathManager.protocolOutputPath;
-			for each (var cmd:CommandObj in cmds)
-			{
-				for each (var p:Param in cmd.params)
-				{
-					if (p.isServerToClint && !p.useless)
-					{
+			for each (cmd in cmds){
+				for each (var p:Param in cmd.params){
+					if (p.isServerToClint && !p.useless){
 						var motoName:String = p.requestClassName.replace(ConstMap.RESPONSE_CLASS_SUF, ConstMap.REQUEST_CLASS_SUF);
 						if(!_paramsDic[motoName]){
 							p.requestClassName = "";
