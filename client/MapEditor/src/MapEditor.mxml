@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   xmlns:ns1="*"
+					   width="900" height="600" contentCreationComplete="Init()"
+					   >
+	<fx:Style source="MapEditor.css"/>
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			import mx.events.MenuEvent;
+			import mx.managers.PopUpManager;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.TextOperationEvent;
+			
+			import utils.Res;
+			
+			import view.GraphicTile;
+			
+			
+			/**地图绘制工作区*/
+			[Bindable]
+			public var _mapDrawUI:MapDrawUI=new MapDrawUI();
+			/**元件预览基准线（网格）*/
+			private var previewGrid:UIComponent=new UIComponent();
+			/**当前选中的元件索引*/
+			[Bindable]
+			private var index:int;
+			/**素材编辑器*/
+			private  var _resEditor:ResEditor;
+			/**序列图动画编辑器*/
+			private  var _animationEditor:AnimationEditor;
+			/**事件代码编辑器*/
+			private  var _eventCodeEditor:EventCodeEditor;
+			
+			
+			/**初始化*/
+			protected function Init():void
+			{
+				/* 弹出新建地图对话框 */
+				var newMapWindow:NewMap=new NewMap();
+				PopUpManager.addPopUp(newMapWindow,this,true);
+				PopUpManager.centerPopUp(newMapWindow);
+				/* 添加地图尺寸改变事件侦听 */
+				_mapDrawUI.addEventListener(MapDrawUI.EVENT_SIZECHANGE,mapSizeChange);
+				
+				drawCanvas.addChild(_mapDrawUI);//添加地图绘制工作区
+				canPreview.addChild(previewGrid);//添加元件预览基准线（网格）
+				
+				/* 绘制元件预览基准线 */
+				previewGrid.graphics.lineStyle(0,0xff0000);
+				previewGrid.graphics.moveTo(0,200);
+				previewGrid.graphics.lineTo(250,200);
+				previewGrid.graphics.moveTo(125,0);
+				previewGrid.graphics.lineTo(125,250);
+				previewGrid.mouseEnabled=false;//禁用鼠标事件捕获
+			}
+			/**因为创建或打开地图时引起的地图大小更改调用的事件处理器。用于调整工作区大小*/
+			private function mapSizeChange(e:Event):void{
+				drawCanvas.width=_mapDrawUI.mapPixelWidth + 200;
+				drawCanvas.height=_mapDrawUI.mapPixelHeight + 200;
+			}
+			public function loadRes(file:String):void{
+				Res.getInstance().setResFile(file);
+				var fun1:Function=function(e:Event):void{
+					Res.getInstance().removeEventListener(Res.LOAD_RES_COMPLETE,fun1);
+					Res.getInstance().loadAllRes();
+				}
+				Res.getInstance().addEventListener(Res.LOAD_RES_COMPLETE,fun1);
+			}
+			/**列表框选择项改变**/
+			protected function onChangeTileList():void{
+				index=listTile.selectedIndex;//当前列表项索引值
+				var offsetX:int=Res.getInstance().resXML.tile[index].@offsetX;
+				var offsetY:int=Res.getInstance().resXML.tile[index].@offsetY;
+				var resName:String=Res.getInstance().resXML.tile[index].@name;
+				/*从资源包中读取数据*/
+				previewImage.source=Res.getInstance().resBitmaps[resName];
+				_mapDrawUI.pen=Res.getInstance().resBitmaps[resName];
+				/* 更新显示位置 */
+				previewImage.x=125-offsetX;
+				previewImage.y=200-offsetY;
+				_mapDrawUI._resIndex=index;//将选择的资源索引传入
+			}
+			/**选择了保存地图后。。。**/
+			protected function onSaveMapSelect(e:Event):void{
+				var file:File=e.target as File;
+				file.removeEventListener(Event.SELECT,onSaveMapSelect);
+				_mapDrawUI.saveMap(file.name);
+				Alert.show("保存成功！","提示");
+			}
+			/**保存地图**/
+			protected function SaveMap():void
+			{
+				var file:File=File.applicationDirectory.resolvePath("map\\");//从程序根目录下的map目录开始浏览
+				var filter:FileFilter=new FileFilter("地图文件(*.map)","*.map");
+				file.browseForSave("保存地图文件");
+				file.addEventListener(Event.SELECT,onSaveMapSelect);
+			}
+			/**打开地图文件**/
+			protected function OpenMap():void
+			{
+				var file:File=File.applicationDirectory.resolvePath("map\\");//从程序根目录下的map目录开始浏览
+				var filter:FileFilter=new FileFilter("地图文件(*.map)","*.map");
+				file.browseForOpen("打开地图文件",[filter]);
+				file.addEventListener(Event.SELECT,onOpenResfileSelect);
+			}
+			/**选择了打开的地图文件后。。。**/
+			protected function onOpenResfileSelect(e:Event):void{
+				var file:File=e.target as File;
+				file.removeEventListener(Event.SELECT,onOpenResfileSelect);
+				var fs:FileStream=new FileStream();
+				fs.open(file,FileMode.READ);
+				var map:XML=XML(fs.readUTFBytes(fs.bytesAvailable));
+				_mapDrawUI.loadMap(map);
+				fs.close();
+			}
+			
+			/**菜单事件**/
+			protected function menubar1_changeHandler(event:MenuEvent):void
+			{
+				switch(event.label){
+					case "新建":
+						Init();
+						break;
+					case "打开":
+						OpenMap();
+						break;
+					case "保存":
+						SaveMap();
+						break;
+					case "退出":
+						exit();
+						break;
+					case "素材编辑器":
+						if(_resEditor==null)
+							_resEditor=new ResEditor();
+						PopUpManager.addPopUp(_resEditor,this,true);
+						PopUpManager.centerPopUp(_resEditor);
+						break;
+					case "序列图动画编辑器":
+						if(_animationEditor==null)
+							_animationEditor=new AnimationEditor();
+						PopUpManager.addPopUp(_animationEditor,this,true);
+						PopUpManager.centerPopUp(_animationEditor);
+						break;
+				}
+			}
+			/**切换层次**/
+			protected function changeLayer():void{
+				var layerIndex:uint=uint(layerSelect.selectedIndex);
+				_mapDrawUI.layerIndex=layerIndex;
+				setPenMode();
+			}
+			/**切换画笔模式**/
+			private function setPenMode():void{
+				switch(penMode.selectedValue)
+				{
+					case "绘制":
+						_mapDrawUI.penMode=MapDrawUI.PEN_MODE_DRAW;
+						break;
+					case "选择":
+						_mapDrawUI.penMode=MapDrawUI.PEN_MODE_SELECT;
+						break;
+					case "擦除":
+						_mapDrawUI.penMode=MapDrawUI.PEN_MODE_ERASER;
+						break;
+				}
+			}
+			/**显示/隐藏层**/
+			protected function changeLayerVisible(event:MouseEvent):void
+			{
+				var target:CheckBox=event.target as CheckBox;
+				switch(target.id)
+				{
+					case "layerFloor":
+						_mapDrawUI.changeVisible(0,target.selected);
+						break;
+					case "layerWorld":
+						_mapDrawUI.changeVisible(1,target.selected);
+						break;
+					case "layerEvent":
+						_mapDrawUI.changeVisible(2,target.selected);
+						break;
+					case "layerSetting":
+						_mapDrawUI.changeVisible(3,target.selected);
+						break;
+				}
+				
+			}
+		]]>
+	</fx:Script>
+	<fx:Binding source="X={_mapDrawUI.posX}	Y={_mapDrawUI.posZ}" destination="this.statusText.text"/>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<fx:XMLList id="menuData" xmlns="">
+			<node label="文件">
+				<node label="新建"/>
+				<node label="打开"/>
+				<node label="保存"/>
+				<node type="separator"/>
+				<node label="退出"/>
+			</node>
+			<node label="工具">
+				<node label="素材编辑器"/>
+				<node label="序列图动画编辑器"/>
+			</node>
+		</fx:XMLList>
+		<s:ArrayList id="layerData">
+			<fx:Object label="地面层"/>
+			<fx:Object label="景物层"/>
+			<fx:Object label="事件层"/>
+			<fx:Object label="通断层"/>
+		</s:ArrayList>
+		<s:XMLListCollection id="tileListData" source="{Res.getInstance().resXML.tile}"/>
+		<s:RadioButtonGroup id="penMode" change="setPenMode()"/>
+	</fx:Declarations>
+	<mx:MenuBar x="0" y="0" width="100%" height="30" change="menubar1_changeHandler(event)"
+				dataProvider="{menuData}" labelField="@label"></mx:MenuBar>
+	
+	<s:HGroup x="160" y="5" width="507" height="21" verticalAlign="middle">
+		<s:Label height="16" text="当前层:" verticalAlign="bottom"/>
+		<s:ComboBox id="layerSelect" width="80" change="changeLayer()" dataProvider="{layerData}"
+					selectedIndex="0" initialize="layerSelect.textInput.editable=false"/>
+		<s:CheckBox id="layerFloor" label="地面层" click="changeLayerVisible(event)" selected="true" />
+		<s:CheckBox id="layerWorld" label="景物层" click="changeLayerVisible(event)" selected="true"/>
+		<s:CheckBox id="layerEvent" label="事件层" click="changeLayerVisible(event)" selected="true"/>
+		<s:CheckBox id="layerSetting" label="通断层" click="changeLayerVisible(event)" selected="true"/>
+		<s:CheckBox id="ck_grid" label="网格" click="_mapDrawUI.gridVisible=ck_grid.selected"
+					selected="true"/>
+		<s:Label y="2" height="16" text="     背景色" verticalAlign="bottom"/>
+		<mx:ColorPicker id="colorCanvas" width="20" height="20" selectedColor="#CACACA"
+						toolTip="画布颜色"/>
+	</s:HGroup>
+	<s:Scroller left="5" right="260" top="35" bottom="5" >
+		<s:Group width="100%" height="100%" focusEnabled="true">
+			<mx:Canvas id="drawCanvas" backgroundColor="{colorCanvas.selectedColor}"
+					   focusEnabled="true"/>
+		</s:Group>
+	</s:Scroller>
+	<s:Panel right="5" top="35" bottom="5" width="250" borderColor="#B4B4B4" chromeColor="#E1E1E1"
+			 dropShadowVisible="false" title="元件面板">
+		<mx:Canvas id="canPreview" width="100%" height="250" backgroundColor="#B0B0B0">
+			<s:Image id="previewImage" x="0" y="0"/>
+		</mx:Canvas>
+		<s:List id="listTile" x="0" top="297" bottom="10" width="100%" borderColor="#929292"
+				change="onChangeTileList()" contentBackgroundColor="#EEEEEE"
+				dataProvider="{tileListData}" itemRenderer="ItemRenderers.resRenderer" selectedIndex="0"/>
+		<s:HGroup x="10" y="255" width="228" height="34" horizontalAlign="left">
+			<s:RadioButton width="72" height="31" label="绘制" chromeColor="#464646" groupName="penMode" selected="true"
+						   skinClass="spark.skins.spark.ToggleButtonSkin"/>
+			<s:RadioButton width="72" height="31" label="选择" chromeColor="#464646" groupName="penMode"
+						   skinClass="spark.skins.spark.ToggleButtonSkin"/>
+			<s:RadioButton width="72" height="31" label="擦除" chromeColor="#464646" groupName="penMode"
+						   skinClass="spark.skins.spark.ToggleButtonSkin"/>
+		</s:HGroup>
+	</s:Panel>
+	<ns1:EventCodeEditor visible="{layerSelect.selectedIndex==2}" x="9" y="39">
+	</ns1:EventCodeEditor>
+</s:WindowedApplication>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="180" height="206" close="WindowOnClose(event)"
+			   title="创建新地图">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.Application;
+			import mx.core.FlexGlobals;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			import utils.Res;
+			
+			protected function WindowOnClose(event:CloseEvent):void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			protected function BtnNO_clickHandler(event:MouseEvent):void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			protected function BtnOK_clickHandler(event:MouseEvent):void
+			{
+				/*加载资源包*/
+				FlexGlobals.topLevelApplication.loadRes(textResFile.text);
+				/*创建地图 */
+				FlexGlobals.topLevelApplication._mapDrawUI.createNewMap(uint(textMapWidth.text),uint(textMapHeight.text),uint(textTileSize.text));
+				
+				PopUpManager.removePopUp(this);
+			}
+			/**打开资源包文件**/
+			protected function resBrowse_click(event:MouseEvent):void
+			{
+				var file:File=File.applicationDirectory.resolvePath("res");//从程序根目录下的res目录开始浏览
+				var filter:FileFilter=new FileFilter("资源配置文件(*.res)","*.res");
+				file.browseForOpen("打开文件",[filter]);
+				file.addEventListener(Event.SELECT,onOpenResfileSelect);
+			}
+			/**选择了打开的资源文件后。。。**/
+			protected function onOpenResfileSelect(e:Event):void{
+				var file:File=e.target as File;
+				file.removeEventListener(Event.SELECT,onOpenResfileSelect);
+				textResFile.text=file.name;
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:Label x="10" y="16" text="地图宽度："/>
+	<s:Label x="10" y="46" text="地图高度："/>
+	<s:TextInput id="textMapWidth" x="69" y="10" width="80" text="20"/>
+	<s:TextInput id="textMapHeight" x="69" y="40" width="80" text="20"/>
+	<s:Label x="10" y="76" text="图块大小："/>
+	<s:TextInput id="textTileSize" x="69" y="70" width="80" text="30"/>
+	<s:Button id="BtnOK" x="18" y="133" width="60" height="30" label="确定"
+			  click="BtnOK_clickHandler(event)"/>
+	<s:Button id="BtnNO" x="85" y="133" width="60" height="30" label="取消"
+			  click="BtnNO_clickHandler(event)"/>
+	<s:Label x="10" y="105" text="资源文件："/>
+	<s:TextInput id="textResFile" x="69" y="99" width="80" enabled="false" text="res.res"/>
+	<s:Button x="151" y="99" width="21" click="resBrowse_click(event)"/>
+</s:TitleWindow>

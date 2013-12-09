@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true">
+	
+	<s:BorderContainer x="0" y="0" backgroundAlpha="0.0"
+					   borderAlpha="0.5" borderWeight="0">
+		<s:Image x="0" y="0" source="{data.bitmapData}"/>
+		<s:Label text="ID:{data.id}" x="5" y="5" color="0xff0000"/>
+	</s:BorderContainer>
+</s:ItemRenderer>

@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="898" height="500" close="PopUpManager.removePopUp(this)"
+			   contentCreationComplete="Init(event)" currentState="create"
+			   width.create="796"
+			   width.design="796">
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.controls.Image;
+			import mx.core.BitmapAsset;
+			import mx.core.DragSource;
+			import mx.core.UIComponent;
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.DragManager;
+			import mx.managers.PopUpManager;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.TextOperationEvent;
+			import spark.utils.DataItem;
+			
+			/**原始图像数据*/
+			private var _bitmapData:BitmapData;
+			/**区块宽度*/
+			private var _tileWidth:uint;
+			/**区块高度*/
+			private var _tileHeight:uint;
+			/**动画信息*/
+			[Bindable]
+			private var _animationsXML:XML=
+				<animations>
+					<config file="" tileWidth="80" tileHeight="80"/>
+					<node name="walkUp" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+					<node name="walkDown" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+					<node name="walkRight" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+					<node name="walkLeft" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+					<node name="walkUpperRight" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+					<node name="walkUpperLeft" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+					<node name="walkLowerRight" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+					<node name="walkLowerLeft" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+				</animations>;
+			/**当前选中的动画索引*/
+			[Bindable]
+			private var _animListIndex:int;
+			/**基准线*/
+			private var _lines:UIComponent=new UIComponent();
+			/**动画时钟*/
+			private var _timer:Timer=new Timer(200);
+			/**当前帧*/
+			private var _currentFrame:int=0;
+			/**当前动画开始帧*/
+			private var _currentStartFrame:int=0;
+			/**当前动画结束帧*/
+			private var _currentEndFrame:int=0;
+			
+			protected function Init(event:FlexEvent):void
+			{
+				
+			}
+			/**选择图像文件*/
+			protected function chooseImageFile(event:MouseEvent):void
+			{
+				var file:File=new File();
+				var fileFilter:FileFilter=new FileFilter("图像文件","*.png;*.jpg;*.jpeg;*.bmp;*.gif");
+				file.addEventListener(Event.SELECT,onSeleted);
+				file.browseForOpen("选择图像文件",[fileFilter]);
+				var loader:Loader=new Loader();
+				/* 文件选择完成 */
+				function onSeleted(e:Event):void{
+					fileText.text=file.nativePath;
+					/* 取得相对路径 */
+					var fileurl:String=(new File(File.applicationDirectory.nativePath).getRelativePath(file,true));
+					_animationsXML.config.@file=fileurl;
+					
+					loader.load(new URLRequest(fileText.text));
+					loader.contentLoaderInfo.addEventListener(Event.COMPLETE,onLoad);
+				}
+				/* 文件载入完成 */
+				function onLoad(e:Event):void{
+					_bitmapData = loader.content["bitmapData"]
+					imageSizeText.text=_bitmapData.width + "*" + _bitmapData.height;
+				}
+			}
+			/**开始切图*/
+			private function beginCut():void{
+				this.currentState="design";
+				_tileWidth=uint(tileWidthText.text);
+				_tileHeight=uint(tileHeightText.text);
+				var iMax:uint=_bitmapData.height/_tileHeight;		//行数
+				var jMax:uint=_bitmapData.width/_tileWidth;			//列数
+				_animationsXML.config.@tileWidth=_tileWidth;
+				_animationsXML.config.@tileHeight=_tileHeight;
+				var idNum:int=0;
+				for(var i:int=0;i<iMax;i++){
+					for(var j:int=0;j<jMax;j++){
+						var data:Object=new Object();
+						var bmpd:BitmapData=new BitmapData(_tileWidth,_tileHeight);
+						bmpd.copyPixels(_bitmapData,new Rectangle(j*_tileWidth,i*_tileHeight,_tileWidth,_tileHeight),new Point(0,0));
+						data.bitmapData=bmpd;
+						data.id=idNum;
+						picsListData.addItem(data);
+						idNum++;
+					}
+				}
+			}
+			/**动画列表选中项目改变事件*/
+			protected function animationListChange(event:IndexChangeEvent):void
+			{
+				_animListIndex=animationsList.selectedIndex;
+			}
+			/**更改中心点*/
+			protected function onSetOffset(event:MouseEvent):void
+			{
+				var offsetX:int=picPreview.mouseX;
+				var offsetY:int=picPreview.mouseY;
+				_animationsXML.node[_animListIndex].@offsetX=offsetX;
+				_animationsXML.node[_animListIndex].@offsetY=offsetY;
+				offsetText.text=offsetX + "," + offsetY;
+				_lines.graphics.clear();
+				_lines.graphics.lineStyle(0,0xffffff,0.5);
+				_lines.graphics.moveTo(0,offsetY);
+				_lines.graphics.lineTo(400,offsetY);
+				_lines.graphics.moveTo(picPreview.mouseX,0);
+				_lines.graphics.lineTo(offsetX,300);
+				picPreview.addChild(_lines);
+			}
+			/**播放动画*/
+			protected function onPlay(event:MouseEvent):void
+			{
+				_timer.delay=_animationsXML.node[_animListIndex].@time;
+				_currentStartFrame=_animationsXML.node[_animListIndex].@startID;
+				_currentEndFrame=_animationsXML.node[_animListIndex].@endID;
+				_currentFrame=_animationsXML.node[_animListIndex].@startID;
+				_timer.addEventListener(TimerEvent.TIMER,onPlaying);
+				_timer.start();
+				playBtn.enabled=false;
+				stopBtn.enabled=true;
+			}
+			/**播放动画中，Timer事件调用。切换帧*/
+			private function onPlaying(e:TimerEvent):void{
+				if(_currentFrame > _currentEndFrame)
+					_currentFrame=_currentStartFrame;
+				imagePreview.source=picsListData[_currentFrame].bitmapData;
+				_currentFrame++;
+			}
+			/**停止动画*/
+			protected function onStop(event:MouseEvent):void
+			{
+				_timer.stop();
+				_timer.removeEventListener(TimerEvent.TIMER,onPlaying);
+				playBtn.enabled=true;
+				stopBtn.enabled=false;
+			}
+			/**选择了保存的文件后。。。**/
+			protected function onSaveSelect(e:Event):void{
+				var file:File=e.target as File;
+				file.removeEventListener(Event.SELECT,onSaveSelect);
+				var fs:FileStream=new FileStream();
+				fs.open(file,FileMode.WRITE);
+				fs.writeUTFBytes(_animationsXML.toXMLString());
+				fs.close();
+				Alert.show("保存成功！","提示");
+			}
+			/**保存按钮Click**/
+			protected function saveBtnClick(event:MouseEvent):void
+			{
+				var file:File=File.applicationDirectory.resolvePath("res/anim");//从程序根目录下的res目录开始浏览
+				var filter:FileFilter=new FileFilter("动画配置文件(*.anim)","*.anim");
+				file.browseForSave("保存文件");
+				file.addEventListener(Event.SELECT,onSaveSelect);
+			}
+			/**打开按钮Click**/
+			protected function openBtnClick(event:MouseEvent):void
+			{
+				var file:File=File.applicationDirectory.resolvePath("res/anim");//从程序根目录下的res目录开始浏览
+				var filter:FileFilter=new FileFilter("动画配置文件(*.anim)","*.anim");
+				file.browseForOpen("打开文件",[filter]);
+				file.addEventListener(Event.SELECT,onOpenSelect);
+			}
+			/**选择了打开的文件后。。。**/
+			protected function onOpenSelect(e:Event):void{
+				var file:File=e.target as File;
+				file.removeEventListener(Event.SELECT,onOpenSelect);
+				var fs:FileStream=new FileStream();
+				fs.open(file,FileMode.READ);
+				_animationsXML=XML(fs.readUTFBytes(fs.bytesAvailable));
+				fs.close();
+				
+				var loader:Loader=new Loader();
+				var fileurl:String=_animationsXML.config.@file;
+				tileWidthText.text=_animationsXML.config.@tileWidth;
+				tileHeightText.text=_animationsXML.config.@tileHeight;
+				loader.load(new URLRequest(fileurl));
+				loader.contentLoaderInfo.addEventListener(Event.COMPLETE,onLoad);
+				/* 文件载入完成 */
+				function onLoad(e:Event):void{
+					_bitmapData = loader.content["bitmapData"];
+					beginCut();
+				}
+			}
+			/**更改间隔时间*/
+			protected function timeNumChange(event:Event):void
+			{
+				_animationsXML.node[_animListIndex].@time=timeNum.value;
+			}
+			
+			protected function startIdTextChange(event:TextOperationEvent):void
+			{
+				_animationsXML.node[_animListIndex].@startID=startIdText.text;
+			}
+			
+			protected function endIdTextChange(event:TextOperationEvent):void
+			{
+				_animationsXML.node[_animListIndex].@endID=endIdText.text;
+			}
+			
+			protected function animNameChange(event:TextOperationEvent):void
+			{
+				_animationsXML.node[_animListIndex].@name=animNameText.text;
+			}
+			
+			protected function delAnim(event:MouseEvent):void
+			{
+				delete _animationsXML.node[_animListIndex];
+			}
+			
+			protected function addAnim(event:MouseEvent):void
+			{
+				_animationsXML.appendChild(<node name="noname" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>);
+			}
+			
+			protected function newBtnClick(event:MouseEvent):void
+			{
+				_animationsXML=
+					<animations>
+						<config file="" tileWidth="80" tileHeight="80"/>
+						<node name="walkUp" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+						<node name="walkDown" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+						<node name="walkRight" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+						<node name="walkLeft" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+						<node name="walkUpperRight" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+						<node name="walkUpperLeft" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+						<node name="walkLowerRight" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+						<node name="walkLowerLeft" offsetX="0" offsetY="0" time="100" startID="0" endID="0"/>
+					</animations>;;
+				if(_bitmapData)
+					_bitmapData.dispose();
+				picsListData.removeAll();
+				imagePreview.source="";
+				_lines.graphics.clear();
+				this.currentState="create";
+			}
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="create"/>
+		<s:State name="design"/>
+	</s:states>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:ArrayCollection id="picsListData"/>
+		<s:XMLListCollection id="animationsListData" source="{_animationsXML.node}"/>
+	</fx:Declarations>
+	<mx:MenuBar x="0" y="0" width="100%" height="30"></mx:MenuBar>
+	<s:Button id="newBtn" includeIn="design" x="10" y="2" height="25" label="新建"
+			  chromeColor="#B39467" click="newBtnClick(event)"/>
+	<s:Button id="saveBtn" includeIn="design" x="168" y="2" height="25" label="保存"
+			  chromeColor="#B39467" click="saveBtnClick(event)"/>
+	<s:Button id="openBtn" x="89" y="2" height="25" label="打开" chromeColor="#B39467"
+			  click="openBtnClick(event)"/>
+	<s:Group includeIn="design" x="0" y="0" width="100%" height="100%">
+		<s:List x="10" top="345" bottom="5" width="776" contentBackgroundColor="#E6E6E6"
+				dataProvider="{picsListData}" itemRenderer="ItemRenderers.imageRenderer">
+			<s:layout>
+				<s:HorizontalLayout gap="0"/>
+			</s:layout>
+		</s:List>
+		<mx:Canvas id="picPreview" x="10" y="36" width="400" height="300" backgroundColor="{colorCanvas.selectedColor}" mouseDown="onSetOffset(event)">
+			<s:Image id="imagePreview" x="0" y="0"/>
+		</mx:Canvas>
+		<s:BorderContainer x="418" y="38" width="367" height="296">
+			<s:List id="animationsList" x="10" y="45" width="157" height="239"
+					change="animationListChange(event)" selectedIndex="0"
+					dataProvider="{animationsListData}" labelField="@name"/>
+			<s:Button x="10" y="10" height="27" label="创建新动画" click="addAnim(event)"/>
+			<s:Button x="97" y="10" height="27" label="删除" click="delAnim(event)"/>
+			<s:Label x="172" y="52" text="名称："/>
+			<s:TextInput id="animNameText" x="228" y="46" change="animNameChange(event)"
+						 text="{_animationsXML.node[_animListIndex].@name}"/>
+			<s:Label x="172" y="82" text="中心点："/>
+			<s:TextInput id="offsetText" x="228" y="76" width="127" enabled="false" text="{_animationsXML.node[_animListIndex].@offsetX},{_animationsXML.node[_animListIndex].@offsetY}"/>
+			<s:Label x="172" y="112" text="帧间隔："/>
+			<s:NumericStepper id="timeNum" x="228" y="106" width="66"
+							  change="timeNumChange(event)" maximum="10000" minimum="50"
+							  stepSize="50" value="{_animationsXML.node[_animListIndex].@time}"/>
+			<s:Label x="298" y="112" text="ms(毫秒)"/>
+			<s:Label x="172" y="142" text="帧范围："/>
+			<s:Button id="stopBtn" x="282" y="10" width="50" height="27" label="Stop"
+					  chromeColor="#FF8C8C" click="onStop(event)" enabled="false"/>
+			<s:Button id="playBtn" x="228" y="10" width="50" height="27" label="Play"
+					  chromeColor="#FF8C8C" click="onPlay(event)"/>
+			<s:Label x="283" y="142" width="14" text="—"/>
+			<s:TextInput id="startIdText" x="228" y="137" width="50"
+						 change="startIdTextChange(event)" text="{_animationsXML.node[_animListIndex].@startID}"/>
+			<s:TextInput id="endIdText" x="302" y="137" width="50"
+						 change="endIdTextChange(event)" text="{_animationsXML.node[_animListIndex].@endID}"/>
+			<s:Label x="172" y="173" text="帧数："/>
+			<s:TextInput id="frameCountText" x="228" y="167" width="127" enabled="false" text="{_animationsXML.node[_animListIndex].@endID-_animationsXML.node[_animListIndex].@startID +1}"/>
+		</s:BorderContainer>
+		<s:Label x="334" y="6" height="16" text="     背景色" verticalAlign="bottom"/>
+		<mx:ColorPicker id="colorCanvas" x="389" y="5" width="20" height="20" selectedColor="#000000"
+						toolTip="画布颜色"/>
+	</s:Group>
+	<s:BorderContainer includeIn="create" x="226" y="189" width="447" height="142">
+		<s:Label x="23" y="22" text="图像文件："/>
+		<s:Label x="23" y="79" text="区块宽度："/>
+		<s:Label x="23" y="108" text="区块高度："/>
+		<s:TextInput id="fileText" x="86" y="15" width="241" enabled="false" text="未选择"/>
+		<s:Button x="330" y="15" label="选择图像文件" click="chooseImageFile(event)"/>
+		<s:TextInput id="tileWidthText" x="86" y="73" width="100" text="80"/>
+		<s:TextInput id="tileHeightText" x="86" y="102" width="100" text="80"/>
+		<s:Label x="23" y="49" text="图像大小："/>
+		<s:RichText x="194" y="43"
+					text="【第一部】选择要切割的图像文件。&#xd;【第二步】计算并填写要切割的图块大小。&#xd;【第三步】直接点击确定，自动切图。"/>
+		<s:TextInput id="imageSizeText" x="86" y="44" width="100" enabled="false" text="不可用"/>
+		<s:Button x="202" y="92" width="220" height="32" label="开始切图"
+				  click="beginCut()"/>
+	</s:BorderContainer>
+	<s:RichText includeIn="create" x="377" y="132" color="#003D59" fontSize="36" fontStyle="normal"
+				fontWeight="normal" text="新建向导" textDecoration="none"/>
+</s:TitleWindow>

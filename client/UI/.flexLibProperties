@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="fl.accessibility.AccImpl"/>
+    <classEntry path="fl.accessibility.ButtonAccImpl"/>
+    <classEntry path="fl.accessibility.CheckBoxAccImpl"/>
+    <classEntry path="fl.accessibility.ComboBoxAccImpl"/>
+    <classEntry path="fl.accessibility.DataGridAccImpl"/>
+    <classEntry path="fl.accessibility.LabelButtonAccImpl"/>
+    <classEntry path="fl.accessibility.ListAccImpl"/>
+    <classEntry path="fl.accessibility.RadioButtonAccImpl"/>
+    <classEntry path="fl.accessibility.SelectableListAccImpl"/>
+    <classEntry path="fl.accessibility.TileListAccImpl"/>
+    <classEntry path="fl.accessibility.UIComponentAccImpl"/>
+    <classEntry path="fl.containers.BaseScrollPane"/>
+    <classEntry path="fl.containers.ScrollPane"/>
+    <classEntry path="fl.containers.UILoader"/>
+    <classEntry path="fl.controls.BaseButton"/>
+    <classEntry path="fl.controls.Button"/>
+    <classEntry path="fl.controls.ButtonLabelPlacement"/>
+    <classEntry path="fl.controls.CheckBox"/>
+    <classEntry path="fl.controls.ColorPicker"/>
+    <classEntry path="fl.controls.ComboBox"/>
+    <classEntry path="fl.controls.DataGrid"/>
+    <classEntry path="fl.controls.Label"/>
+    <classEntry path="fl.controls.LabelButton"/>
+    <classEntry path="fl.controls.List"/>
+    <classEntry path="fl.controls.NumericStepper"/>
+    <classEntry path="fl.controls.ProgressBar"/>
+    <classEntry path="fl.controls.ProgressBarDirection"/>
+    <classEntry path="fl.controls.ProgressBarMode"/>
+    <classEntry path="fl.controls.RadioButton"/>
+    <classEntry path="fl.controls.RadioButtonGroup"/>
+    <classEntry path="fl.controls.ScrollBar"/>
+    <classEntry path="fl.controls.ScrollBarDirection"/>
+    <classEntry path="fl.controls.ScrollPolicy"/>
+    <classEntry path="fl.controls.SelectableList"/>
+    <classEntry path="fl.controls.Slider"/>
+    <classEntry path="fl.controls.SliderDirection"/>
+    <classEntry path="fl.controls.TextArea"/>
+    <classEntry path="fl.controls.TextInput"/>
+    <classEntry path="fl.controls.TileList"/>
+    <classEntry path="fl.controls.UIScrollBar"/>
+    <classEntry path="fl.controls.dataGridClasses.DataGridCellEditor"/>
+    <classEntry path="fl.controls.dataGridClasses.DataGridColumn"/>
+    <classEntry path="fl.controls.dataGridClasses.HeaderRenderer"/>
+    <classEntry path="fl.controls.listClasses.CellRenderer"/>
+    <classEntry path="fl.controls.listClasses.ICellRenderer"/>
+    <classEntry path="fl.controls.listClasses.ImageCell"/>
+    <classEntry path="fl.controls.listClasses.ListData"/>
+    <classEntry path="fl.controls.listClasses.TileListData"/>
+    <classEntry path="fl.controls.progressBarClasses.IndeterminateBar"/>
+    <classEntry path="fl.core.InvalidationType"/>
+    <classEntry path="fl.core.UIComponent"/>
+    <classEntry path="fl.data.DataProvider"/>
+    <classEntry path="fl.data.SimpleCollectionItem"/>
+    <classEntry path="fl.data.TileListCollectionItem"/>
+    <classEntry path="fl.display.ProLoader"/>
+    <classEntry path="fl.display.ProLoaderInfo"/>
+    <classEntry path="fl.events.ColorPickerEvent"/>
+    <classEntry path="fl.events.ComponentEvent"/>
+    <classEntry path="fl.events.DataChangeEvent"/>
+    <classEntry path="fl.events.DataChangeType"/>
+    <classEntry path="fl.events.DataGridEvent"/>
+    <classEntry path="fl.events.DataGridEventReason"/>
+    <classEntry path="fl.events.InteractionInputType"/>
+    <classEntry path="fl.events.ListEvent"/>
+    <classEntry path="fl.events.ProLoaderRSLPreloaderSandboxEvent"/>
+    <classEntry path="fl.events.RSLErrorEvent"/>
+    <classEntry path="fl.events.RSLEvent"/>
+    <classEntry path="fl.events.ScrollEvent"/>
+    <classEntry path="fl.events.SliderEvent"/>
+    <classEntry path="fl.events.SliderEventClickTarget"/>
+    <classEntry path="fl.managers.FocusManager"/>
+    <classEntry path="fl.managers.IFocusManager"/>
+    <classEntry path="fl.managers.IFocusManagerComponent"/>
+    <classEntry path="fl.managers.IFocusManagerGroup"/>
+    <classEntry path="fl.managers.SkinManager"/>
+    <classEntry path="fl.managers.StyleManager"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

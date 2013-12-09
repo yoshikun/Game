@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="300" height="250" chromeColor="#D1C4C4" 
+		 dropShadowVisible="false" title="事件代码">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.events.FlexMouseEvent;
+			
+			[Bindable]
+			private var _code:String;
+			
+			protected function hideORshow():void
+			{
+				if(this.height<40){
+					eff_shousuo.end();
+					eff_zhankai.play();
+					codeInput.editable=true;
+				}else{
+					eff_zhankai.end();
+					eff_shousuo.play();
+					codeInput.editable=false;
+				}
+			}
+			
+			protected function btn_changeMap(event:MouseEvent):void
+			{
+				codeInput.appendText("changeMap:map1.map,5,5");
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:Resize id="eff_shousuo" heightFrom="250" heightTo="32" duration="400" target="{this}"/>
+		<s:Resize id="eff_zhankai" heightFrom="32" heightTo="250" duration="400" target="{this}"/>
+	</fx:Declarations>
+	<s:TextArea id="codeInput" x="0" y="0" width="100%" height="184" borderVisible="false"
+				click="codeInput.editable=true;" contentBackgroundColor="#DFFFE7"
+				deactivate="codeInput.editable=false;" editable="false" fontSize="16"
+				text="@{FlexGlobals.topLevelApplication._mapDrawUI.eventCode}"/>
+	<s:Label x="0" y="-31" width="298" height="31" click="hideORshow()"/>
+	<s:Button x="7" y="190" label="切换地图" click="btn_changeMap(event)"/>
+</s:Panel>

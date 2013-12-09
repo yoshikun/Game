@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="600" height="500" close="PopUpManager.removePopUp(this);"
+			   creationComplete="Init(event)" title="资源编辑器">
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import spark.events.IndexChangeEvent;
+			import spark.events.TextOperationEvent;
+			import utils.IsoUtils;
+			import utils.Point3D;
+			import view.IsoTile;
+			
+			
+			private var _line:UIComponent;//对齐基准线
+			private var _grid:IsoTile;//占用尺寸的格子
+			[Bindable]
+			private var _resXml:XML;//元件XML配置文件
+			private var index:int;//当前选中的元件索引
+			
+			/**初始化**/
+			protected function Init(event:FlexEvent):void
+			{
+				_line=new UIComponent();
+				canPreview.addChild(_line);
+				/* 绘制元件预览基准线 */
+				_line.graphics.lineStyle(0,0xff0000);
+				_line.graphics.moveTo(0,250);
+				_line.graphics.lineTo(580,250);
+				_line.graphics.moveTo(290,0);
+				_line.graphics.lineTo(290,320);
+				_line.mouseEnabled=false;//禁用鼠标事件捕获
+				/* 绘制占用尺寸网格 */
+				_grid=new IsoTile(32,0xff0000,0);//懒得画新的图块格子，所以就用已经编写好的IsoTile
+				_grid.position=IsoUtils.screenToIso(new Point(290,250));//IsoTile重写了X、Y所以不能自己更改坐标，它的坐标体系是ISO的，需要转换
+				_grid.mouseEnabled=false;//禁用鼠标事件捕获
+				_line.addChild(_grid);
+				
+			}
+			
+			/**鼠标修改偏移* */
+			protected function onPreviewMouseUp():void{
+				previewImage.stopDrag();
+				var offsetX:Number=290-previewImage.x;
+				var offsetY:Number=250-previewImage.y;
+				_resXml.tile[index].@offsetX=offsetX;
+				_resXml.tile[index].@offsetY=offsetY;
+				tileOffestX.value=offsetX;
+				tileOffestY.value=offsetY;
+			}
+			/**修改元件名称 **/
+			protected function tileNameChange(event:TextOperationEvent):void
+			{
+				_resXml.tile[index].@name=textTileName.text;
+			}
+			/**修改元件类型**/
+			protected function tileTypeChange(event:IndexChangeEvent):void
+			{
+				_resXml.tile[index].@type=cboTileType.selectedItem.label;
+			}
+			/**修改元件文件名**/
+			protected function tileFileChange(event:TextOperationEvent):void
+			{
+				_resXml.tile[index].@file=textTileFile.text;
+			}
+			/**修改元件偏移 **/
+			protected function tileOffsetChange(event:Event):void
+			{
+				/* 更改相应项目属性，更新显示位置 */
+				_resXml.tile[index].@offsetX=tileOffestX.value;
+				_resXml.tile[index].@offsetY=tileOffestY.value;
+				previewImage.x=290-tileOffestX.value;
+				previewImage.y=250-tileOffestY.value;
+			}
+			/**网格大小改变**/
+			protected function gridSize_change(event:Event):void
+			{
+				_grid.size=gridSize.value;
+			}
+			/**列表框选择项改变**/
+			protected function onChangeTileList():void{
+				index=listTile.selectedIndex;//当前列表项索引值
+				/* 将当前项信息填充到控件里 */
+				textTileName.text=_resXml.tile[index].@name;
+				textTileFile.text=_resXml.tile[index].@file;
+				tileOffestX.value=_resXml.tile[index].@offsetX;
+				tileOffestY.value=_resXml.tile[index].@offsetY;
+				/* 根据不同类型，到不同的目录下读入文件显示 */
+				if(_resXml.tile[index].@type=="floor"){
+					cboTileType.selectedIndex=0;
+					previewImage.source="res/floor/"+_resXml.tile[index].@file;
+				}else{
+					cboTileType.selectedIndex=1;
+					previewImage.source="res/building/"+_resXml.tile[index].@file;
+				}
+				/* 更新图像位置 */
+				previewImage.x=290-_resXml.tile[index].@offsetX;
+				previewImage.y=250-_resXml.tile[index].@offsetY;
+			}
+			/**新建按钮Click**/
+			protected function btnNew_click(event:MouseEvent):void
+			{
+				/* 将资源XML初始化为只含有一个默认节点 */
+				_resXml=<res><tile type="floor" name="noname" file="0001.png" offsetX="32" offsetY="16"/></res>;
+			}
+			/**打开按钮Click**/
+			protected function btnOpen_click(event:MouseEvent):void
+			{
+				var file:File=File.applicationDirectory.resolvePath("res");//从程序根目录下的res目录开始浏览
+				var filter:FileFilter=new FileFilter("资源配置文件(*.res)","*.res");
+				file.browseForOpen("打开文件",[filter]);
+				file.addEventListener(Event.SELECT,onOpenSelect);
+			}
+			/**选择了打开的文件后。。。**/
+			protected function onOpenSelect(e:Event):void{
+				var file:File=e.target as File;
+				file.removeEventListener(Event.SELECT,onOpenSelect);
+				var fs:FileStream=new FileStream();
+				fs.open(file,FileMode.READ);
+				_resXml=XML(fs.readUTFBytes(fs.bytesAvailable));
+				fs.close();
+			}
+			/**选择了保存的文件后。。。**/
+			protected function onSaveSelect(e:Event):void{
+				var file:File=e.target as File;
+				file.removeEventListener(Event.SELECT,onSaveSelect);
+				var fs:FileStream=new FileStream();
+				fs.open(file,FileMode.WRITE);
+				fs.writeUTFBytes(_resXml.toXMLString());
+				fs.close();
+				Alert.show("保存成功！","提示");
+			}
+			/**保存按钮Click**/
+			protected function btnSave_click(event:MouseEvent):void
+			{
+				var file:File=File.applicationDirectory.resolvePath("res");//从程序根目录下的res目录开始浏览
+				var filter:FileFilter=new FileFilter("资源配置文件(*.res)","*.res");
+				file.browseForSave("保存文件");
+				file.addEventListener(Event.SELECT,onSaveSelect);
+			}
+			/**添加按钮Click**/
+			protected function btnAdd_click(event:MouseEvent):void
+			{
+				/* 向资源XML中添加节点 */
+				_resXml.appendChild(<tile type="floor" name="noname" file="0001.png" offsetX="32" offsetY="16"/>);
+				listTile.selectedIndex=tileListData.length-1;//选中最后添加的项
+				onChangeTileList();//手动调用列表项目被改变的事件处理函数，因为通过编程方法更改索引不会派发Change事件。
+			}
+			/**删除按钮Click**/
+			protected function btnDel_click(event:MouseEvent):void
+			{
+				delete _resXml.tile[listTile.selectedIndex];//删除当前选中的项目
+				onChangeTileList();//手动调用列表项目被改变的事件处理函数，重新加载项目信息
+			}
+			
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:XMLListCollection id="tileListData" source="{_resXml.tile}"/>
+		<s:ArrayList id="tileTypeData">
+			<fx:Object label="floor"/>
+			<fx:Object label="building"/>
+		</s:ArrayList>
+	</fx:Declarations>
+	<mx:Canvas id="canPreview" x="9" y="7" width="580" height="320" backgroundColor="#B0B0B0">
+		<s:Image id="previewImage" x="0" y="0"
+				 mouseDown="previewImage.startDrag()" mouseUp="onPreviewMouseUp()"/>
+	</mx:Canvas>
+	<s:List id="listTile" x="8" y="360" width="193" height="98" borderColor="#929292"
+			change="onChangeTileList()" contentBackgroundColor="#EEEEEE"
+			dataProvider="{tileListData}" labelField="@name"/>
+	<s:HGroup x="97" y="-26" width="205" height="20">
+		<s:Button id="btnNew" width="60" height="100%" label="新建" click="btnNew_click(event)"/>
+		<s:Button id="btnOpen" width="60" height="100%" label="打开"
+				  click="btnOpen_click(event)"/>
+		<s:Button id="btnSave" width="60" height="100%" label="保存"
+				  click="btnSave_click(event)"/>
+	</s:HGroup>
+	<s:HGroup x="10" y="336" width="191" height="20" verticalAlign="middle">
+		<s:Label text="元件列表："/>
+		<s:Button id="btnAdd" width="60" height="100%" label="添加" click="btnAdd_click(event)"/>
+		<s:Button id="btnDel" width="60" height="100%" label="删除" click="btnDel_click(event)"/>
+	</s:HGroup>
+	<s:BorderContainer x="207" y="336" width="240" height="122">
+		<s:Label x="5" y="14" text="名称:"/>
+		<s:Label x="5" y="41" text="类型:"/>
+		<s:Label x="5" y="67" text="文件名:"/>
+		<s:Label x="6" y="94" text="X偏移:"/>
+		<s:Label x="127" y="94" text="Y偏移:"/>
+		<s:TextInput id="textTileName" x="47" y="8" width="186"
+					 change="tileNameChange(event)" text="草地1"/>
+		<s:ComboBox id="cboTileType" x="47" y="34" width="186"
+					change="tileTypeChange(event)" dataProvider="{tileTypeData}"
+					selectedIndex="0"/>
+		<s:TextInput id="textTileFile" x="47" y="61" width="187"
+					 change="tileFileChange(event)" text="0001.png"/>
+		<s:NumericStepper id="tileOffestX" x="47" y="88" width="70"
+						  change="tileOffsetChange(event)" maximum="300" minimum="0"/>
+		<s:NumericStepper id="tileOffestY" x="164" y="88" width="70"
+						  change="tileOffsetChange(event)" maximum="300" minimum="0"/>
+	</s:BorderContainer>
+	<s:BorderContainer x="453" y="336" width="135" height="122" backgroundColor="#E5E5E5">
+		<s:Label x="0" y="0" width="100%" height="20" backgroundColor="#B9B9B9" text="编辑器设置"
+				 textAlign="center" verticalAlign="middle"/>
+		<s:Label x="3" y="33" text="网格大小："/>
+		<s:NumericStepper id="gridSize" x="62" y="27" width="69"
+						  change="gridSize_change(event)" maximum="320" value="32"/>
+	</s:BorderContainer>
+</s:TitleWindow>
