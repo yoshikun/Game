@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2010 (http://www.altova.com) by MESMERiZE (MiZE) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="root">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="command" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>一组命令，value采用一个或多个单词，每个单词首字字母大写</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="param" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>一个条命令</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element ref="attrib" minOccurs="0" maxOccurs="unbounded"/>
+									</xs:sequence>
+									<xs:attribute name="value" type="xs:string" use="required">
+										<xs:annotation>
+											<xs:documentation>命令名称，采用全大写单词，单词和单词之间用_隔开</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="path" use="required">
+										<xs:annotation>
+											<xs:documentation>"C > S"是客户端发送给服务端,"C > S"是服务端发送给客户端</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="S > C"/>
+												<xs:enumeration value="C > S"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="info" type="xs:string" use="required">
+										<xs:annotation>
+											<xs:documentation>对此命令的说明</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="useless" type="xs:boolean" default="false">
+										<xs:annotation>
+											<xs:documentation>该命令是否无用，默认false</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="value" type="xs:string" use="required">
+							<xs:annotation>
+								<xs:documentation>命令名称</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="obj" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="attrib" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+						<xs:attribute name="value" type="xs:string" use="required"/>
+						<xs:attribute name="info" type="xs:string" use="required">
+							<xs:annotation>
+								<xs:documentation>说明文字</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="attrib">
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>一个变量名称，采用一个或多个单词，首字母小写，后面的每个单词首字字母大写</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="consts" type="xs:string" use="optional">
+				<xs:annotation>
+					<xs:documentation>枚举值，客户端用的</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="type" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>服务器数据类型</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="info" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>参数说明</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

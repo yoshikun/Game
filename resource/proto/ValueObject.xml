@@ -1,0 +1,829 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 (http://www.altova.com) by Administrator (EMBRACE) -->
+<!--
+文件格式定义：
+====obj 一个数据对象
+========value 对象名称，采用一个或多个单词，每个单词首字字母大写,最后一个单词为Info
+============attrib 对象的一组数据格式
+================value 一个变量名称，采用一个或多个单词，首字母小写，后面的每个单词首字字母大写
+====================如果数据是一个数组，则在名称后加[]，例如FRIEND_LIST命令中的info[num]，
+====================其中info为变量名，[]表示数组，num表示数组中的数值变量，这个num取自num变量
+================type 服务器数据类型
+================info 参数说明
+-->
+<root xsi:noNamespaceSchemaLocation="Protocol.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<obj value="SelectUserInfo" info="角色信息(角色列表使用)">
+		<attrib value="userID" type="uint32_t" info="角色ID"/>
+		<attrib value="nickName" type="char[33]" info="昵称"/>
+		<attrib value="accid" type="uint32_t" info="账号ID"/>
+		<attrib value="type" type="uint8_t" info="种族 1,2,3"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="sex" type="uint8_t" info="性别 1男 2女"/>
+		<attrib value="bitmask" type="uint32_t" info="角色掩码"/>
+	</obj>
+	<obj value="MainUserData" info="角色信息">
+		<attrib value="userID" type="uint32_t" info="角色ID"/>
+		<attrib value="nickName" type="char[33]" info="昵称"/>
+		<attrib value="captionName" type="char[33]" info="称号"/>
+		<attrib value="accid" type="uint32_t" info="账号ID"/>
+		<attrib value="type" type="uint8_t" info="种族 1,2,3"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="sex" type="uint8_t" info="性别 1男 2女"/>
+		<attrib value="state" type="uint8_t" info="状态"/>
+		<attrib value="bitMask" type="uint32_t" info="角色掩码"/>
+		<attrib value="exp" type="uint32_t" info="当前经验值"/>
+		<attrib value="reputation" type="uint32_t" info="声望"/>
+		<attrib value="winWars" type="uint32_t" info="胜利次数"/>
+		<attrib value="flees" type="uint32_t" info="逃跑次数"/>
+		<attrib value="allWars" type="uint32_t" info="战斗总次数"/>
+		<attrib value="forbidTalk" type="uint32_t" info="禁言到期的时间"/>
+		<attrib value="onlineTime" type="uint32_t" info="在线时间统计"/>
+		<attrib value="offlineTime" type="uint32_t" info="上次下线时间"/>
+		<attrib value="money" type="uint32_t" info="钱啊"/>
+		<attrib value="gold" type="uint32_t" info="金币"/>
+		<attrib value="ticket" type="uint32_t" info="礼券"/>
+		<attrib value="soulPoint" type="uint32_t" info="魂精"/>
+		<attrib value="soulEnergy" type="uint32_t" info="噬魂能量"/>
+		<attrib value="vigour" type="uint32_t" info="精力点"/>
+		<attrib value="maxVigour" type="uint32_t" info="精力点上限"/>
+		<attrib value="vip" type="uint8_t" info="vip"/>
+		<attrib value="accPriv" type="uint32_t" info="账号权限"/>
+		<attrib value="unionID" type="uint32_t" info="公会id"/>
+		<attrib value="unionName" type="char[33]" info="公会名称"/>
+		<attrib value="cityID" type="uint32_t" info="站街地图场景ID"/>
+		<attrib value="x" type="uint32_t" info="站街坐标"/>
+		<attrib value="y" type="uint32_t" info="站街坐标"/>
+		<attrib value="guide" type="uint32_t" info="完成的引导ID"/>
+		<attrib value="moveSpeed" type="uint16_t" info="移动速度"/>
+		<attrib value="attackSpeed" type="uint16_t" info="攻击速度"/>
+		<attrib value="adistance" type="uint16_t" info="攻击距离"/>
+		<attrib value="vision" type="uint16_t" info="视野距离"/>
+		<attrib value="hp" type="uint32_t" info="当前生命值"/>
+		<attrib value="maxHP" type="uint32_t" info="最大生命值"/>
+		<attrib value="hpRegen" type="uint16_t" info="每秒生命值恢复"/>
+		<attrib value="sp" type="uint16_t" info="当前愤怒值"/>
+		<attrib value="maxSP" type="uint16_t" info="最大愤怒值"/>
+		<attrib value="spRegen" type="uint16_t" info="愤怒值恢复"/>
+		<attrib value="energy" type="uint16_t" info="当前能量值"/>
+		<attrib value="maxEnergy" type="uint16_t" info="最大能量值"/>
+		<attrib value="energyRegen" type="uint16_t" info="每秒能量值恢复"/>
+		<attrib value="pDamage" type="uint16_t" info="攻击力"/>
+		<attrib value="defence" type="uint16_t" info="防御力"/>
+		<attrib value="criDam" type="uint16_t" info="暴击伤害百分比"/>
+		<attrib value="criDefence" type="uint16_t" info="暴击抗性百分比"/>
+		<attrib value="criDamP" type="uint16_t" info="暴击伤害概率"/>
+		<attrib value="suck" type="uint16_t" info="生命吸取"/>
+		<attrib value="rebound" type="uint16_t" info="伤害反弹"/>
+		<attrib value="combat" type="uint32_t" info="战斗力"/>
+		<attrib value="allCombat" type="uint32_t" info="总战斗力（包括出战英雄）"/>
+		<attrib value="dayObtainExp" type="uint32_t" info="当日获得经验"/>
+		<attrib value="isAntiAddiction" type="uint8_t" info="0不 1防沉迷"/>
+		<attrib value="buyVigourLeft" type="uint32_t" info="剩余购买精力点数量"/>
+	</obj>
+	<obj value="SceneUserData" info="场景角色信息">
+		<attrib value="data" type="@UserFightData" info="数据"/>
+		<attrib value="isHide" type="uint8_t" info="是否隐藏 1隐藏 0否"/>
+		<attrib value="reliveNum" type="uint8_t" info="剩余复活次数"/>
+	</obj>
+	<obj value="UserFightData" info="角色信息">
+		<attrib value="userID" type="uint32_t" info="角色ID"/>
+		<attrib value="nickName" type="char[33]" info="昵称"/>
+		<attrib value="caption" type="char[33]" info="称谓"/>
+		<attrib value="type" type="uint8_t" info="种族 1,2,3"/>
+		<attrib value="sex" type="uint8_t" info="性别 1男 2女"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="pos" type="uint8_t" info="位置"/>
+		<attrib value="moveSpeed" type="uint16_t" info="移动速度"/>
+		<attrib value="attackSpeed" type="uint16_t" info="攻击速度"/>
+		<attrib value="adistance" type="uint16_t" info="攻击距离"/>
+		<attrib value="vision" type="uint16_t" info="视野距离"/>
+		<attrib value="hp" type="uint32_t" info="当前生命值"/>
+		<attrib value="maxHP" type="uint32_t" info="最大生命值"/>
+		<attrib value="hpRegen" type="uint16_t" info="每秒生命值恢复"/>
+		<attrib value="sp" type="uint16_t" info="当前愤怒值"/>
+		<attrib value="maxSP" type="uint16_t" info="最大愤怒值"/>
+		<attrib value="spRegen" type="uint16_t" info="愤怒值恢复"/>
+		<attrib value="energy" type="uint16_t" info="当前能量值"/>
+		<attrib value="maxEnergy" type="uint16_t" info="最大能量值"/>
+		<attrib value="energyRegen" type="uint16_t" info="每秒能量值恢复"/>
+		<attrib value="pDamage" type="uint16_t" info="攻击力"/>
+		<attrib value="defence" type="uint16_t" info="防御力"/>
+		<attrib value="criDam" type="uint16_t" info="暴击伤害百分比"/>
+		<attrib value="criDefence" type="uint16_t" info="暴击抗性百分比"/>
+		<attrib value="criDamP" type="uint16_t" info="暴击伤害概率"/>
+		<attrib value="suck" type="uint16_t" info="生命吸取"/>
+		<attrib value="rebound" type="uint16_t" info="伤害反弹"/>
+		<attrib value="combat" type="uint32_t" info="战斗力"/>
+		<attrib value="allCombat" type="uint32_t" info="总战斗力（包括出战英雄）"/>
+		<attrib value="states[16]" type="uint16_t" info="技能状态列表"/>
+	</obj>
+	<obj value="ServerInfo" info="服务器信息">
+		<attrib value="serverID" type="uint16_t" info="服务器id"/>
+		<attrib value="serverType" type="uint16_t" info="服务器类型"/>
+		<attrib value="name" type="char[33]" info="名字"/>
+		<attrib value="ip" type="char[33]" info="内网ip"/>
+		<attrib value="port" type="uint16_t" info="内网端口"/>
+		<attrib value="extip" type="char[33]" info="外网ip"/>
+		<attrib value="extport" type="uint16_t" info="外网端口"/>
+		<attrib value="netType" type="uint16_t" info="网络类型（1电信，2网通）"/>
+		<attrib value="load" type="uint32_t" info="最大负载"/>
+		<attrib value="inuse" type="uint32_t" info="当前负载"/>
+	</obj>
+	<obj value="StateInfo" info="用户状态信息">
+		<attrib value="stateID" type="uint32_t" info="状态ID"/>
+		<attrib value="lastTime" type="uint32_t" info="持续时间单位S"/>
+	</obj>
+	<obj value="HallRoomInfo" info="房间信息">
+		<attrib value="roomID" type="uint32_t" info="房间id"/>
+		<attrib value="name" type="char[33]" info="房间名称"/>
+		<attrib value="needLevel" type="uint16_t" info="需要等级"/>
+		<attrib value="mode" type="uint8_t" info="游戏模式"/>
+		<attrib value="curPlayers" type="uint8_t" info="当前人数"/>
+		<attrib value="maxPlayers" type="uint8_t" info="最大游戏人数"/>
+		<attrib value="owner" type="uint32_t" info=" 房主ID"/>
+		<attrib value="state" type="uint8_t" info="房间状态0等待 1开始游戏 2隐藏 3销毁"/>
+		<attrib value="sceneID" type="uint32_t" info="地图场景id"/>
+		<attrib value="loginType" type="uint8_t" info="进入副本类型 0,1"/>
+	</obj>
+	<obj value="RoomUserInfo" info="房间用户信息">
+		<attrib value="userObj" type="@SelectUserInfo" info="角色信息"/>
+		<attrib value="pos" type="uint8_t" info="玩家所在位置 1-3"/>
+		<attrib value="uState" type="uint8_t" info="0 空闲 1进入房间 2准备状态 3匹配成功 4游戏准备状态 5开始游戏"/>
+		<attrib value="team" type="uint8_t" info="队伍 1,2"/>
+		<attrib value="avatar[8]" type="uint32_t" info="时装ID"/>
+	</obj>
+	<obj value="MapUserData" info="地图中的用户信息,包括状态">
+		<attrib value="userID" type="uint32_t" info="角色ID"/>
+		<attrib value="nickName" type="char[33]" info="昵称"/>
+		<attrib value="caption" type="char[33]" info="称谓"/>
+		<attrib value="type" type="uint8_t" info="种族 1,2,3"/>
+		<attrib value="sex" type="uint8_t" info="性别 1男 2女"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="pos" type="uint8_t" info="位置"/>
+		<attrib value="team" type="uint8_t" info="队伍1,2 决定敌对"/>
+		<attrib value="avatar[8]" type="uint32_t" info="时装ID"/>
+		<attrib value="unionName" type="char[33]" info="公会名称"/>
+		<attrib value="vip" type="uint8_t" info="vip等级"/>
+		<attrib value="hp" type="uint32_t" info="当前生命值"/>
+		<attrib value="maxHP" type="uint32_t" info="最大生命值"/>
+		<attrib value="energy" type="uint16_t" info="当前能量值"/>
+		<attrib value="maxEnergy" type="uint16_t" info="最大能量值"/>
+		<attrib value="moveSpeed" type="uint16_t" info="移动速度"/>
+	</obj>
+	<obj value="MapUserDataPos" info="站街地图的用户信息，带坐标">
+		<attrib value="info" type="@MapUserData" info="信息"/>
+		<attrib value="x" type="uint16_t" info="x"/>
+		<attrib value="y" type="uint16_t" info="y"/>
+		<attrib value="direct" type="uint8_t" info="方向"/>
+		<attrib value="states[16]" type="uint16_t" info="技能状态列表"/>
+	</obj>
+	<obj value="PetInfo" info="宠物操作信息">
+		<attrib value="userID" type="uint32_t" info="玩家id"/>
+		<attrib value="baseID" type="uint32_t" info="数据ID"/>
+		<attrib value="state" type="uint8_t" info="0不可建造 1可建造"/>
+		<attrib value="skillNum" type="uint16_t" info="技能个数"/>
+		<attrib value="num" type="uint16_t" info="宠物个数"/>
+	</obj>
+	<obj value="ScenePetInfo" info="宠物场景信息">
+		<attrib value="data" type="@PetData" info="数据"/>
+		<attrib value="id" type="uint32_t" info="npc临时ID"/>
+		<attrib value="masterType" type="uint8_t" info="主人的类型"/>
+		<attrib value="masterID" type="uint32_t" info="主人的id"/>
+		<attrib value="x" type="uint16_t" info="x"/>
+		<attrib value="y" type="uint16_t" info="y"/>
+		<attrib value="direct" type="uint8_t" info="方向"/>
+		<attrib value="isHide" type="uint8_t" info="是否隐藏 1隐藏 0否"/>
+		<attrib value="states[16]" type="uint16_t" info="技能状态列表"/>
+	</obj>
+	<obj value="PetData" info="宠物信息">
+		<attrib value="baseID" type="uint32_t" info="数据ID"/>
+		<attrib value="name" type="char[33]" info="名字"/>
+		<attrib value="race" type="uint8_t" info="种族"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="moveSpeed" type="uint16_t" info="移动速度"/>
+		<attrib value="attackSpeed" type="uint16_t" info="攻击速度"/>
+		<attrib value="adistance" type="uint16_t" info="攻击距离"/>
+		<attrib value="vision" type="uint16_t" info="视野距离"/>
+		<attrib value="hp" type="uint32_t" info="当前生命值"/>
+		<attrib value="maxHP" type="uint32_t" info="最大生命值"/>
+		<attrib value="hpRegen" type="uint16_t" info="每秒生命值恢复"/>
+		<attrib value="sp" type="uint16_t" info="当前愤怒值"/>
+		<attrib value="maxSP" type="uint16_t" info="最大愤怒值"/>
+		<attrib value="spRegen" type="uint16_t" info="愤怒值恢复"/>
+		<attrib value="energy" type="uint16_t" info="当前能量值"/>
+		<attrib value="maxEnergy" type="uint16_t" info="最大能量值"/>
+		<attrib value="energyRegen" type="uint16_t" info="每秒能量值恢复"/>
+		<attrib value="pDamage" type="uint16_t" info="攻击力"/>
+		<attrib value="defence" type="uint16_t" info="防御力"/>
+		<attrib value="criDam" type="uint16_t" info="暴击伤害百分比"/>
+		<attrib value="criDefence" type="uint16_t" info="暴击抗性百分比"/>
+		<attrib value="criDamP" type="uint16_t" info="暴击伤害概率"/>
+		<attrib value="suck" type="uint16_t" info="生命吸取"/>
+		<attrib value="rebound" type="uint16_t" info="伤害反弹"/>
+		<attrib value="combat" type="uint32_t" info="战斗力"/>
+		<attrib value="reliveCD" type="uint16_t" info="复活时间"/>
+		<attrib value="replaceCD" type="uint16_t" info="替换间隔"/>
+		<attrib value="skillCD" type="int16_t" info="技能CD变化(可正负)"/>
+		<attrib value="energyCost" type="int16_t" info="技能能量消耗变化"/>
+		<attrib value="currentExp" type="uint32_t" info="当前经验"/>
+		<attrib value="maxExp" type="uint32_t" info="升级所需经验"/>
+		<attrib value="bornSkill" type="uint16_t" info="出生技能"/>
+		<attrib value="attackSkills[3]" type="@SkillInfo" info="主动技能"/>
+		<attrib value="passiveSkills[5]" type="@SkillInfo" info="被动技能"/>
+		<attrib value="ai" type="uint16_t" info="宠物AI"/>
+		<attrib value="type" type="uint8_t" info="宠物类型"/>
+		<attrib value="state" type="uint8_t" info="状态 1普通 2死亡 3可噬魂"/>
+		<attrib value="battleLv" type="uint16_t" info="战斗等级"/>
+		<attrib value="normalSkill" type="uint16_t" info="普通攻击技能ID"/>
+	</obj>
+	<obj value="PetCreateData" info="宠物生产信息">
+		<attrib value="price" type="uint32_t" info="价格"/>
+		<attrib value="defenceID" type="uint32_t" info="防守宠物id"/>
+		<attrib value="duration" type="uint16_t" info="加工时长"/>
+	</obj>
+	<obj value="TechData" info="地图中的科技信息">
+		<attrib value="baseID" type="uint32_t" info="科技ID"/>
+		<attrib value="state" type="uint8_t" info="当前状态 0未激活 1激活未建造 2以建造"/>
+		<attrib value="techLevel" type="uint16_t" info="科技等级"/>
+		<attrib value="needResource" type="uint32_t" info="升级需要的资源"/>
+		<attrib value="duration" type="uint16_t" info="建造所需时间"/>
+	</obj>
+	<obj value="GoldMine" info="金矿信息">
+		<attrib value="baseID" type="uint32_t" info="金矿id"/>
+		<attrib value="curLevel" type="uint16_t" info="当前等级"/>
+		<attrib value="curProduce" type="uint16_t" info="当前每秒产量"/>
+		<attrib value="curMiners" type="uint16_t" info="当前农民数"/>
+		<attrib value="curFields" type="uint16_t" info="当前拥有栏位数"/>
+		<attrib value="needResource" type="uint32_t" info="升级需要的资源"/>
+		<attrib value="duration" type="uint16_t" info="建造时间"/>
+		<attrib value="state" type="uint8_t" info="状态 0升级中 1就绪"/>
+	</obj>
+	<obj value="TechPetData" info="科技宠物信息">
+		<attrib value="techID" type="uint32_t" info="科技id"/>
+		<attrib value="baseID" type="uint32_t" info="宠物id"/>
+		<attrib value="state" type="uint8_t" info="状态 0激活未建造 1已生产"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="needResource" type="uint32_t" info="所需资源"/>
+		<attrib value="duration" type="uint16_t" info="加工时常"/>
+	</obj>
+	<obj value="SkillInfo" info="技能结构">
+		<attrib value="baseID" type="uint16_t" info="baseID"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="uplevel" type="uint16_t" info="装备提升的等级"/>
+	</obj>
+	<obj value="ConfigSkillInfo" info="配置技能">
+		<attrib value="mainSkill" type="uint16_t" info="主要技"/>
+		<attrib value="normalSkill" type="uint16_t" info="普通技"/>
+		<attrib value="specialSkill" type="uint16_t" info="特殊技"/>
+		<attrib value="greatSkill" type="uint16_t" info="绝技"/>
+	</obj>
+	<obj value="UnionBaseInfo" info="公会基础信息">
+		<attrib value="unionID" type="uint32_t" info="公会ID"/>
+		<attrib value="unionName" type="char[33]" info="公会名称"/>
+		<attrib value="level" type="uint16_t" info="公会等级"/>
+		<attrib value="leaderID" type="uint32_t" info="会长的角色ID"/>
+		<attrib value="leaderName" type="char[33]" info="会长的名字"/>
+		<attrib value="curnum" type="uint16_t" info="公会当前人数"/>
+		<attrib value="maxnum" type="uint16_t" info="公会上限人数"/>
+		<attrib value="state" type="uint8_t" info="公会状态"/>
+		<attrib value="combat" type="uint32_t" info="平均战斗力"/>
+	</obj>
+	<obj value="UnionInfo" info="公会信息">
+		<attrib value="unionID" type="uint32_t" info="公会ID"/>
+		<attrib value="unionName" type="char[33]" info="公会名称"/>
+		<attrib value="level" type="uint16_t" info="公会等级"/>
+		<attrib value="createID" type="uint32_t" info="创建者角色ID"/>
+		<attrib value="createName" type="char[33]" info="创建者名字"/>
+		<attrib value="leaderID" type="uint32_t" info="会长的角色ID"/>
+		<attrib value="leaderName" type="char[33]" info="会长的名字"/>
+		<attrib value="curnum" type="uint16_t" info="公会当前人数"/>
+		<attrib value="maxnum" type="uint16_t" info="公会上限人数"/>
+		<attrib value="state" type="uint8_t" info="公会状态"/>
+		<attrib value="createTime" type="uint32_t" info="创建时间"/>
+		<attrib value="money" type="uint32_t" info="公会资金"/>
+		<attrib value="score" type="uint32_t" info="公会积分"/>
+		<attrib value="baseLevel" type="uint16_t" info="公会基地等级"/>
+		<attrib value="baseExp" type="uint32_t" info="公会基地当前经验"/>
+		<attrib value="note" type="char[255]" info="公会公告"/>
+		<attrib value="combat" type="uint32_t" info="平均战斗力"/>
+	</obj>
+	<obj value="UnionMemberInfo" info="公会用户信息">
+		<attrib value="unionID" type="uint32_t" info="公会ID"/>
+		<attrib value="userID" type="uint32_t" info="用户ID"/>
+		<attrib value="nickName" type="char[33]" info="用户角色昵称"/>
+		<attrib value="aliasName" type="char[33]" info="用户公会别称"/>
+		<attrib value="sex" type="uint8_t" info="用户性别 0未知 1男 2女"/>
+		<attrib value="level" type="uint16_t" info="用户等级"/>
+		<attrib value="power" type="uint16_t" info="用户权限  1普通会员权限 2管理员权限 4会长权限"/>
+		<attrib value="joinTime" type="uint32_t" info="加入时间"/>
+		<attrib value="lastupdate" type="uint32_t" info="最后活跃时间"/>
+		<attrib value="donate" type="uint32_t" info="有效贡献度"/>
+		<attrib value="allDonate" type="uint32_t" info="总贡献度"/>
+		<attrib value="score" type="uint32_t" info="个人积分"/>
+		<attrib value="state" type="uint8_t" info="用户状态"/>
+		<attrib value="combat" type="uint32_t" info="战斗力"/>
+		<attrib value="online" type="uint8_t" info="0不在线 1在线"/>
+		<attrib value="baselimit" type="uint8_t" info="可修筑基地次数"/>
+	</obj>
+	<obj value="ApplyInfo" info="申请列表信息">
+		<attrib value="userID" type="uint32_t" info="用户ID"/>
+		<attrib value="nickName" type="char[33]" info="用户名称"/>
+		<attrib value="sex" type="uint8_t" info="用户性别"/>
+		<attrib value="level" type="uint16_t" info="用户等级"/>
+		<attrib value="combat" type="uint32_t" info="战斗力"/>
+		<attrib value="applyTime" type="uint32_t" info="申请时间"/>
+	</obj>
+	<obj value="ApplyBaseInfo" info="批复返回信息">
+		<attrib value="id" type="uint32_t" info="用户ID"/>
+		<attrib value="ret" type="uint8_t" info="批复结果 0同意 1拒绝 2错误"/>
+	</obj>
+	<obj value="ItemDataID" info="数据ID">
+		<attrib value="baseID" type="uint32_t" info="种类ID"/>
+		<attrib value="id" type="uint32_t" info="唯一ID"/>
+	</obj>
+	<obj value="RelationInfo" info="社会关系信息">
+		<attrib value="userID" type="uint32_t" info="玩家ID"/>
+		<attrib value="nickName" type="char[33]" info="昵称"/>
+		<attrib value="relationType" type="uint8_t" info="关系类型 1好友 2黑名单"/>
+		<attrib value="degree" type="uint16_t" info="友好度"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="state" type="uint8_t" info="是否在线"/>
+		<attrib value="unionName" type="char[33]" info="公会名称"/>
+		<attrib value="sex" type="uint8_t" info="性别"/>
+		<attrib value="homeBless" type="uint8_t" info="是否祝福过，0未祝福 1已祝福"/>
+	</obj>
+	<obj value="Uint32_t" info="4字节ID">
+		<attrib value="id" type="uint32_t" info="id"/>
+	</obj>
+	<obj value="ItemLocationInfo" info="物品位置信息">
+		<attrib value="locationType" type="uint32_t" info="物品格子类型 0不是格子 1背包格子 2装备(符文) 7英雄装备 8英雄仓库 9出战列表"/>
+		<attrib value="tableID" type="uint32_t" info="包袱ID"/>
+		<attrib value="column" type="uint16_t" info="位置"/>
+		<attrib value="row" type="uint16_t" info="位置"/>
+	</obj>
+	<obj value="ItemInfo" info="物品信息">
+		<attrib value="id" type="uint32_t" info="物品唯一id"/>
+		<attrib value="baseID" type="uint32_t" info="物品类别id"/>
+		<attrib value="pos" type="@ItemLocationInfo" info="位置"/>
+		<attrib value="num" type="uint32_t" info="数量"/>
+		<attrib value="upgrade" type="uint8_t" info="等级"/>
+		<attrib value="quality" type="uint8_t" info=" 品质（1-5分别代表 白 绿蓝 紫 红）"/>
+		<attrib value="bind" type="uint8_t" info="装备是否绑定"/>
+		<attrib value="exp" type="uint32_t" info="经验"/>
+		<attrib value="pDamage" type="uint16_t" info="攻击力"/>
+		<attrib value="pdPercent" type="uint16_t" info="攻击力加成百分比"/>
+		<attrib value="defence" type="uint16_t" info="防御力"/>
+		<attrib value="maxHP" type="uint32_t" info="最大生命值"/>
+		<attrib value="resumeHP" type="uint16_t" info="生命恢复速度"/>
+		<attrib value="obtainTime" type="uint32_t" info="道具获得时间"/>
+		<attrib value="endTime" type="uint32_t" info="截止时间"/>
+		<attrib value="price" type="uint32_t" info="价格"/>
+		<attrib value="star[10]" type="uint32_t" info="物品星级"/>
+		<attrib value="socket[6]" type="@SocketInfo" info="孔"/>
+		<attrib value="fixEffect[5]" type="@ItemEffect" info="固定效果"/>
+		<attrib value="randEffect[5]" type="@ItemEffect" info="随机效果"/>
+		<attrib value="growEffect[5]" type="@ItemEffect" info="成长效果"/>
+		<attrib value="skill[3]" type="@uint16_t" info="装备技能"/>
+	</obj>
+	<obj value="LotteryData" info="抽奖道具信息">
+		<attrib value="pos" type="uint8_t" info="所在位置"/>
+		<attrib value="item" type="@ItemInfo" info="道具信息"/>
+	</obj>
+	<obj value="SimpleItemInfo" info="物品信息">
+		<attrib value="id" type="uint32_t" info="物品唯一id"/>
+		<attrib value="baseID" type="uint32_t" info="物品类别id"/>
+		<attrib value="pos" type="@ItemLocationInfo" info="位置"/>
+		<attrib value="num" type="uint32_t" info="数量"/>
+	</obj>
+	<obj value="ItemEffect" info="道具效果">
+		<attrib value="type" type="uint8_t" info="效果类型 1技能效果 2技能等级 3技能类型伤害 4技能类型等级 5技能伤害"/>
+		<attrib value="id" type="uint16_t" info="效果ID"/>
+		<attrib value="value" type="uint32_t" info="值"/>
+	</obj>
+	<obj value="SocketInfo" info="插孔数据">
+		<attrib value="type" type="uint8_t" info="插孔类型 1普通宝石插槽 1元素宝石插槽"/>
+		<attrib value="itemID" type="uint32_t" info="物品ID 0:没有孔,uint.MAX:有空没有插,其他:插有宝石"/>
+		<attrib value="fixEffect[5]" type="@ItemEffect" info="固定效果"/>
+		<attrib value="skill[3]" type="@uint16_t" info="技能"/>
+	</obj>
+	<obj value="EquipGridInfo" info="装备格子数据">
+		<attrib value="id" type="uint8_t" info="格子ID"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+	</obj>
+	<obj value="NpcInfo" info="上次副本有效配置">
+		<attrib value="id" type="uint32_t" info="临时ID"/>
+		<attrib value="baseID" type="uint32_t" info="基本ID"/>
+		<attrib value="type" type="uint8_t" info="1宠物 6英雄"/>
+	</obj>
+	<obj value="AffectSkill" info="英雄影响技能属性">
+		<attrib value="id" type="uint16_t" info="指定技能ID 0为影响全部技能"/>
+		<attrib value="type" type="uint8_t" info="类型 1按百分比减少CD 2按值减少CD 3按百分比减少消耗 4按值减少消耗 5按百分比增加伤害 6按值增加伤害"/>
+		<attrib value="value" type="uint16_t" info="影响的值"/>
+	</obj>
+	<obj value="HeroInfo" info="英雄详细信息">
+		<attrib value="baseID" type="uint32_t" info="数据ID"/>
+		<attrib value="name" type="char[33]" info="名字"/>
+		<attrib value="race" type="uint8_t" info="种族"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="moveSpeed" type="uint16_t" info="移动速度"/>
+		<attrib value="attackSpeed" type="uint16_t" info="攻击速度"/>
+		<attrib value="adistance" type="uint16_t" info="攻击距离"/>
+		<attrib value="vision" type="uint16_t" info="视野距离"/>
+		<attrib value="hp" type="uint32_t" info="当前生命值"/>
+		<attrib value="maxHP" type="uint32_t" info="最大生命值"/>
+		<attrib value="hpRegen" type="uint16_t" info="每秒生命值恢复"/>
+		<attrib value="sp" type="uint16_t" info="当前愤怒值"/>
+		<attrib value="maxSP" type="uint16_t" info="最大愤怒值"/>
+		<attrib value="spRegen" type="uint16_t" info="愤怒值恢复"/>
+		<attrib value="energy" type="uint16_t" info="当前能量值"/>
+		<attrib value="maxEnergy" type="uint16_t" info="最大能量值"/>
+		<attrib value="energyRegen" type="uint16_t" info="每秒能量值恢复"/>
+		<attrib value="pDamage" type="uint16_t" info="攻击力"/>
+		<attrib value="defence" type="uint16_t" info="防御力"/>
+		<attrib value="criDam" type="uint16_t" info="暴击伤害百分比"/>
+		<attrib value="criDefence" type="uint16_t" info="暴击抗性百分比"/>
+		<attrib value="criDamP" type="uint16_t" info="暴击伤害概率"/>
+		<attrib value="suck" type="uint16_t" info="生命吸取"/>
+		<attrib value="rebound" type="uint16_t" info="伤害反弹"/>
+		<attrib value="combat" type="uint32_t" info="战斗力"/>
+		<attrib value="reliveCD" type="uint16_t" info="复活时间"/>
+		<attrib value="replaceCD" type="uint16_t" info="替换间隔"/>
+		<attrib value="skillCD" type="int16_t" info="技能CD变化(可正负)"/>
+		<attrib value="energyCost" type="int16_t" info="技能能量消耗变化"/>
+		<attrib value="currentExp" type="uint32_t" info="当前经验"/>
+		<attrib value="maxExp" type="uint32_t" info="升级所需经验"/>
+		<attrib value="bornSkill" type="uint16_t" info="出生技能"/>
+		<attrib value="id" type="uint32_t" info="唯一id"/>
+		<attrib value="state" type="uint32_t" info="状态 字节数组,按位设置（0出战 1训练）"/>
+		<attrib value="quality" type="uint8_t" info=" 品质（1-5分别代表 白 绿蓝 紫 红）"/>
+		<attrib value="extraAtkP" type="uint16_t" info="额外攻击一次的概率（物理攻击触发）"/>
+		<attrib value="ignoreDamP" type="uint16_t" info="百分比伤害减免"/>
+		<attrib value="ignoreDam" type="uint16_t" info="伤害减免（值）"/>
+		<attrib value="attackSkills[3]" type="@SkillInfo" info="主动技能"/>
+		<attrib value="passiveSkills[5]" type="@SkillInfo" info="被动技能"/>
+		<attrib value="obtainTime" type="uint32_t" info="道具获得时间"/>
+		<attrib value="endTime" type="uint32_t" info="截止时间"/>
+	</obj>
+	<obj value="LevelRankInfo" info="等级排行信息">
+		<attrib value="userID" type="uint32_t" info="用户ID"/>
+		<attrib value="nickName" type="char[33]" info="姓名"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="unionName" type="char[33]" info="公会名称"/>
+		<attrib value="curPostion" type="uint16_t" info="本次排名"/>
+		<attrib value="lastPostion" type="uint16_t" info="上次排名"/>
+	</obj>
+	<obj value="WealthRankInfo" info="等级排行信息">
+		<attrib value="userID" type="uint32_t" info="用户ID"/>
+		<attrib value="nickName" type="char[33]" info="姓名"/>
+		<attrib value="money" type="uint32_t" info="铜币"/>
+		<attrib value="unionName" type="char[33]" info="公会名称"/>
+		<attrib value="curPostion" type="uint16_t" info="本次排名"/>
+		<attrib value="lastPostion" type="uint16_t" info="上次排名"/>
+	</obj>
+	<obj value="CombatRankInfo" info="战斗力排行信息">
+		<attrib value="userID" type="uint32_t" info="用户ID"/>
+		<attrib value="nickName" type="char[33]" info="姓名"/>
+		<attrib value="combat" type="uint32_t" info="战斗力数值"/>
+		<attrib value="unionName" type="char[33]" info="公会名称"/>
+		<attrib value="curPostion" type="uint16_t" info="本次排名"/>
+		<attrib value="lastPostion" type="uint16_t" info="上次排名"/>
+	</obj>
+	<obj value="UnionLvRankInfo" info="等级排行信息">
+		<attrib value="unionID" type="uint32_t" info="公会ID"/>
+		<attrib value="unionName" type="char[33]" info="公会名称"/>
+		<attrib value="leaderID" type="uint32_t" info="会长的角色ID"/>
+		<attrib value="leaderName" type="char[33]" info="会长的名字"/>
+		<attrib value="level" type="uint16_t" info="公会等级"/>
+		<attrib value="money" type="uint32_t" info="公会资金"/>
+		<attrib value="curPostion" type="uint16_t" info="本次排名"/>
+		<attrib value="lastPostion" type="uint16_t" info="上次排名"/>
+	</obj>
+	<obj value="GiftPackInfo" info="礼包信息">
+		<attrib value="id" type="uint32_t" info="礼包唯一ID"/>
+		<attrib value="name" type="char[33]" info="送礼人昵称"/>
+		<attrib value="itemType" type="uint8_t" info="礼包类型 1商城购买 2副本掉落打包 3VIP等级礼包 4联赛排名礼包 5VIP特权礼包 6任务完成奖励 7收集奖励 8道具补偿 9场景掉落临时背包 10家园祝福礼包 11临时背包 12系统礼包 13公会礼包 14探宝 15答题 16斗兽场 17充值 18消费 19赛跑 20公会抽奖 21首次充值"/>
+		<attrib value="endTime" type="uint32_t" info="礼包时间"/>
+		<attrib value="num" type="uint16_t" info="礼包道具数量"/>
+		<attrib value="info[num]" type="@ItemNumInfo" info="道具信息"/>
+	</obj>
+	<obj value="DailyTaskInfo" info="日常任务">
+		<attrib value="baseID" type="uint16_t" info="日常任务ID"/>
+		<attrib value="currentRequirement" type="uint8_t" info="完成要素"/>
+		<attrib value="state" type="uint8_t" info="状态 0可查看 1进行中 2完成"/>
+	</obj>
+	<obj value="DailyTaskReward" info="日常任务领奖信息">
+		<attrib value="id" type="uint16_t" info="领奖ID"/>
+		<attrib value="state" type="uint8_t" info="状态 0未领奖 1已领奖"/>
+	</obj>
+	<obj value="ForbidInsTime" info="禁止进入副本剩余时间">
+		<attrib value="type" type="uint8_t" info="副本类型 同Scene.xml的type"/>
+		<attrib value="time" type="uint32_t" info="结束时间（秒）"/>
+		<attrib value="allTime" type="uint32_t" info="总时长，秒数"/>
+	</obj>
+	<obj value="QuestInfo" info="任务信息">
+		<attrib value="id" type="uint32_t" info="任务ID"/>
+		<attrib value="num" type="uint16_t" info="任务条件数量"/>
+		<attrib value="info[num]" type="@QuestValueInfo" info="任务条件完成量信息"/>
+	</obj>
+	<obj value="QuestValueInfo" info="任务条件完成量信息">
+		<attrib value="id" type="uint32_t" info="任务条件ID"/>
+		<attrib value="value" type="uint16_t" info="已完成量"/>
+	</obj>
+	<obj value="PKRankInfo" info="竞技场排行信息">
+		<attrib value="userID" type="uint32_t" info="用户ID"/>
+		<attrib value="nickName" type="char[33]" info="姓名"/>
+		<attrib value="value" type="uint32_t" info="连胜次数"/>
+		<attrib value="rank" type="uint16_t" info="本次排名"/>
+	</obj>
+	<obj value="PKLogInfo" info="竞技场日志信息">
+		<attrib value="type" type="uint8_t" info="类型 1主动战胜 2主动战败 3被动战胜 4被动失败"/>
+		<attrib value="pkUser" type="uint32_t" info="PK玩家ID"/>
+		<attrib value="pkUserName" type="char[33]" info="PK玩家姓名"/>
+		<attrib value="time" type="uint32_t" info="发生时间"/>
+		<attrib value="value" type="uint32_t" info="数值变化"/>
+	</obj>
+	<obj value="ReputationItem" info="声望物品信息">
+		<attrib value="baseID" type="uint32_t" info="baseID"/>
+		<attrib value="state" type="uint8_t" info="0购买等级不足,显示等级满足 1购买等级满足 2所有条件满足 3已招募"/>
+	</obj>
+	<obj value="ObjectInfo" info="带入场景道具信息">
+		<attrib value="id" type="uint32_t" info="道具临时id"/>
+		<attrib value="baseID" type="uint32_t" info="道具基础ID"/>
+		<attrib value="num" type="uint8_t" info="数量"/>
+	</obj>
+	<obj value="ObtainPet" info="获得宠物信息">
+		<attrib value="id" type="uint32_t" info="id"/>
+		<attrib value="state" type="uint8_t" info="状态 1开启 2获得"/>
+	</obj>
+	<obj value="LeechdomInfo" info="消耗品BUF">
+		<attrib value="effect" type="uint8_t" info="效果ID(技能效果)"/>
+		<attrib value="value" type="uint16_t" info="影响值"/>
+		<attrib value="num" type="uint16_t" info="剩余次数限制"/>
+		<attrib value="startTime" type="uint32_t" info="使用时间"/>
+		<attrib value="dueTime" type="uint32_t" info="结束时间"/>
+	</obj>
+	<obj value="GUID" info="包括地图数据类型的ID">
+		<attrib value="id" type="uint32_t" info="id"/>
+		<attrib value="type" type="uint8_t" info="地图数据类型 0玩家 1宠物 2道具"/>
+	</obj>
+	<obj value="MapItemData" info="掉落道具信息">
+		<attrib value="type" type="uint8_t" info="掉落的道具类型 1道具 2技能"/>
+		<attrib value="id" type="uint32_t" info="id"/>
+		<attrib value="baseID" type="uint32_t" info="道具基础ID | 技能ID"/>
+		<attrib value="npcX" type="uint32_t" info="NPC像素坐标"/>
+		<attrib value="npcY" type="uint32_t" info="NPC像素坐标"/>
+		<attrib value="x" type="uint32_t" info="道具格点坐标"/>
+		<attrib value="y" type="uint32_t" info="道具格点坐标"/>
+		<attrib value="num" type="uint32_t" info="数量"/>
+		<attrib value="npcID" type="uint32_t" info="掉落NPC"/>
+	</obj>
+	<obj value="DoorInfo" info="传送门信息">
+		<attrib value="id" type="uint32_t" info="传送门ID"/>
+		<attrib value="state" type="uint8_t" info="状态 0关闭 1开启"/>
+	</obj>
+	<obj value="ItemNumInfo" info="道具信息">
+		<attrib value="id" type="uint32_t" info="id"/>
+		<attrib value="num" type="uint32_t" info="数量"/>
+	</obj>
+	<obj value="AddProperity" info="增加属性信息">
+		<attrib value="atk" type="uint16_t" info="攻击力"/>
+		<attrib value="atkp" type="uint16_t" info="攻击力增加百分比"/>
+		<attrib value="crip" type="uint16_t" info="暴击率"/>
+		<attrib value="cri" type="uint16_t" info="暴击伤害"/>
+		<attrib value="def" type="uint16_t" info="防御力"/>
+		<attrib value="ref" type="uint16_t" info="反弹"/>
+		<attrib value="tough" type="uint16_t" info="韧性"/>
+		<attrib value="hp" type="uint16_t" info="血量"/>
+		<attrib value="hpp" type="uint16_t" info="血量百分比"/>
+		<attrib value="suck" type="uint16_t" info="吸血"/>
+		<attrib value="rhp" type="uint16_t" info="生命回复"/>
+	</obj>
+	<obj value="GodCtrlHeroInfo" info="御神器英雄信息">
+		<attrib value="id" type="uint32_t" info="id"/>
+		<attrib value="pos" type="uint8_t" info="位置"/>
+	</obj>
+	<obj value="GodCtrlLevelInfo" info="御神器点属性信息">
+		<attrib value="level" type="uint8_t" info="等级"/>
+		<attrib value="info[6]" type="@DotInfo" info="点状态"/>
+	</obj>
+	<obj value="DotInfo" info="御神器点属性信息">
+		<attrib value="id" type="uint8_t" info="点序号 从零开始"/>
+		<attrib value="state" type="uint8_t" info="0没开 1半中 2全中"/>
+	</obj>
+	<obj value="RoomState" info="房间状态">
+		<attrib value="id" type="uint32_t" info="id"/>
+		<attrib value="state" type="uint8_t" info="0等待 1开始游戏 2隐藏 3销毁"/>
+	</obj>
+	<obj value="HomeSceneInfo" info="家园信息">
+		<attrib value="id" type="uint32_t" info="家园ID"/>
+		<attrib value="name" type="char[33]" info="名称"/>
+		<attrib value="type" type="uint8_t" info="类型"/>
+		<attrib value="openType" type="uint8_t" info="开放类型"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="vip" type="uint8_t" info="房主VIP等级"/>
+	</obj>
+	<obj value="HomeFunc" info="家园功能信息">
+		<attrib value="id" type="uint16_t" info="功能ID"/>
+		<attrib value="type" type="uint16_t" info="功能类型"/>
+	</obj>
+	<obj value="TrainHeroBase" info="训练栏位信息">
+		<attrib value="id" type="uint16_t" info="栏位ID"/>
+		<attrib value="state" type="uint8_t" info="状态 0未开启 1开启"/>
+		<attrib value="heroID" type="uint32_t" info="英雄ID"/>
+		<attrib value="startTime" type="uint32_t" info="开始训练时间（秒）"/>
+		<attrib value="endTime" type="uint32_t" info="结束训练时间（秒）"/>
+	</obj>
+	<obj value="SearchZoneID" info="探索区域ID">
+		<attrib value="zoneID" type="uint16_t" info="区域ID"/>
+		<attrib value="groupID" type="uint16_t" info="组ID"/>
+	</obj>
+	<obj value="SeachZone" info="探索信息">
+		<attrib value="id" type="@SearchZoneID" info="ID"/>
+		<attrib value="state" type="uint8_t" info="状态 0未探索 1探索中 2探索结果"/>
+		<attrib value="startTime" type="uint32_t" info="探索开始时间（秒）"/>
+		<attrib value="endTime" type="uint32_t" info="探索结束时间（秒）"/>
+	</obj>
+	<obj value="TrainSoul" info="育魂珠信息">
+		<attrib value="id" type="uint16_t" info="ID"/>
+		<attrib value="state" type="uint8_t" info="状态 0未开启 1开启 2培养中 3培养完成"/>
+		<attrib value="type" type="uint8_t" info="类型 1低级 2高级"/>
+		<attrib value="trainItem" type="uint32_t" info="培育的魂精道具"/>
+		<attrib value="startTime" type="uint32_t" info="培育开始时间（秒）"/>
+		<attrib value="endTime" type="uint32_t" info="培育结束时间（秒）"/>
+		<attrib value="soulPoint" type="uint32_t" info="魂精"/>
+	</obj>
+	<obj value="GodLikeInfo" info="神像信息">
+		<attrib value="state" type="uint8_t" info="状态 0正常 1祝福满 2冷却中"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="blessCount" type="uint16_t" info="祝福次数"/>
+	</obj>
+	<obj value="BlessLogInfo" info="神像祝福信息">
+		<attrib value="userID" type="uint32_t" info="玩家ID"/>
+		<attrib value="userName" type="char[33]" info="玩家名称"/>
+		<attrib value="time" type="uint32_t" info="祝福时间"/>
+	</obj>
+	<obj value="GodLikeReward" info="祝福奖励信息">
+		<attrib value="id" type="uint32_t" info="奖励ID"/>
+		<attrib value="state" type="uint8_t" info="领取状态 0不可领取 1可领取 2领取过"/>
+		<attrib value="reward" type="uint32_t" info="礼包ID"/>
+	</obj>
+	<obj value="RewardInsInfo" info="悬赏副本信息">
+		<attrib value="insSceneID" type="uint32_t" info="副本ID"/>
+		<attrib value="state" type="uint8_t" info="状态 0未完成 1已完成"/>
+	</obj>
+	<obj value="ZoneEventInsInfo" info="区域事件副本">
+		<attrib value="eventID" type="uint32_t" info="事件ID"/>
+		<attrib value="zone" type="uint32_t" info="区域ID"/>
+		<attrib value="sceneID" type="uint32_t" info="副本ID"/>
+		<attrib value="endTime" type="uint32_t" info="有效结束时间（秒）"/>
+		<attrib value="state" type="uint8_t" info="事件状态 0可以进行 1已完成"/>
+	</obj>
+	<obj value="ThroughInsInfo" info="副本信息">
+		<attrib value="id" type="uint32_t" info="ID"/>
+		<attrib value="state" type="uint8_t" info="状态 0完成 1进入过但未完成"/>
+	</obj>
+	<obj value="PKUserInfo" info="竞技场玩家信息">
+		<attrib value="userID" type="uint32_t" info="用户ID"/>
+		<attrib value="nickName" type="char[33]" info="姓名"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="sex" type="uint8_t" info="性别 1男 2女"/>
+		<attrib value="avatar[8]" type="uint32_t" info="化身"/>
+		<attrib value="rank" type="uint32_t" info="排名"/>
+		<attrib value="allCombat" type="uint32_t" info="战斗力"/>
+	</obj>
+	<obj value="MopUpRewardInfo" info="扫荡奖励信息">
+		<attrib value="sceneID" type="uint32_t" info="副本ID"/>
+		<attrib value="expReward" type="uint32_t" info="经验奖励"/>
+		<attrib value="goldReward" type="uint32_t" info="金币奖励"/>
+		<attrib value="heroExpReward" type="uint32_t" info="出战英雄经验奖励"/>
+		<attrib value="num" type="uint16_t" info=" 获得道具数量"/>
+		<attrib value="info[num]" type="@ItemNumInfo" info="道具信息"/>
+	</obj>
+	<obj value="ActivityInfo" info="活动信息">
+		<attrib value="type" type="uint8_t" info="活动类型"/>
+		<attrib value="doneNum" type="uint16_t" info="当日完成次数"/>
+	</obj>
+	<obj value="DpsInfo" info="伤害输出信息">
+		<attrib value="userID" type="uint32_t" info="用户ID"/>
+		<attrib value="nickName" type="char[33]" info="姓名"/>
+		<attrib value="unionID" type="uint32_t" info="公会ID"/>
+		<attrib value="unionName" type="char[33]" info="公会名称"/>
+		<attrib value="value" type="uint32_t" info="伤害数值"/>
+		<attrib value="rank" type="uint32_t" info="排名"/>
+	</obj>
+	<obj value="BaseBuildInfo" info="公会基地修筑信息">
+		<attrib value="unionID" type="uint32_t" info="公会ID"/>
+		<attrib value="charID" type="uint32_t" info="角色ID"/>
+		<attrib value="name" type="char[33]" info="名称"/>
+		<attrib value="type" type="uint8_t" info="消耗资源类型 1银币 2人民币"/>
+		<attrib value="money" type="uint32_t" info="消耗资源数量"/>
+		<attrib value="addexp" type="uint32_t" info="增加的公会基地经验"/>
+		<attrib value="addmoney" type="uint32_t" info="增加的公会资金"/>
+		<attrib value="time" type="uint32_t" info="修筑具体时间"/>
+		<attrib value="week" type="uint32_t" info="修筑周"/>
+	</obj>
+	<obj value="DpsRankInfo" info="公会成员输出伤害排行">
+		<attrib value="unionID" type="uint32_t" info="公会ID"/>
+		<attrib value="charID" type="uint32_t" info="角色ID"/>
+		<attrib value="name" type="char[33]" info="名称"/>
+		<attrib value="rank" type="uint16_t" info="排行"/>
+		<attrib value="dps" type="uint32_t" info="输出伤害"/>
+		<attrib value="day" type="uint32_t" info="哪天"/>
+	</obj>
+	<obj value="SearchTreasLog" info="探宝日志信息">
+		<attrib value="pos" type="uint16_t" info="显示顺序"/>
+		<attrib value="name" type="char[33]" info="名称"/>
+		<attrib value="item" type="uint32_t" info="道具"/>
+		<attrib value="num" type="uint16_t" info="数量"/>
+		<attrib value="rare" type="uint8_t" info="稀有度"/>
+		<attrib value="time" type="uint32_t" info="时间"/>
+	</obj>
+	<obj value="TextInfo" info="变长字符串">
+		<attrib value="text" type="char[num]" info="数据内容"/>
+	</obj>
+	<obj value="QuizRankInfo" info="答题竞赛奖励">
+		<attrib value="id" type="uint32_t" info="玩家ID"/>
+		<attrib value="name" type="char[33]" info="玩家名称"/>
+		<attrib value="score" type="uint32_t" info="得分"/>
+		<attrib value="rank" type="uint32_t" info="排名"/>
+		<attrib value="item" type="@ItemInfo" info="道具奖励"/>
+		<attrib value="gold" type="uint32_t" info="游戏币"/>
+	</obj>
+	<obj value="TeamInfo" info="队伍信息">
+		<attrib value="teamID" type="uint32_t" info="队伍id"/>
+		<attrib value="name" type="char[33]" info="队伍名称"/>
+		<attrib value="level" type="uint16_t" info="队伍平均等级"/>
+		<attrib value="mode" type="uint8_t" info="游戏模式"/>
+		<attrib value="curPlayers" type="uint8_t" info="当前人数"/>
+		<attrib value="maxPlayers" type="uint8_t" info="最大人数"/>
+		<attrib value="owner" type="uint32_t" info=" 房主ID"/>
+		<attrib value="state" type="uint8_t" info="房间状态0等待 1匹配 2游戏 3销毁"/>
+	</obj>
+	<obj value="TeamUserInfo" info="房间用户信息">
+		<attrib value="userObj" type="@SelectUserInfo" info="角色信息"/>
+		<attrib value="pos" type="uint8_t" info="玩家所在位置 1-3"/>
+		<attrib value="state" type="uint8_t" info="玩家状态 0空闲 1在房间中 2匹配中 3在队伍中 4队伍准备中"/>
+		<attrib value="avatar[8]" type="uint32_t" info="时装ID"/>
+	</obj>
+	<obj value="ScoreRankInfo" info="公会积分排行">
+		<attrib value="pos" type="uint16_t" info="玩家排名 从一开始"/>
+		<attrib value="id" type="uint32_t" info="公会ID"/>
+		<attrib value="name" type="char[33]" info="公会名称"/>
+		<attrib value="score" type="uint32_t" info="公会积分"/>
+	</obj>
+	<obj value="ScoreInfo" info="公会成员积分信息">
+		<attrib value="id" type="uint32_t" info="ID"/>
+		<attrib value="name" type="char[33]" info="名称"/>
+		<attrib value="score" type="uint32_t" info="积分"/>
+		<attrib value="rank" type="uint32_t" info="排名"/>
+	</obj>
+	<obj value="DareStateInfo" info="限时活动状态">
+		<attrib value="type" type="uint8_t" info="类型 1角斗场 2多人副本 3公会BOSS 4公会战"/>
+		<attrib value="state" type="uint8_t" info="0开始 1结束"/>
+	</obj>
+	<obj value="ActivityRankInfo" info="排名奖励">
+		<attrib value="id" type="uint32_t" info="玩家ID"/>
+		<attrib value="name" type="char[33]" info="玩家名称"/>
+		<attrib value="rank" type="uint32_t" info="排名"/>
+		<attrib value="item" type="@ItemNumInfo" info="道具奖励"/>
+	</obj>
+	<obj value="ActiveStateInfo" info="活动状态信息">
+		<attrib value="id" type="uint32_t" info="活动ID"/>
+		<attrib value="state" type="uint8_t" info="活动状态"/>
+	</obj>
+	<obj value="GiftPackRewardInfo" info="礼包奖励信息">
+		<attrib value="id" type="uint32_t" info="礼包奖励ID"/>
+		<attrib value="state" type="uint8_t" info="状态 0不符合 1可以领 2已领取"/>
+		<attrib value="nextTime" type="uint32_t" info="在线时长，下次领取时间"/>
+	</obj>
+	<obj value="MailHeadInfo" info="邮件头信息">
+		<attrib value="id" type="uint32_t" info="唯一id"/>
+		<attrib value="state" type="uint8_t" info="状态 1新 2查看过 3删除"/>
+		<attrib value="title" type="char[33]" info="发件人"/>
+		<attrib value="fromName" type="char[33]" info="发件人"/>
+		<attrib value="delTime" type="uint32_t" info="删除时间"/>
+		<attrib value="createTime" type="uint32_t" info="创建时间"/>
+		<attrib value="accessory" type="uint8_t" info="是否有附件 0没有 1有"/>
+		<attrib value="itemGot" type="uint8_t" info="附件是否领取过 0未取 1已取过"/>
+		<attrib value="type" type="uint8_t" info="邮件类型 1系统 2普通邮件 3留言 4退回的邮件"/>
+	</obj>
+	<obj value="UseItemInfo" info="使用道具信息">
+		<attrib value="id" type="uint32_t" info="id"/>
+		<attrib value="num" type="uint32_t" info="数量"/>
+		<attrib value="nextTime" type="uint32_t" info="下次可使用时间"/>
+	</obj>
+	<obj value="NpcRaceInfo" info="赛跑npc">
+		<attrib value="id" type="uint32_t" info="id"/>
+		<attrib value="odds" type="uint32_t" info="赔率"/>
+		<attrib value="state" type="uint8_t" info="0未出战 1出战选手"/>
+		<attrib value="joinNum" type="uint32_t" info="出战次数"/>
+		<attrib value="winNum" type="uint32_t" info="胜利次数"/>
+		<attrib value="gold" type="uint32_t" info="投注金额"/>
+	</obj>
+	<obj value="NoticePara" info="公告数据">
+		<attrib value="id" type="uint32_t" info="id"/>
+		<attrib value="data" type="uint32_t" info="额外数值"/>
+		<attrib value="name" type="char[33]" info="名称"/>
+		<attrib value="type" type="uint8_t" info="类型 0空类型 1玩家 2道具基础ID 3npc 4数字类型 5礼包 6副本 7功能NPC 8公会 9ViewOpen 10道具唯一ID"/>
+	</obj>
+</root>

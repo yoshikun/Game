@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 (http://www.altova.com) by Administrator (EMBRACE) -->
+<root xsi:noNamespaceSchemaLocation="Protocol.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<obj value="UserGenderConst" info="用户性别">
+		<attrib value="ALIEN" consts="0" type="uint8_t" info="保密"/>
+		<attrib value="MALE" consts="1" type="uint8_t" info="男生"/>
+		<attrib value="FMALE" consts="2" type="uint8_t" info="女生"/>
+	</obj>
+</root>
