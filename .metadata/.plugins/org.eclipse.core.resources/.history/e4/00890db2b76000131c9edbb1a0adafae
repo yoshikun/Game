@@ -1,0 +1,28 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.response.union
+{
+    import com.yile.framework.net.IResponse;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /*@import*/
+
+    /**
+     * 邀请入会应答(7:59)
+     */
+    public class InviteUnionAnswerResponse implements IResponse
+    {
+        /**
+         * 0加入成功 1公会已满 2错误
+         */
+        public var ret:uint;
+
+        public function read(p:Packet):void
+        {
+
+            ret = p.readUnsignedByte();
+        }
+    }
+}

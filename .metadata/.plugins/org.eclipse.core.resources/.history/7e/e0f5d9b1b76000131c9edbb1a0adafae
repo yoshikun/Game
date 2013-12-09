@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.user
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 请求自己的离线消息(2:19)
+     */
+    public class OfflineMsgRequest implements IRequest
+    {
+        public function get module():uint
+        {
+            return 2;
+        }
+
+        public function get action():uint
+        {
+            return 19;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+        }
+    }
+}

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<!--  输入路径 -->
+	<protocolInputPath>G:\GitHub\Game\resource\zh_cn\proto</protocolInputPath>
+	<!--  输出路径 -->
+	<protocolOutputPath>G:\GitHub\Game\client\IGO\src\net</protocolOutputPath>
+	<!-- dataXml输入路径 -->
+	<dataXmlInputPath>G:\GitHub\Game\resource\zh_cn\proto\table</dataXmlInputPath>
+	<!-- dataXml输出路径 -->
+	<dataXmlOutputPath>G:\GitHub\Game\client\IGO\src\data/baseData</dataXmlOutputPath>
+	
+	<copyRight>Copyright (c) 2012, www.yile.com All rights reserved.</copyRight>
+	
+	<!--  import的路径 -->
+	<iResponsePath>com.yile.framework.net.IResponse;</iResponsePath>
+	<responsePackagePath></responsePackagePath>
+	<iRequestPath>com.yile.framework.net.IRequest;</iRequestPath>
+	<voPackagePath>com.yile.games.doll.net.vo.*;</voPackagePath>
+	<packetPath>com.yile.framework.net.Packet;</packetPath>
+	<packagePrefix>com.yile.games.doll.net.</packagePrefix>
+	<byteArrayPath>import flash.utils.ByteArray;</byteArrayPath>
+	<maxSize>13</maxSize>
+	<!--  需要加载的文件啦 -->
+	<constantFile>Constant.xml</constantFile>
+	<voFile>ValueObject.xml</voFile>
+	<protocolFile>Protocol.xml</protocolFile>
+
+	<!-- 需要加载的dataBase的xml文件 -->
+	<baseData>  States,
+				SkillObjBase,
+				SkillBase,
+				Scene,
+				ObjectBase,
+				NpcBase,
+				Formula,
+				EffectLayer,
+				FuncBase,
+				UnionPower,
+				Item,
+				Effect,
+				Rune,
+				DareMode,
+				Exp,
+				ShopItem,
+				EventList,
+				Quest,
+				QuestCondition,
+				DailyTask,
+				DailyTaskReward,
+				SceneTransport, 
+				RelationSkill,
+				ResourceTree,
+				Guide,
+				ObtainPet,
+				DareReward,
+				GiftPack,
+				Vip,
+				VipCard,
+				VipPriority,
+				ItemAffixe,
+				Zone,
+				GiftPack,
+				PetManual,
+				HeroExp,
+				GodSeal,
+				GodCtrl,
+				ViewOpen,
+				ArrowTip,
+				HomeFunction,
+				UpgradeSkillBase,
+				PKReward,
+				Room,
+				SceneNPC,
+				Setting,
+				ReputationItem,
+				IntensityStandard,
+				SealDot,
+				UnionItem,
+				UnionBase,
+				Union,
+				BaseConsole,
+				Tutor,
+				Treasure,
+				DareConfig,
+				CapitalActivity,
+				RechargeReward,
+				ConsumeLottery,
+				GiftPackReward,
+				MonsterEvents,
+				Fashion,
+				RaceNpc,
+				Notice
+	</baseData>
+</config>

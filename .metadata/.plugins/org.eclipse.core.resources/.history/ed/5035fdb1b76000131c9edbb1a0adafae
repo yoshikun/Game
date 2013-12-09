@@ -1,0 +1,34 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.response.item
+{
+    import com.yile.framework.net.IResponse;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /*@import*/
+
+    /**
+     * 英雄升级(11:36)
+     */
+    public class UpgradeHeroResponse implements IResponse
+    {
+        /**
+         * 结果 0未知失败 1成功 2金钱不足 3达到等级上限
+         */
+        public var ret:uint;
+
+        /**
+         * 暴击经验 0不是暴击
+         */
+        public var criExp:uint;
+
+        public function read(p:Packet):void
+        {
+
+            ret = p.readUnsignedByte();
+            criExp = p.readUnsignedInt();
+        }
+    }
+}

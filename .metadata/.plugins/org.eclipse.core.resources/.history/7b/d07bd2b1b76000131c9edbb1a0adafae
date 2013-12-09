@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.user
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 累计登录信息(2:129)
+     */
+    public class ActiveLoginInfoRequest implements IRequest
+    {
+        public function get module():uint
+        {
+            return 2;
+        }
+
+        public function get action():uint
+        {
+            return 129;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+        }
+    }
+}

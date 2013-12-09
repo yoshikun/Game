@@ -1,4 +1,4 @@
-package com.yile.games.doll.net
+package net
 {
     import com.yile.framework.net.IProtocol;
     import com.yile.framework.net.IResponse;

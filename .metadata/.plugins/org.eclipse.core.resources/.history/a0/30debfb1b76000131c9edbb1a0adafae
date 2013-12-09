@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.mail
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 新邮件提示(18:11)
+     */
+    public class NotifyNewMailRequest implements IRequest
+    {
+        public function get module():uint
+        {
+            return 18;
+        }
+
+        public function get action():uint
+        {
+            return 11;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+        }
+    }
+}

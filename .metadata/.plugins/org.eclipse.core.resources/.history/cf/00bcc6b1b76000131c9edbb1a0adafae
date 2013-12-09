@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.scene
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 死亡通知(5:51)
+     */
+    public class DeathNotifyRequest implements IRequest
+    {
+        public function get module():uint
+        {
+            return 5;
+        }
+
+        public function get action():uint
+        {
+            return 51;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+        }
+    }
+}

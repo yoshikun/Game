@@ -1,0 +1,42 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.item
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 英雄升级、进阶加速（修改冷却时间）(11:33)
+     */
+    public class UpgradeHeroSpeedRequest implements IRequest
+    {
+        /**
+         * 英雄ID
+         */
+        public var heroID:uint;
+    
+        /**
+         * 类型 1进阶 2升级
+         */
+        public var type:uint;
+    
+        public function get module():uint
+        {
+            return 11;
+        }
+
+        public function get action():uint
+        {
+            return 33;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+            p.writeUnsignedInt(heroID);
+            p.writeByte(type);
+        }
+    }
+}

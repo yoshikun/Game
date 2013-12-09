@@ -1,0 +1,36 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.response.scene
+{
+    import com.yile.framework.net.IResponse;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /*@import*/
+
+    /**
+     * 死亡通知(5:52)
+     */
+    public class DeathNotifyResponse implements IResponse
+    {
+        /**
+         * 唯一ID
+         */
+        public var guid:GUID;
+
+        /**
+         * 复活等待时间（秒）0为无法复活
+         */
+        public var reliveWaitTime:uint;
+
+        public function read(p:Packet):void
+        {
+
+            guid = new GUID();
+            guid.id = p.readUnsignedInt();
+            guid.type = p.readUnsignedByte();
+            reliveWaitTime = p.readUnsignedInt();
+        }
+    }
+}

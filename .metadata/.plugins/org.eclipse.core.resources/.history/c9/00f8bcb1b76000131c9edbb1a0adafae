@@ -1,0 +1,36 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.item
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 英雄详细信息(11:25)
+     */
+    public class HeroDetailInfoRequest implements IRequest
+    {
+        /**
+         * 英雄 ID，为0则请求全部英雄
+         */
+        public var heroID:uint;
+    
+        public function get module():uint
+        {
+            return 11;
+        }
+
+        public function get action():uint
+        {
+            return 25;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+            p.writeUnsignedInt(heroID);
+        }
+    }
+}

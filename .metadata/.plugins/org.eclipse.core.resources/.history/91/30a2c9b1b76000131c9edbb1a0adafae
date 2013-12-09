@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.scene
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 用户场景数据更新(5:25)
+     */
+    public class SceneUserInfoRequest implements IRequest
+    {
+        public function get module():uint
+        {
+            return 5;
+        }
+
+        public function get action():uint
+        {
+            return 25;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+        }
+    }
+}

@@ -1,0 +1,28 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.response.dare
+{
+    import com.yile.framework.net.IResponse;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /*@import*/
+
+    /**
+     * 领取奖励(13:12)
+     */
+    public class GetPkRewardResponse implements IResponse
+    {
+        /**
+         * 0成功 1条件不满足 2已领取 3CD
+         */
+        public var ret:uint;
+
+        public function read(p:Packet):void
+        {
+
+            ret = p.readUnsignedByte();
+        }
+    }
+}

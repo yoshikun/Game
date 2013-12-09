@@ -9,7 +9,7 @@ package
 	
 	public class RequestBuilder extends BuilderBase
 	{
-		protected var funRes:String;
+		protected var _funRes:String;
 		
 	    public function RequestBuilder(cmds:Array, objMap:Object)
 	    {
@@ -34,7 +34,7 @@ package
 	    }
 	    public function toRequestCode(p:Param, subPath:String):String
 	    {
-			funRes = "";
+			_funRes = "";
 	        var result:String = "/**\n * " + PathManager.copyRight + "\n */";
 	        result += "\npackage " + PathManager.packagePrefix + "request." + subPath;
 	        result += "\n{";
@@ -76,13 +76,13 @@ package
 						count = attrib.getArrayLenName();
 					}
 					
-					funRes += "\n			var len:int = " + v + ".length;";
-					funRes += "\n			for (var i:int = 0; i < " + count + "; i++){";
+					_funRes += "\n			var len:int = " + v + ".length;";
+					_funRes += "\n			for (var i:int = 0; i < " + count + "; i++){";
 					if(AsTranslater.typeSwitch(type) != type){
-						funRes += "\n				p." + AsTranslater.writeSwitch(type) + ";";
-						funRes = funRes.replace("{0}", v + "[i]");
+						_funRes += "\n				p." + AsTranslater.writeSwitch(type) + ";";
+						_funRes = _funRes.replace("{0}", v + "[i]");
 					}else{
-						funRes += "\n				var info:" + AsTranslater.typeSwitch(type) + " = " + v + "[i] as " + type + ";";
+						_funRes += "\n				var info:" + AsTranslater.typeSwitch(type) + " = " + v + "[i] as " + type + ";";
 					}
 						
 					for each(var data:Obj in Obj.objMap){
@@ -94,19 +94,19 @@ package
 								var dataType:String = dataAttrib.getCleardType();
 								var dataValue:String = dataAttrib.value;
 								
-								funRes += "\n				p." + AsTranslater.writeSwitch(dataType) + ";";
-								funRes = funRes.replace("{0}", "info." + dataValue);
+								_funRes += "\n				p." + AsTranslater.writeSwitch(dataType) + ";";
+								_funRes = _funRes.replace("{0}", "info." + dataValue);
 							}
 						}
 					}
 
-					funRes += "\n			}"
+					_funRes += "\n			}"
 					
 	            }else if(attrib.isVOType()){
 					decodeInfo(t, v);
 				}else{
-					funRes += "\n            p." + AsTranslater.writeSwitch(type) + ";";
-					funRes = funRes.replace("{0}",  v);
+					_funRes += "\n            p." + AsTranslater.writeSwitch(type) + ";";
+					_funRes = _funRes.replace("{0}",  v);
 				}
 	            result += "\n        /**";
 	            result += "\n         * " + attrib.info + "";
@@ -142,13 +142,8 @@ package
 			result += "\n"
 			result += "\n        public function write(p:Packet):void";
 			result += "\n        {";
-			result += "\n            " + funRes;
+			result += "\n            " + _funRes;
 			result += "\n        }";
-			
-//				public function write(p:Packet):void {
-//					p.writeUnsignedInt(accId);
-//					p.writeUnsignedInt(key);
-//				}
 	        result += "\n    }";
 	        result += "\n}";
 	
@@ -167,8 +162,8 @@ package
 						var infoType:String = infoAttrib.getCleardType();
 						var value:String = infoAttrib.value;
 						
-						funRes += "\n" + space + "p." + AsTranslater.writeSwitch(infoType) + ";";
-						funRes = funRes.replace("{0}",  v + "." + value);
+						_funRes += "\n" + space + "p." + AsTranslater.writeSwitch(infoType) + ";";
+						_funRes = _funRes.replace("{0}",  v + "." + value);
 					}
 				}
 			}

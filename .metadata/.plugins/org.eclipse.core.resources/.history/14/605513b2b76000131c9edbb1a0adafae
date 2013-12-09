@@ -1,0 +1,28 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.response.user
+{
+    import com.yile.framework.net.IResponse;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /*@import*/
+
+    /**
+     * 取消挂机(2:140)
+     */
+    public class CancelHoldOnlineResponse implements IResponse
+    {
+        /**
+         * 结果 0未知 1ok 2其他操作中断挂机
+         */
+        public var ret:uint;
+
+        public function read(p:Packet):void
+        {
+
+            ret = p.readUnsignedByte();
+        }
+    }
+}

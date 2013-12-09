@@ -1,0 +1,28 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.response.system
+{
+    import com.yile.framework.net.IResponse;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /*@import*/
+
+    /**
+     * 踢人下线(1:12)
+     */
+    public class KickUserOutNotifyResponse implements IResponse
+    {
+        /**
+         * 类型 1防沉迷强制下线
+         */
+        public var type:uint;
+
+        public function read(p:Packet):void
+        {
+
+            type = p.readUnsignedByte();
+        }
+    }
+}

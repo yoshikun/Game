@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.user
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 查询已挑战副本(2:45)
+     */
+    public class GodmodePlayListRequest implements IRequest
+    {
+        public function get module():uint
+        {
+            return 2;
+        }
+
+        public function get action():uint
+        {
+            return 45;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+        }
+    }
+}

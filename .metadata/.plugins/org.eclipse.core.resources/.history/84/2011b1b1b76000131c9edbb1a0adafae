@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.dare
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 通知离开限时活动(13:17)
+     */
+    public class NotifyLeaveDareRequest implements IRequest
+    {
+        public function get module():uint
+        {
+            return 13;
+        }
+
+        public function get action():uint
+        {
+            return 17;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+        }
+    }
+}

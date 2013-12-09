@@ -1,0 +1,28 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.response.item
+{
+    import com.yile.framework.net.IResponse;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /*@import*/
+
+    /**
+     * 删除道具数据(11:6)
+     */
+    public class RemoveItemResponse implements IResponse
+    {
+        /**
+         * 物品唯一ID
+         */
+        public var itemID:uint;
+
+        public function read(p:Packet):void
+        {
+
+            itemID = p.readUnsignedInt();
+        }
+    }
+}

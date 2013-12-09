@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.user
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 赛跑活动状态(2:147)
+     */
+    public class NpcRaceStateRequest implements IRequest
+    {
+        public function get module():uint
+        {
+            return 2;
+        }
+
+        public function get action():uint
+        {
+            return 147;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+        }
+    }
+}

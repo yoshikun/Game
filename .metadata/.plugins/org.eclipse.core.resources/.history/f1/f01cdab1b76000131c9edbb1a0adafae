@@ -1,0 +1,36 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.user
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 用户充值(2:49)
+     */
+    public class RecharegeMoneyParaRequest implements IRequest
+    {
+        /**
+         * 充值金额
+         */
+        public var num:uint;
+    
+        public function get module():uint
+        {
+            return 2;
+        }
+
+        public function get action():uint
+        {
+            return 49;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+            p.writeUnsignedInt(num);
+        }
+    }
+}

@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.user
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 御神器信息(2:73)
+     */
+    public class GodCtrlInfoRequest implements IRequest
+    {
+        public function get module():uint
+        {
+            return 2;
+        }
+
+        public function get action():uint
+        {
+            return 73;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+        }
+    }
+}

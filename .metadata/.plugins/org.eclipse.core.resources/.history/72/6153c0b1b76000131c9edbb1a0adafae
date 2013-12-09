@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.mail
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 获取邮件列表(18:3)
+     */
+    public class ReqGetListMailRequest implements IRequest
+    {
+        public function get module():uint
+        {
+            return 18;
+        }
+
+        public function get action():uint
+        {
+            return 3;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+        }
+    }
+}

@@ -1,0 +1,28 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.response.item
+{
+    import com.yile.framework.net.IResponse;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /*@import*/
+
+    /**
+     * 道具购买(11:38)
+     */
+    public class BuyItemResponse implements IResponse
+    {
+        /**
+         * 结果 0未知失败 1成功 2金钱不足 3背包空间不足 4精力点上限
+         */
+        public var ret:uint;
+
+        public function read(p:Packet):void
+        {
+
+            ret = p.readUnsignedByte();
+        }
+    }
+}

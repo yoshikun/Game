@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.scene
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 玩家道具信息(5:19)
+     */
+    public class UserObjectInfoRequest implements IRequest
+    {
+        public function get module():uint
+        {
+            return 5;
+        }
+
+        public function get action():uint
+        {
+            return 19;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+        }
+    }
+}

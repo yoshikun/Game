@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.response.scene
+{
+    import com.yile.framework.net.IResponse;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /*@import*/
+
+    /**
+     * 变更传送门状态(5:72)
+     */
+    public class ChangeDoorStateResponse implements IResponse
+    {
+        /**
+         * 传送门
+         */
+        public var info:DoorInfo;
+
+        public function read(p:Packet):void
+        {
+
+            info = new DoorInfo();
+            info.id = p.readUnsignedInt();
+            info.state = p.readUnsignedByte();
+        }
+    }
+}

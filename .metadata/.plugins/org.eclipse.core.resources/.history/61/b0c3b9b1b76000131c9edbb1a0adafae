@@ -1,0 +1,30 @@
+/**
+ * Copyright (c) 2012, www.yile.com All rights reserved.
+ */
+package com.yile.games.doll.net.request.home
+{
+    import com.yile.framework.net.IRequest;
+    import com.yile.games.doll.net.vo.*;
+    import com.yile.framework.net.Packet;
+
+    /**
+     * 偷取魂晶(15:43)
+     */
+    public class ReqStealSoulRequest implements IRequest
+    {
+        public function get module():uint
+        {
+            return 15;
+        }
+
+        public function get action():uint
+        {
+            return 43;
+        }
+
+        public function write(p:Packet):void
+        {
+            
+        }
+    }
+}
