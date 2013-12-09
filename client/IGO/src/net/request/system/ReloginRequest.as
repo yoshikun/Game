@@ -17,12 +17,12 @@ package net.request.system
          */
         public var userID:uint;
     
-        public function get module():uint
+        public function get module():int
         {
             return 1;
         }
 
-        public function get action():uint
+        public function get action():int
         {
             return 7;
         }

@@ -32,12 +32,12 @@ package net.request.relation
          */
         public var state:uint;
     
-        public function get module():uint
+        public function get module():int
         {
             return 10;
         }
 
-        public function get action():uint
+        public function get action():int
         {
             return 5;
         }

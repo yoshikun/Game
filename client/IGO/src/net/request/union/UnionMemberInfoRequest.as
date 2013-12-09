@@ -17,12 +17,12 @@ package net.request.union
          */
         public var unionID:uint;
     
-        public function get module():uint
+        public function get module():int
         {
             return 7;
         }
 
-        public function get action():uint
+        public function get action():int
         {
             return 5;
         }

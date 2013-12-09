@@ -3,7 +3,7 @@
  */
 package net.response.relation
 {
-    import com.yile.framework.net.IResponse;
+    import com.yo.net.IResponse;
     import net.vo.*;
     import com.yo.net.Packet;
 

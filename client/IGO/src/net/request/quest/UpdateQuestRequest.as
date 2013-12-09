@@ -12,12 +12,12 @@ package net.request.quest
      */
     public class UpdateQuestRequest implements IRequest
     {
-        public function get module():uint
+        public function get module():int
         {
             return 12;
         }
 
-        public function get action():uint
+        public function get action():int
         {
             return 3;
         }

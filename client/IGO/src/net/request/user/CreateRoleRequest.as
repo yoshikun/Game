@@ -42,12 +42,12 @@ package net.request.user
          */
         public var sex:uint;
     
-        public function get module():uint
+        public function get module():int
         {
             return 2;
         }
 
-        public function get action():uint
+        public function get action():int
         {
             return 3;
         }

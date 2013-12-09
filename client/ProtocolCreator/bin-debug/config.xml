@@ -12,7 +12,7 @@
 	<copyRight>Copyright (c) 2012, www.yile.com All rights reserved.</copyRight>
 	
 	<!--  import的路径 -->
-	<iResponsePath>com.yile.framework.net.IResponse;</iResponsePath>
+	<iResponsePath>com.yo.net.IResponse;</iResponsePath>
 	<responsePackagePath></responsePackagePath>
 	<iRequestPath>com.yo.net.IRequest;</iRequestPath>
 	<packetPath>com.yo.net.Packet;</packetPath>

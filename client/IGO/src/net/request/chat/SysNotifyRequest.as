@@ -12,12 +12,12 @@ package net.request.chat
      */
     public class SysNotifyRequest implements IRequest
     {
-        public function get module():uint
+        public function get module():int
         {
             return 6;
         }
 
-        public function get action():uint
+        public function get action():int
         {
             return 3;
         }

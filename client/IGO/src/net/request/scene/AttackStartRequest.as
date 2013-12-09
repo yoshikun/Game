@@ -17,12 +17,12 @@ package net.request.scene
          */
         public var baseID:uint;
     
-        public function get module():uint
+        public function get module():int
         {
             return 5;
         }
 
-        public function get action():uint
+        public function get action():int
         {
             return 37;
         }

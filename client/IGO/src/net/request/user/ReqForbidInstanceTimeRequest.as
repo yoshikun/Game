@@ -12,12 +12,12 @@ package net.request.user
      */
     public class ReqForbidInstanceTimeRequest implements IRequest
     {
-        public function get module():uint
+        public function get module():int
         {
             return 2;
         }
 
-        public function get action():uint
+        public function get action():int
         {
             return 43;
         }

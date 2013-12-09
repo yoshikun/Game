@@ -3,7 +3,7 @@
  */
 package net.response.state
 {
-    import com.yile.framework.net.IResponse;
+    import com.yo.net.IResponse;
     import net.vo.*;
     import com.yo.net.Packet;
 

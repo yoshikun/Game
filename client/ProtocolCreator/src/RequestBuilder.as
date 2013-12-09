@@ -130,12 +130,12 @@ package
 	            }
 	        }
 			
-			result += "\n        public function get module():uint";
+			result += "\n        public function get module():int";
 			result += "\n        {";
 			result += "\n            return " + p.cmdIndex + ";";
 			result += "\n        }";
 			result += "\n"
-			result += "\n        public function get action():uint";
+			result += "\n        public function get action():int";
 			result += "\n        {";
 			result += "\n            return " + p.paramIndex + ";";
 			result += "\n        }";
