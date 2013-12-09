@@ -1,0 +1,486 @@
+!SESSION 2013-12-09 13:51:40.125 -----------------------------------------------
+eclipse.buildId=I20100608-0911
+java.version=1.6.0_16
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=zh_CN
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.ui 2 0 2013-12-09 13:52:03.838
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2013-12-09 13:52:03.838
+!MESSAGE Commands should really have a category: plug-in='com.qnx.flashbuilder.multiplatform.qnx.ui', id='com.qnx.flashbuilder.multiplatform.qnx.ui.commands.OpenInfoCenter', categoryId='com.qnx.flashbuilder.multiplatform.qnx.ui.commands.category.help'
+
+!ENTRY com.adobe.flexbuilder.ui 4 1 2013-12-09 13:52:05.576
+!MESSAGE Product = null version = 460 edition = prem
+
+!ENTRY org.eclipse.jface 2 0 2013-12-09 13:58:38.731
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2013-12-09 13:58:38.731
+!MESSAGE A conflict occurred for CTRL+G:
+Binding(CTRL+G,
+	ParameterizedCommand(Command(com.adobe.flexbuilder.as.editor.find.all.declarations.in.workspace,在工作空间中查找所有声明,
+		,
+		Category(com.adobe.flexbuilder.editorcore.navigation.category,导航,null,true),
+		ActionHandler(com.adobe.flexbuilder.as.editor.ui.packageexplorer.actions.FlexPackageExplorerFindAllDeclarationsAction@1b5a254),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	com.adobe.flexide.editorcore.flexEditorScope,,,system)
+Binding(CTRL+G,
+	ParameterizedCommand(Command(com.adobe.flexbuilder.as.editor.find.all.declarations.in.workspace,在工作空间中查找所有声明,
+		,
+		Category(com.adobe.flexbuilder.editorcore.navigation.category,导航,null,true),
+		ActionHandler(com.adobe.flexbuilder.as.editor.ui.packageexplorer.actions.FlexPackageExplorerFindAllDeclarationsAction@1b5a254),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	com.adobe.flexbuilder.as.editor.context.packageexplorer,,,system)
+Binding(CTRL+G,
+	ParameterizedCommand(Command(org.eclipse.jdt.ui.edit.text.java.search.declarations.in.workspace,工作空间中的声明,
+		在工作空间中搜索对所选元素的声明,
+		Category(org.eclipse.search.ui.category.search,搜索,搜索命令类别,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+!SUBENTRY 1 org.eclipse.jface 2 0 2013-12-09 13:58:38.731
+!MESSAGE A conflict occurred for CTRL+SHIFT+G:
+Binding(CTRL+SHIFT+G,
+	ParameterizedCommand(Command(com.adobe.flexbuilder.as.editor.find.all.references.in.workspace,在工作空间中查找所有引用,
+		,
+		Category(com.adobe.flexbuilder.editorcore.navigation.category,导航,null,true),
+		ActionHandler(com.adobe.flexbuilder.as.editor.ui.packageexplorer.actions.FlexPackageExplorerFindAllReferencesAction@aeeafb),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	com.adobe.flexide.editorcore.flexEditorScope,,,system)
+Binding(CTRL+SHIFT+G,
+	ParameterizedCommand(Command(com.adobe.flexbuilder.as.editor.find.all.references.in.workspace,在工作空间中查找所有引用,
+		,
+		Category(com.adobe.flexbuilder.editorcore.navigation.category,导航,null,true),
+		ActionHandler(com.adobe.flexbuilder.as.editor.ui.packageexplorer.actions.FlexPackageExplorerFindAllReferencesAction@aeeafb),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	com.adobe.flexbuilder.as.editor.context.packageexplorer,,,system)
+Binding(CTRL+SHIFT+G,
+	ParameterizedCommand(Command(org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace,工作空间中的引用,
+		在工作空间中搜索对所选元素的引用,
+		Category(org.eclipse.search.ui.category.search,搜索,搜索命令类别,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+
+!ENTRY org.eclipse.jface 2 0 2013-12-09 14:19:15.392
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2013-12-09 14:19:15.392
+!MESSAGE A conflict occurred for CTRL+I:
+Binding(CTRL+I,
+	ParameterizedCommand(Command(com.adobe.flexbuilder.as.editor.organize.autoindent,更正缩进,
+		,
+		Category(com.adobe.flexbuilder.as.editor.source.editing.category,ActionScript 源代码编辑,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	com.adobe.flexide.editorcore.flexEditorScope,,,system)
+Binding(CTRL+I,
+	ParameterizedCommand(Command(org.eclipse.wst.sse.ui.format.active.elements,格式化活动元素,
+		格式化活动元素,
+		Category(org.eclipse.ui.category.edit,编辑,null,true),
+		LegacyHandlerWrapper(ActionHandler(action=org.eclipse.ui.texteditor.TextOperationAction@1b4addd)),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.wst.sse.ui.structuredTextEditorScope,,,system)
+!SUBENTRY 1 org.eclipse.jface 2 0 2013-12-09 14:19:15.392
+!MESSAGE A conflict occurred for CTRL+SHIFT+F:
+Binding(CTRL+SHIFT+F,
+	ParameterizedCommand(Command(com.adobe.flexbuilder.as.editor.organize.autoformat,应用格式化,
+		,
+		Category(com.adobe.flexbuilder.as.editor.source.editing.category,ActionScript 源代码编辑,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	com.adobe.flexide.editorcore.flexEditorScope,,,system)
+Binding(CTRL+SHIFT+F,
+	ParameterizedCommand(Command(org.eclipse.wst.sse.ui.format.document,格式化,
+		格式化所选内容,
+		Category(org.eclipse.ui.category.edit,编辑,null,true),
+		LegacyHandlerWrapper(ActionHandler(action=org.eclipse.ui.texteditor.TextOperationAction@102890a)),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.wst.sse.ui.structuredTextEditorScope,,,system)
+!SUBENTRY 1 org.eclipse.jface 2 0 2013-12-09 14:19:15.392
+!MESSAGE A conflict occurred for CTRL+O:
+Binding(CTRL+O,
+	ParameterizedCommand(Command(com.adobe.flexbuilder.as.editor.quick.outline,快速大纲,
+		,
+		Category(com.adobe.flexbuilder.editorcore.navigation.category,导航,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	com.adobe.flexide.editorcore.flexEditorScope,,,system)
+Binding(CTRL+O,
+	ParameterizedCommand(Command(org.eclipse.wst.sse.ui.quick_outline,快速大纲,
+		显示编辑器输入的快速大纲,
+		Category(org.eclipse.ui.category.navigate,浏览,null,true),
+		org.eclipse.wst.sse.ui.internal.quickoutline.QuickOutlineHandler@1732fa4,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.wst.sse.ui.structuredTextEditorScope,,,system)
+!SUBENTRY 1 org.eclipse.jface 2 0 2013-12-09 14:19:15.392
+!MESSAGE A conflict occurred for CTRL+SHIFT+P:
+Binding(CTRL+SHIFT+P,
+	ParameterizedCommand(Command(com.adobe.flexbuilder.as.editor.go.to.brace,转至匹配的中括号,
+		,
+		Category(com.adobe.flexbuilder.editorcore.navigation.category,导航,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	com.adobe.flexide.editorcore.flexEditorScope,,,system)
+Binding(CTRL+SHIFT+P,
+	ParameterizedCommand(Command(org.eclipse.m2e.core.ui.command.addPlugin,Add Maven Plugin,
+		Add Maven Plugin,
+		Category(org.eclipse.ui.category.edit,编辑,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.core.runtime.xml,,,system)
+Binding(CTRL+SHIFT+P,
+	ParameterizedCommand(Command(org.eclipse.wst.sse.ui.goto.matching.bracket,匹配的中括号,
+		转至匹配的中括号,
+		Category(org.eclipse.ui.category.navigate,浏览,null,true),
+		org.eclipse.wst.sse.ui.StructuredTextEditor$GotoMatchingBracketHandler@13cd159,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.wst.sse.ui.structuredTextEditorScope,,,system)
+!SUBENTRY 1 org.eclipse.jface 2 0 2013-12-09 14:19:15.392
+!MESSAGE A conflict occurred for F3:
+Binding(F3,
+	ParameterizedCommand(Command(com.adobe.flexbuilder.as.editor.go.to.definition,打开声明,
+		,
+		Category(com.adobe.flexbuilder.editorcore.navigation.category,导航,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	com.adobe.flexide.editorcore.flexEditorScope,,,system)
+Binding(F3,
+	ParameterizedCommand(Command(org.eclipse.jdt.ui.edit.text.java.open.editor,打开声明,
+		对所选元素打开编辑器,
+		Category(org.eclipse.ui.category.navigate,浏览,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+Binding(F3,
+	ParameterizedCommand(Command(org.eclipse.wst.sse.ui.open.file.from.source,打开所选内容,
+		对所选链接打开编辑器,
+		Category(org.eclipse.ui.category.edit,编辑,null,true),
+		LegacyHandlerWrapper(ActionHandler(action=org.eclipse.wst.sse.ui.internal.hyperlink.OpenHyperlinkAction@1d42ab1)),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.wst.sse.ui.structuredTextEditorScope,,,system)
+!SUBENTRY 1 org.eclipse.jface 2 0 2013-12-09 14:19:15.392
+!MESSAGE A conflict occurred for CTRL+SHIFT+C:
+Binding(CTRL+SHIFT+C,
+	ParameterizedCommand(Command(org.eclipse.wst.sse.ui.toggle.comment,切换注释,
+		切换注释,
+		Category(org.eclipse.ui.category.edit,编辑,null,true),
+		org.eclipse.wst.sse.ui.internal.handlers.ToggleLineCommentHandler@3eeb34,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.wst.sse.ui.structuredTextEditorScope,,,system)
+Binding(CTRL+SHIFT+C,
+	ParameterizedCommand(Command(com.adobe.flexide.editorcore.add.comment,切换块注释,
+		,
+		Category(com.adobe.flexbuilder.editorcore.flex.edit,Flex 编辑,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	com.adobe.flexide.editorcore.flexEditorScope,,,system)
+!SUBENTRY 1 org.eclipse.jface 2 0 2013-12-09 14:19:15.392
+!MESSAGE A conflict occurred for CTRL+SHIFT+\:
+Binding(CTRL+SHIFT+\,
+	ParameterizedCommand(Command(com.adobe.flexbuilder.mxml.editor.ShowPreviousStateCommand,上一个状态,
+		,
+		Category(com.adobe.flexbuilder.mxml.editor.stateNav,MXML 状态可视化,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	com.adobe.flexide.editorcore.flexEditorScope,,,system)
+Binding(CTRL+SHIFT+\,
+	ParameterizedCommand(Command(org.eclipse.wst.sse.ui.remove.block.comment,删除块注释,
+		删除块注释,
+		Category(org.eclipse.ui.category.edit,编辑,null,true),
+		org.eclipse.wst.sse.ui.internal.handlers.RemoveBlockCommentHandler@c3a412,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.wst.sse.ui.structuredTextEditorScope,,,system)
+!SUBENTRY 1 org.eclipse.jface 2 0 2013-12-09 14:19:15.392
+!MESSAGE A conflict occurred for CTRL+SHIFT+D:
+Binding(CTRL+SHIFT+D,
+	ParameterizedCommand(Command(org.eclipse.jdt.debug.ui.commands.Display,显示,
+		显示对所选文本求值的结果,
+		Category(org.eclipse.debug.ui.category.run,运行/调试,运行/调试命令类别,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.dialogAndWindow,,,system)
+Binding(CTRL+SHIFT+D,
+	ParameterizedCommand(Command(org.eclipse.m2e.core.ui.command.addDependency,Add Maven Dependency,
+		Add Maven Dependency,
+		Category(org.eclipse.ui.category.edit,编辑,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.core.runtime.xml,,,system)
+Binding(CTRL+SHIFT+D,
+	ParameterizedCommand(Command(com.adobe.flexide.editorcore.add.other.comment,添加其它注释,
+		,
+		Category(com.adobe.flexbuilder.editorcore.flex.edit,Flex 编辑,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	com.adobe.flexide.editorcore.flexEditorScope,,,system)
+
+!ENTRY org.eclipse.jface 2 0 2013-12-09 16:16:42.448
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2013-12-09 16:16:42.448
+!MESSAGE A conflict occurred for F4:
+Binding(F4,
+	ParameterizedCommand(Command(org.eclipse.jdt.ui.edit.text.java.open.type.hierarchy,打开类型层次结构,
+		对所选元素打开类型层次结构,
+		Category(org.eclipse.ui.category.navigate,浏览,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+Binding(F4,
+	ParameterizedCommand(Command(org.eclipse.jdt.ui.edit.text.java.open.editor,打开声明,
+		对所选元素打开编辑器,
+		Category(org.eclipse.ui.category.navigate,浏览,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,user)
+Binding(F4,
+	ParameterizedCommand(Command(com.adobe.flexbuilder.as.editor.go.to.definition,打开声明,
+		,
+		Category(com.adobe.flexbuilder.editorcore.navigation.category,导航,null,true),
+		,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,user)
+
+!ENTRY org.eclipse.ui.workbench 4 0 2013-12-09 16:26:12.402
+!MESSAGE WARNING: Prevented recursive attempt to activate part org.eclipse.jdt.ui.PackageExplorer while still in the middle of activating part com.adobe.flexbuilder.editors.mxml.MXMLEditor
+!STACK 0
+java.lang.RuntimeException: WARNING: Prevented recursive attempt to activate part org.eclipse.jdt.ui.PackageExplorer while still in the middle of activating part com.adobe.flexbuilder.editors.mxml.MXMLEditor
+	at org.eclipse.ui.internal.WorkbenchPage.setActivePart(WorkbenchPage.java:3586)
+	at org.eclipse.ui.internal.WorkbenchPage.internalActivate(WorkbenchPage.java:691)
+	at org.eclipse.ui.internal.WorkbenchPage.activate(WorkbenchPage.java:663)
+	at org.eclipse.ui.internal.WorkbenchPage.busyShowView(WorkbenchPage.java:1170)
+	at org.eclipse.ui.internal.WorkbenchPage.busyShowView(WorkbenchPage.java:1140)
+	at org.eclipse.ui.internal.WorkbenchPage$20.run(WorkbenchPage.java:3921)
+	at org.eclipse.swt.custom.BusyIndicator.showWhile(BusyIndicator.java:70)
+	at org.eclipse.ui.internal.WorkbenchPage.showView(WorkbenchPage.java:3918)
+	at com.adobe.flexbuilder.editorcore.editor.CodeAndDesignViewManager$EditorListener.showViews(CodeAndDesignViewManager.java:716)
+	at com.adobe.flexbuilder.editorcore.editor.CodeAndDesignViewManager$EditorListener.access$4(CodeAndDesignViewManager.java:639)
+	at com.adobe.flexbuilder.editorcore.editor.CodeAndDesignViewManager$EditorListener$1.run(CodeAndDesignViewManager.java:614)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:135)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4140)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3757)
+	at org.eclipse.jface.window.Window.runEventLoop(Window.java:825)
+	at org.eclipse.jface.window.Window.open(Window.java:801)
+	at org.eclipse.jface.dialogs.MessageDialog.open(MessageDialog.java:334)
+	at org.eclipse.ui.texteditor.AbstractTextEditor.handleEditorInputChanged(AbstractTextEditor.java:4735)
+	at org.eclipse.ui.texteditor.StatusTextEditor.handleEditorInputChanged(StatusTextEditor.java:267)
+	at org.eclipse.ui.texteditor.AbstractDecoratedTextEditor.handleEditorInputChanged(AbstractDecoratedTextEditor.java:1474)
+	at org.eclipse.ui.texteditor.AbstractTextEditor.sanityCheckState(AbstractTextEditor.java:4887)
+	at org.eclipse.ui.texteditor.StatusTextEditor.sanityCheckState(StatusTextEditor.java:257)
+	at org.eclipse.ui.texteditor.AbstractTextEditor.safelySanityCheckState(AbstractTextEditor.java:4865)
+	at org.eclipse.ui.texteditor.AbstractTextEditor$ActivationListener.handleActivation(AbstractTextEditor.java:984)
+	at org.eclipse.ui.texteditor.AbstractTextEditor$ActivationListener.partActivated(AbstractTextEditor.java:941)
+	at org.eclipse.ui.internal.PartListenerList$1.run(PartListenerList.java:72)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.runtime.Platform.run(Platform.java:888)
+	at org.eclipse.ui.internal.PartListenerList.fireEvent(PartListenerList.java:57)
+	at org.eclipse.ui.internal.PartListenerList.firePartActivated(PartListenerList.java:70)
+	at org.eclipse.ui.internal.PartService.firePartActivated(PartService.java:187)
+	at org.eclipse.ui.internal.PartService.setActivePart(PartService.java:306)
+	at org.eclipse.ui.internal.WWinPartService.updateActivePart(WWinPartService.java:134)
+	at org.eclipse.ui.internal.WWinPartService.access$0(WWinPartService.java:125)
+	at org.eclipse.ui.internal.WWinPartService$WWinListener.partDeactivated(WWinPartService.java:50)
+	at org.eclipse.ui.internal.PartListenerList2$4.run(PartListenerList2.java:115)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.runtime.Platform.run(Platform.java:888)
+	at org.eclipse.ui.internal.PartListenerList2.fireEvent(PartListenerList2.java:55)
+	at org.eclipse.ui.internal.PartListenerList2.firePartDeactivated(PartListenerList2.java:113)
+	at org.eclipse.ui.internal.PartService.firePartDeactivated(PartService.java:242)
+	at org.eclipse.ui.internal.PartService.setActivePart(PartService.java:300)
+	at org.eclipse.ui.internal.WorkbenchPagePartList.fireActivePartChanged(WorkbenchPagePartList.java:57)
+	at org.eclipse.ui.internal.PartList.setActivePart(PartList.java:136)
+	at org.eclipse.ui.internal.WorkbenchPage.setActivePart(WorkbenchPage.java:3636)
+	at org.eclipse.ui.internal.WorkbenchPage.internalActivate(WorkbenchPage.java:691)
+	at org.eclipse.ui.internal.WorkbenchPage.activate(WorkbenchPage.java:663)
+	at org.eclipse.ui.internal.WorkbenchPage.makeActive(WorkbenchPage.java:1324)
+	at org.eclipse.ui.internal.WorkbenchPage.updateActivePart(WorkbenchPage.java:1304)
+	at org.eclipse.ui.internal.WorkbenchPage.handleDeferredEvents(WorkbenchPage.java:1496)
+	at org.eclipse.ui.internal.WorkbenchPage.deferUpdates(WorkbenchPage.java:1485)
+	at org.eclipse.ui.internal.WorkbenchPage.closeEditors(WorkbenchPage.java:1459)
+	at org.eclipse.ui.internal.WorkbenchPage.closeEditor(WorkbenchPage.java:1523)
+	at org.eclipse.wst.sse.ui.StructuredTextEditor$9.run(StructuredTextEditor.java:1220)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:135)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4140)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3757)
+	at org.eclipse.ui.internal.Workbench.runEventLoop(Workbench.java:2696)
+	at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2660)
+	at org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2494)
+	at org.eclipse.ui.internal.Workbench$7.run(Workbench.java:674)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:667)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+	at com.adobe.flexbuilder.standalone.FlashBuilderApplication.start(FlashBuilderApplication.java:108)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:344)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:622)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:577)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1410)
+
+!ENTRY org.eclipse.ui.workbench 4 0 2013-12-09 16:26:12.404
+!MESSAGE WARNING: Prevented recursive attempt to activate part org.eclipse.ui.console.ConsoleView while still in the middle of activating part com.adobe.flexbuilder.editors.mxml.MXMLEditor
+!STACK 0
+java.lang.RuntimeException: WARNING: Prevented recursive attempt to activate part org.eclipse.ui.console.ConsoleView while still in the middle of activating part com.adobe.flexbuilder.editors.mxml.MXMLEditor
+	at org.eclipse.ui.internal.WorkbenchPage.setActivePart(WorkbenchPage.java:3586)
+	at org.eclipse.ui.internal.WorkbenchPage.internalActivate(WorkbenchPage.java:691)
+	at org.eclipse.ui.internal.WorkbenchPage.activate(WorkbenchPage.java:663)
+	at org.eclipse.ui.internal.WorkbenchPage.busyShowView(WorkbenchPage.java:1170)
+	at org.eclipse.ui.internal.WorkbenchPage.busyShowView(WorkbenchPage.java:1140)
+	at org.eclipse.ui.internal.WorkbenchPage$20.run(WorkbenchPage.java:3921)
+	at org.eclipse.swt.custom.BusyIndicator.showWhile(BusyIndicator.java:70)
+	at org.eclipse.ui.internal.WorkbenchPage.showView(WorkbenchPage.java:3918)
+	at com.adobe.flexbuilder.editorcore.editor.CodeAndDesignViewManager$EditorListener.showViews(CodeAndDesignViewManager.java:716)
+	at com.adobe.flexbuilder.editorcore.editor.CodeAndDesignViewManager$EditorListener.access$4(CodeAndDesignViewManager.java:639)
+	at com.adobe.flexbuilder.editorcore.editor.CodeAndDesignViewManager$EditorListener$1.run(CodeAndDesignViewManager.java:614)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:135)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4140)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3757)
+	at org.eclipse.jface.window.Window.runEventLoop(Window.java:825)
+	at org.eclipse.jface.window.Window.open(Window.java:801)
+	at org.eclipse.jface.dialogs.MessageDialog.open(MessageDialog.java:334)
+	at org.eclipse.ui.texteditor.AbstractTextEditor.handleEditorInputChanged(AbstractTextEditor.java:4735)
+	at org.eclipse.ui.texteditor.StatusTextEditor.handleEditorInputChanged(StatusTextEditor.java:267)
+	at org.eclipse.ui.texteditor.AbstractDecoratedTextEditor.handleEditorInputChanged(AbstractDecoratedTextEditor.java:1474)
+	at org.eclipse.ui.texteditor.AbstractTextEditor.sanityCheckState(AbstractTextEditor.java:4887)
+	at org.eclipse.ui.texteditor.StatusTextEditor.sanityCheckState(StatusTextEditor.java:257)
+	at org.eclipse.ui.texteditor.AbstractTextEditor.safelySanityCheckState(AbstractTextEditor.java:4865)
+	at org.eclipse.ui.texteditor.AbstractTextEditor$ActivationListener.handleActivation(AbstractTextEditor.java:984)
+	at org.eclipse.ui.texteditor.AbstractTextEditor$ActivationListener.partActivated(AbstractTextEditor.java:941)
+	at org.eclipse.ui.internal.PartListenerList$1.run(PartListenerList.java:72)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.runtime.Platform.run(Platform.java:888)
+	at org.eclipse.ui.internal.PartListenerList.fireEvent(PartListenerList.java:57)
+	at org.eclipse.ui.internal.PartListenerList.firePartActivated(PartListenerList.java:70)
+	at org.eclipse.ui.internal.PartService.firePartActivated(PartService.java:187)
+	at org.eclipse.ui.internal.PartService.setActivePart(PartService.java:306)
+	at org.eclipse.ui.internal.WWinPartService.updateActivePart(WWinPartService.java:134)
+	at org.eclipse.ui.internal.WWinPartService.access$0(WWinPartService.java:125)
+	at org.eclipse.ui.internal.WWinPartService$WWinListener.partDeactivated(WWinPartService.java:50)
+	at org.eclipse.ui.internal.PartListenerList2$4.run(PartListenerList2.java:115)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.runtime.Platform.run(Platform.java:888)
+	at org.eclipse.ui.internal.PartListenerList2.fireEvent(PartListenerList2.java:55)
+	at org.eclipse.ui.internal.PartListenerList2.firePartDeactivated(PartListenerList2.java:113)
+	at org.eclipse.ui.internal.PartService.firePartDeactivated(PartService.java:242)
+	at org.eclipse.ui.internal.PartService.setActivePart(PartService.java:300)
+	at org.eclipse.ui.internal.WorkbenchPagePartList.fireActivePartChanged(WorkbenchPagePartList.java:57)
+	at org.eclipse.ui.internal.PartList.setActivePart(PartList.java:136)
+	at org.eclipse.ui.internal.WorkbenchPage.setActivePart(WorkbenchPage.java:3636)
+	at org.eclipse.ui.internal.WorkbenchPage.internalActivate(WorkbenchPage.java:691)
+	at org.eclipse.ui.internal.WorkbenchPage.activate(WorkbenchPage.java:663)
+	at org.eclipse.ui.internal.WorkbenchPage.makeActive(WorkbenchPage.java:1324)
+	at org.eclipse.ui.internal.WorkbenchPage.updateActivePart(WorkbenchPage.java:1304)
+	at org.eclipse.ui.internal.WorkbenchPage.handleDeferredEvents(WorkbenchPage.java:1496)
+	at org.eclipse.ui.internal.WorkbenchPage.deferUpdates(WorkbenchPage.java:1485)
+	at org.eclipse.ui.internal.WorkbenchPage.closeEditors(WorkbenchPage.java:1459)
+	at org.eclipse.ui.internal.WorkbenchPage.closeEditor(WorkbenchPage.java:1523)
+	at org.eclipse.wst.sse.ui.StructuredTextEditor$9.run(StructuredTextEditor.java:1220)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:135)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4140)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3757)
+	at org.eclipse.ui.internal.Workbench.runEventLoop(Workbench.java:2696)
+	at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2660)
+	at org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2494)
+	at org.eclipse.ui.internal.Workbench$7.run(Workbench.java:674)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:667)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+	at com.adobe.flexbuilder.standalone.FlashBuilderApplication.start(FlashBuilderApplication.java:108)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:344)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:622)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:577)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1410)
+
+!ENTRY com.adobe.flexbuilder.project 4 43 2013-12-09 16:26:13.744
+!MESSAGE 找不到文件：G:\GitHub\Game\ProtocolCreator\src\ProtocolCreator.mxml。
+!STACK 1
+org.eclipse.core.internal.resources.ResourceException: 找不到文件：G:\GitHub\Game\ProtocolCreator\src\ProtocolCreator.mxml。
+	at org.eclipse.core.internal.localstore.FileSystemResourceManager.read(FileSystemResourceManager.java:783)
+	at org.eclipse.core.internal.resources.File.getContents(File.java:289)
+	at org.eclipse.core.internal.resources.File.getContents(File.java:278)
+	at com.adobe.flexbuilder.designmodel.DesignModelManager.getModelForFile(DesignModelManager.java:514)
+	at com.adobe.flexbuilder.designmodel.DesignModelManager.getPrivateModel(DesignModelManager.java:179)
+	at com.adobe.flexbuilder.designmodel.DesignModelManager.getReadOnlyModel(DesignModelManager.java:152)
+	at com.adobe.flexide.designitems.utils.ItemUtils.getMainAppMXMLModel(ItemUtils.java:1484)
+	at com.adobe.flexbuilder.designview.assets.AssetManager.isCurrentfileMainFile(AssetManager.java:850)
+	at com.adobe.flexbuilder.designview.assets.AssetManager.initPaths(AssetManager.java:354)
+	at com.adobe.flexbuilder.designview.assets.AssetManager.<init>(AssetManager.java:261)
+	at com.adobe.flexbuilder.designview.DesignAssets.makeAssetManager(DesignAssets.java:38)
+	at com.adobe.flexbuilder.mxml.editor.design.MXMLDesignEditor.makeAssetManager(MXMLDesignEditor.java:1360)
+	at com.adobe.flexbuilder.editorcore.editor.DesignEditorPart.createEmbedInstanceManager(DesignEditorPart.java:134)
+	at com.adobe.flexbuilder.editorcore.editor.DesignEditorPart.getEmbedInstanceManager(DesignEditorPart.java:171)
+	at com.adobe.flexbuilder.mxml.editor.design.MXMLDesignEditor.getEmbedInstanceManager(MXMLDesignEditor.java:1980)
+	at com.adobe.flexbuilder.mxml.editor.design.MXMLDesignEditor.isAssetCompilationNeededWhileOpeningTheEditor(MXMLDesignEditor.java:4113)
+	at com.adobe.flexbuilder.mxml.editor.design.MXMLDesignEditor.initializeDesignViewFromCodeView(MXMLDesignEditor.java:3899)
+	at com.adobe.flexbuilder.mxml.editor.MXMLEditor$6.run(MXMLEditor.java:1377)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:135)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4140)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3757)
+	at org.eclipse.ui.internal.Workbench.runEventLoop(Workbench.java:2696)
+	at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2660)
+	at org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2494)
+	at org.eclipse.ui.internal.Workbench$7.run(Workbench.java:674)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:667)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+	at com.adobe.flexbuilder.standalone.FlashBuilderApplication.start(FlashBuilderApplication.java:108)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:344)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:622)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:577)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1410)
+!SUBENTRY 1 org.eclipse.core.resources 4 271 2013-12-09 16:26:13.744
+!MESSAGE 找不到文件：G:\GitHub\Game\ProtocolCreator\src\ProtocolCreator.mxml。

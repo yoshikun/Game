@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="将资源“ProtocolCreator/src/Config.xml”重命名为“config.xml”" description="重命名资源“Config.xml”" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/Config.xml" name="config.xml" stamp="1386577412100" updateReferences="true"/>
+</session>

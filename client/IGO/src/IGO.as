@@ -15,7 +15,7 @@ package
 	[SWF(width="1000", height="600", frameRate="60", backgroundColor="#0")]
 	public class IGO extends Game
 	{
-		[Embed(source="map.jpg")]
+		[Embed(source="../../../resource/zh_cn/icon/map.jpg")]
 		private var Map:Class;
 		
 		public function IGO()
