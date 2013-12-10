@@ -15,9 +15,9 @@ package core
 		
 		public static var resourcePath:String = "";
 		
-		public static var host:String = "192.168.1.18";
+		public static var host:String = "115.28.2.190";
 		
-		public static var port:uint = 20001;
+		public static var port:uint = 7778;
 		
 		/**
 		 * 语言

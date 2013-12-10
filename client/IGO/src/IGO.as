@@ -37,8 +37,7 @@ package
 			
 			SceneManager.instance.setup(new SceneStateCreator());
 			
-//			SceneManager.instance.changeState(State.LOGIN_SCENE);
-			SceneManager.instance.changeState(State.TEST_SCENE);
+			SceneManager.instance.changeState(State.LOGIN_SCENE);
 		}
 		
 		override protected function update():void
