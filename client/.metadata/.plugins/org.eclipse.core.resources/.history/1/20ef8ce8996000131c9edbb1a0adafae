@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<root>
-    <host>192.168.1.11</host>
-    <port>20001</port>
-    <lang>zh_cn</lang>
-    <resource>../resource/</resource>
-    <encryptAsset>../encryptAssets/</encryptResource>
-</root>
