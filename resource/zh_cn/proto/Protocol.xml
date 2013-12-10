@@ -18,9 +18,8 @@
 	<command value="System">
 		<param value="LOGIN" path="C > S" info="登录到登陆服">
 			<attrib value="account" type="char[48]" info="用户账号"/>
-			<attrib value="password" type="char[33]" info="用户登录用key"/>
 			<attrib value="version" type="uint32_t" info="客户端版本号"/>
-			<attrib value="gameType" type="uint16_t" info=""/>
+			<attrib value="gameType" type="uint16_t" info="游戏平台类型 从1000开始"/>
 			<attrib value="gameZone" type="uint32_t" info="游戏区 从1开始"/>
 		</param>
 		<param value="LOGIN" path="S > C" info="登录到登陆服返回结果">
