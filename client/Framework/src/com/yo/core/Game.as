@@ -1,5 +1,6 @@
 package com.yo.core
 {
+	import com.adobe.utils.DateUtil;
 	import com.yo.manager.ProfilerManager;
 	
 	import flash.display.Sprite;
@@ -15,6 +16,8 @@ package com.yo.core
 	import flash.system.System;
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
+	import flash.utils.ByteArray;
+	import flash.utils.Endian;
 	import flash.utils.Timer;
 	import flash.utils.getTimer;
 	
@@ -131,6 +134,10 @@ package com.yo.core
 		
 		protected function initContextMenu():void
 		{
+			var date:Date = getCompilationDate();
+			var compileTime:String = DateUtil.getChinaDate(date) + date.hours + "时" + date.minutes + "分" + date.seconds + "秒"
+			_captionArr.push("编译 " + compileTime);
+			
 			_contextMenu = new ContextMenu();
 			_contextMenu.hideBuiltInItems();
 			_contextMenu.customItems = [];
@@ -162,6 +169,33 @@ package com.yo.core
 				default:
 					break;
 			}
+		}
+		
+		protected function getCompilationDate():Date {
+			var swf:ByteArray = stage.loaderInfo.bytes;
+			if (!swf){
+				return new Date();
+			}
+			swf.endian = Endian.LITTLE_ENDIAN;
+			
+			// Signature + Version + FileLength + FrameSize + FrameRate + FrameCount
+			swf.position = 3 + 1 + 4 + (Math.ceil(((swf[8] >> 3) * 4 - 3) / 8) + 1) + 2 + 2;
+			
+			while (swf.position != swf.length) {
+				var tagHeader:uint = swf.readUnsignedShort();
+				if (tagHeader >> 6 == 41) {
+					// ProductID + Edition + MajorVersion + MinorVersion + BuildLow + BuildHigg
+					swf.position += 4 + 4 + 1 + 1 + 4 + 4;
+					var milli:Number = swf.readUnsignedInt();
+					var date:Date = new Date();
+					date.setTime(milli + swf.readUnsignedInt() * 4294967296);
+					return date;
+				} else {
+					swf.position += (tagHeader & 63) != 63 ? (tagHeader & 63) : swf.readUnsignedInt() + 4;
+				}
+			}
+			
+			return new Date();
 		}
 		
 		protected function toggleProfilerDisplay():void
