@@ -4,6 +4,8 @@ package scene
 	
 	import flash.events.Event;
 	
+	import core.Config;
+	
 	import enum.State;
 	
 	import net.NetManager;
@@ -30,7 +32,7 @@ package scene
 		}
 		
 		override protected function initEvent():void{
-//			NetManager.instance.connect(Config.host, Config.port);
+			NetManager.instance.connect(Config.host, Config.port);
 			
 			NetManager.instance.addEventListener(Event.CONNECT, __connect);
 		}
