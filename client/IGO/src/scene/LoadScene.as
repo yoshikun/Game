@@ -16,8 +16,6 @@ package scene
 		override public function enter():void{
 			super.enter();
 			
-			ResourceManager.instance.setup(new URLCreator());
-			
 			SceneManager.instance.changeState(State.CITY_SCENE);
 		}
 		

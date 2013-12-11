@@ -51,7 +51,7 @@ package com.yo.manager.resource
 		/**
 		 * 加载单个资源 
 		 */        
-		public function loadResource(resourceName:String, resourceType:String = "common", itemLoadComplete:Function = null, context:* = null):void{
+		public function loadResource(resourceName:String, resourceType:String, itemLoadComplete:Function = null, context:* = null):void{
 			var loaderName:String = resourceName;
 			addToQueue(loaderName, resourceName, resourceType, itemLoadComplete, context);
 			start(loaderName);
@@ -60,7 +60,7 @@ package com.yo.manager.resource
 		/**
 		 * 加入加载队列 
 		 */        
-		public function addToQueue(loaderName:String, resourceName:String, resourceType:String = "common", itemLoadComplete:Function = null, context:* = null):void{
+		public function addToQueue(loaderName:String, resourceName:String, resourceType:String, itemLoadComplete:Function = null, context:* = null):void{
 			var loader:BulkLoader = getLoader(loaderName);
 			addLoadingItem(loader, resourceName, resourceType, itemLoadComplete, context);
 		}
@@ -106,7 +106,7 @@ package com.yo.manager.resource
 		/**
 		 * 获取资源 
 		 */        
-		public function getResource(resourceName:String, resourceType:String = "common", loaderName:String = ""):*{
+		public function getResource(resourceName:String, resourceType:String, loaderName:String = ""):*{
 			if(loaderName == ""){
 				loaderName = resourceName;
 			}
@@ -119,7 +119,7 @@ package com.yo.manager.resource
 		/**
 		 * 获取loader内部资源 
 		 */        
-		public function getLoadingItem(resourceName:String, resourceType:String = "common", loaderName:String = ""):LoadingItem{
+		public function getLoadingItem(resourceName:String, resourceType:String, loaderName:String = ""):LoadingItem{
 			if(loaderName == ""){
 				loaderName = resourceName;
 			}

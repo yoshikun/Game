@@ -1,13 +1,18 @@
 package
 {
+	import br.com.stimuli.loading.loadingtypes.LoadingItem;
+	
 	import com.yo.core.Game;
 	import com.yo.logger.Log;
-	
-	import flash.display.Bitmap;
+	import com.yo.manager.resource.ResourceManager;
 	
 	import core.Config;
+	import core.URLCreator;
 	
 	import enum.State;
+	
+	import flash.display.Bitmap;
+	import flash.events.Event;
 	
 	import scene.SceneManager;
 	import scene.SceneStateCreator;
@@ -35,7 +40,26 @@ package
 		override protected function initManager():void{
 			super.initManager();
 			
+			ResourceManager.instance.setup(new URLCreator());
 			SceneManager.instance.setup(new SceneStateCreator());
+		}
+		
+		override protected function initView():void{
+			ResourceManager.instance.loadResource("config", "config", __configLoadComplete);
+		}
+		
+		private function __configLoadComplete(e:Event):void
+		{
+			var config:XML = ResourceManager.instance.getResource("config", "config");
+			
+			Config.host = config.host;
+			Config.port = config.port;
+			Config.lang = config.lang;
+			Config.resource = config.resource;
+			Config.encryptResource = config.encryptResource;
+			Config.encrypt = config.encrypt;
+			
+			ResourceManager.instance.clearLoader("config");
 			
 			SceneManager.instance.changeState(State.LOGIN_SCENE);
 		}

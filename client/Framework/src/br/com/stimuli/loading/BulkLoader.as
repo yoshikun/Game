@@ -649,8 +649,8 @@ package br.com.stimuli.loading {
         if(!item){
             return false;
         }
-        _removeFromItems(item);
-        _removeFromConnections(item);
+        removeFromItems(item);
+        removeFromConnections(item);
 
         item.stop();
         item.cleanListeners();
@@ -698,7 +698,7 @@ package br.com.stimuli.loading {
             //which item should we remove?
             var itemToRemove : LoadingItem = _getLeastUrgentOpenedItem();
             pause(itemToRemove);
-            _removeFromConnections(itemToRemove);
+            removeFromConnections(itemToRemove);
             itemToRemove.status = null;
         }
         // update the item's piority so that subsequent calls to loadNow don't close a
@@ -783,7 +783,7 @@ package br.com.stimuli.loading {
         _getAllConnections().forEach(function(i : LoadingItem, ...rest) : void{
 
                 if(i.status == LoadingItem.STATUS_ERROR && i.numTries >= i.maxTries){
-                    _removeFromConnections(i);
+                    removeFromConnections(i);
                 }
             });
         for each (var checkItem:LoadingItem in _items){
@@ -827,7 +827,7 @@ package br.com.stimuli.loading {
     /** @private */
     public function _onItemComplete(evt : Event) : void {
         var item : LoadingItem  = evt.target as LoadingItem;
-        _removeFromConnections(item);
+        removeFromConnections(item);
         log("Loaded ", item, LOG_INFO);
         log("Items to load", getNotLoadedItems(), LOG_VERBOSE);
         item.cleanListeners();
@@ -868,7 +868,7 @@ package br.com.stimuli.loading {
     }
 
     /** @private */
-    public function _removeFromItems(item : LoadingItem) : Boolean{
+    public function removeFromItems(item : LoadingItem) : Boolean{
         var removeIndex : int = _items.indexOf(item);
         if(removeIndex > -1){
             _items.splice( removeIndex, 1);
@@ -890,7 +890,7 @@ package br.com.stimuli.loading {
     }
 
     /** @private */
-    public function _removeFromConnections(item : *) : Boolean{
+    public function removeFromConnections(item : *) : Boolean{
         if(!_connections || _getNumConnectionsForItem(item) == 0) return false;
         var connectionsForHost : Array = _getConnectionsForHostName(item.hostName);(item);
         var removeIndex : int = connectionsForHost.indexOf(item);
@@ -954,7 +954,7 @@ package br.com.stimuli.loading {
     /** @private */
     public function _onItemError(evt : ErrorEvent) : void{
         var item : LoadingItem  = evt.target as LoadingItem;
-        _removeFromConnections(item);
+        removeFromConnections(item);
         log("After " + item.numTries + " I am giving up on " + item.url.url, LOG_ERRORS);
         log("Error loading", item, evt.text, LOG_ERRORS);
         _loadNext();
@@ -1609,8 +1609,8 @@ package br.com.stimuli.loading {
             if(!item) {
                 return false;
             }
-            _removeFromItems(item);
-            _removeFromConnections(item);
+            removeFromItems(item);
+            removeFromConnections(item);
             item.destroy();
             delete _contents[item.url.url];
             // this has to be checked, else a removeAll will trigger events for completion
@@ -1719,7 +1719,7 @@ package br.com.stimuli.loading {
             item.stop();
         }
         log("STOPPED ITEM:" , item, LOG_INFO)
-            var result : Boolean = _removeFromConnections(item);
+            var result : Boolean = removeFromConnections(item);
         if(loadsNext){
             _loadNext();
         }

@@ -27,12 +27,12 @@ package core
 		/**
 		 * 资源路径
 		 */
-		public static var asset:String = "assets/" + Config.lang + "/";
+		public static var resource:String = "assets/" + Config.lang + "/";
 		
 		/**
 		 * 加密路径 
 		 */		
-		public static var encryptAsset:String = "md5Assets/" + Config.lang + "/";
+		public static var encryptResource:String = "encryptResource/" + Config.lang + "/";
 		
 		/**
 		 * 加密 
@@ -40,9 +40,9 @@ package core
 		public static var encrypt:Boolean;
 		
 		public static function getAssetPath():String{
-			var path:String = Config.asset;
+			var path:String = Config.resource;
 			if(encrypt){
-				path = Config.encryptAsset;
+				path = Config.encryptResource;
 			}
 			return path;
 		}

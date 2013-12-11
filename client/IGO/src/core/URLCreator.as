@@ -16,7 +16,7 @@ package core
 			var path:String = Config.getAssetPath();
 			
 			// 配置资源路径
-			ResourceManager.instance.setUrl("config",           {path:path + "config/",            extension:".xml"});
+			ResourceManager.instance.setUrl("config",           {path:"",            			   extension:".xml"});
 			ResourceManager.instance.setUrl("animation_optim",  {path:path + "animation/",         extension:".swf"});
 			ResourceManager.instance.setUrl("swf_animation",    {path:path + "animation/",         extension:".swf"});
 			ResourceManager.instance.setUrl("effect",           {path:path + "effect/",            extension:".swf"});

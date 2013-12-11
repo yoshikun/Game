@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <host>115.28.2.190</host>
+	<!-- 115.28.2.190 127.0.0.1 -->
+    <host>127.0.0.1</host>
     <port>7778</port>
     <lang>zh_cn</lang>
+    <encrypt>0</encrypt>
     <resource>../resource/</resource>
     <encryptResource>../encryptResource/</encryptResource>
 </root>
