@@ -28,7 +28,7 @@ package scene
 		override public function enter():void{
 			super.enter();
 			
-			Log.getLog(this).debug("开始连接");
+			Log.getLog(this).debug("开始连接 " +　Config.host + ":" + Config.port);
 			NetManager.instance.connect(Config.host, Config.port);
 		}
 		
