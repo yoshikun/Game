@@ -19,10 +19,7 @@ package net
 		/**
 		 * {{info}}
 		 */
-		public static const {{value}}:Object = {
-			module: {{cmdIndex}},
-			action: {{paramIndex}}{{#requestClassName}}, request:{{requestClassName}}{{/requestClassName}}//
-		};
+		public static const {{value}}:String = {{cmdIndex}} + ":" + {{paramIndex}};
 		
 		{{/data}}
 		public function Protocol()

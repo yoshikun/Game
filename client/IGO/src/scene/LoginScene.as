@@ -1,15 +1,18 @@
 package scene
 {
+	import com.yo.logger.Log;
 	import com.yo.net.ProtocolEvent;
-	
-	import flash.events.Event;
 	
 	import core.Config;
 	
 	import enum.State;
 	
+	import flash.events.Event;
+	
 	import net.NetManager;
+	import net.Protocol;
 	import net.request.system.LoginGateRequest;
+	import net.request.system.LoginRequest;
 	
 	import ui.LoginController;
 
@@ -35,6 +38,8 @@ package scene
 			NetManager.instance.connect(Config.host, Config.port);
 			
 			NetManager.instance.addEventListener(Event.CONNECT, __connect);
+			
+			NetManager.instance.addEventListener(Protocol.LOGIN, __loginResponse);
 		}
 		
 		override protected function initView():void{
@@ -43,12 +48,23 @@ package scene
 		
 		private function __loginResponse(e:ProtocolEvent):void
 		{
+			Log.getLog(this).debug("登陆成功");
 			SceneManager.instance.changeState(State.LOAD_SCENE);
 		}
 		
 		private function __connect(e:Event):void
 		{
-			requestLoginGate();
+			requestLogin();
+		}
+		
+		private function requestLogin():void
+		{
+			var r:LoginRequest = new LoginRequest();
+			r.account = "yoshikun";
+			r.gameType = 1000;
+			r.gameZone = 1;
+			r.netType = 1;
+			NetManager.instance.send(r);
 		}
 		
 		private function requestLoginGate():void

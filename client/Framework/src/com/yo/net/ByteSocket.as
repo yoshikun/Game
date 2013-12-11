@@ -170,7 +170,6 @@ package com.yo.net
 				var p:Packet = new Packet();
 				p.module = r.module;
 				p.action = r.action;
-				p.key = auth;
 				r.write(p);
 				
 				var allBytes:ByteArray = new ByteArray();

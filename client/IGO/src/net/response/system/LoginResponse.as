@@ -15,24 +15,9 @@ package net.response.system
     public class LoginResponse implements IResponse
     {
         /**
-         * 结果 1成功,2找不到会话服务器 3网关用户满 4用户登录错误
+         * 结果 0成功,1维护 2未到开服时间 3网关未开
          */
         public var result:uint;
-
-        /**
-         * 服务器版本
-         */
-        public var serverVersion:uint;
-
-        /**
-         * 用户账号
-         */
-        public var accid:uint;
-
-        /**
-         * 用户登录用key
-         */
-        public var key:uint;
 
         /**
          * 网关ip
@@ -48,9 +33,6 @@ package net.response.system
         {
 
             result = p.readUnsignedByte();
-            serverVersion = p.readUnsignedInt();
-            accid = p.readUnsignedInt();
-            key = p.readUnsignedInt();
             ip = p.readMultiByte(32, "utf-8");
             port = p.readUnsignedShort();
         }

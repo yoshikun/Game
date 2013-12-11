@@ -18,19 +18,19 @@ package net.request.system
         public var account:String;
     
         /**
-         * 用户登录用key
+         * 游戏平台类型 从1000开始
          */
-        public var password:String;
-    
-        /**
-         * 客户端版本号
-         */
-        public var version:uint;
+        public var gameType:uint;
     
         /**
          * 游戏区 从1开始
          */
         public var gameZone:uint;
+    
+        /**
+         * 1:电信 2:网通
+         */
+        public var netType:uint;
     
         public function get module():int
         {
@@ -46,9 +46,9 @@ package net.request.system
         {
             
             p.writeMultiBytes(account, 48);
-            p.writeMultiBytes(password, 33);
-            p.writeUnsignedInt(version);
+            p.writeShort(gameType);
             p.writeUnsignedInt(gameZone);
+            p.writeShort(netType);
         }
     }
 }
