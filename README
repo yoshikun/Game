@@ -8,4 +8,6 @@
 ─resource		-资源
  ├─proto		 ├─协议
  └─table		 ├─数据表
+ └─data			 ├─
 ─server			-服务端
+─tool			-工具
