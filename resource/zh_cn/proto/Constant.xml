@@ -5,6 +5,5 @@
 		<attrib value="ALIEN" consts="0" type="uint8_t" info="保密"/>
 		<attrib value="MALE" consts="1" type="uint8_t" info="男生"/>
 		<attrib value="FMALE" consts="2" type="uint8_t" info="女生"/>
-
 	</obj>
 </root>
