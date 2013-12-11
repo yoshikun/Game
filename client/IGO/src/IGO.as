@@ -1,18 +1,16 @@
 package
 {
-	import br.com.stimuli.loading.loadingtypes.LoadingItem;
-	
 	import com.yo.core.Game;
 	import com.yo.logger.Log;
 	import com.yo.manager.resource.ResourceManager;
+	
+	import flash.display.Bitmap;
+	import flash.events.Event;
 	
 	import core.Config;
 	import core.URLCreator;
 	
 	import enum.State;
-	
-	import flash.display.Bitmap;
-	import flash.events.Event;
 	
 	import scene.SceneManager;
 	import scene.SceneStateCreator;

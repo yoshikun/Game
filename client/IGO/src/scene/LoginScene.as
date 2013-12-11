@@ -3,11 +3,12 @@ package scene
 	import com.yo.logger.Log;
 	import com.yo.net.ProtocolEvent;
 	
+	import flash.events.Event;
+	import flash.system.Security;
+	
 	import core.Config;
 	
 	import enum.State;
-	
-	import flash.events.Event;
 	
 	import net.NetManager;
 	import net.Protocol;
@@ -29,6 +30,7 @@ package scene
 			super.enter();
 			
 			Log.getLog(this).debug("开始连接 " +　Config.host + ":" + Config.port);
+			Security.loadPolicyFile("xmlsocket://115.28.2.190:7778")
 			NetManager.instance.connect(Config.host, Config.port);
 		}
 		
