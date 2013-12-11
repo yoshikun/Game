@@ -50,6 +50,8 @@ package
 		
 		private function __configLoadComplete(e:Event):void
 		{
+			Log.getLog(this).debug("成功加载配置表");
+			
 			var config:XML = ResourceManager.instance.getResource("config", "config");
 			
 			Config.host = config.host;

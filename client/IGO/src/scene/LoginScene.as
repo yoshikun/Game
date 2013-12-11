@@ -27,6 +27,9 @@ package scene
 		
 		override public function enter():void{
 			super.enter();
+			
+			Log.getLog(this).debug("开始连接");
+			NetManager.instance.connect(Config.host, Config.port);
 		}
 		
 		override protected function initController():void{
@@ -35,10 +38,7 @@ package scene
 		}
 		
 		override protected function initEvent():void{
-			NetManager.instance.connect(Config.host, Config.port);
-			
 			NetManager.instance.addEventListener(Event.CONNECT, __connect);
-			
 			NetManager.instance.addEventListener(Protocol.LOGIN, __loginResponse);
 		}
 		
