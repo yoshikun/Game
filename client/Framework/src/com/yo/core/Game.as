@@ -132,6 +132,9 @@ package com.yo.core
 			KeyboardManager.getInstance().init(stage);
 		}
 		
+		/**
+		 * 初始化右键菜单
+		 */		
 		protected function initContextMenu():void
 		{
 			var date:Date = getCompilationDate();
@@ -171,6 +174,9 @@ package com.yo.core
 			}
 		}
 		
+		/**
+		 * 编译时间
+		 */		
 		protected function getCompilationDate():Date {
 			var swf:ByteArray = stage.loaderInfo.bytes;
 			if (!swf){
