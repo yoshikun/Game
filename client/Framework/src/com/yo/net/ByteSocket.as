@@ -10,6 +10,7 @@ package com.yo.net
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.net.Socket;
+	import flash.system.Security;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	import flash.utils.getQualifiedClassName;
@@ -45,6 +46,8 @@ package com.yo.net
 		
 		public function connect(ip:String, port:int):void 
 		{
+			Log.getLog(this).debug("请求crossdomain.xml");
+			Security.loadPolicyFile("xmlsocket://115.28.2.190/crossdomain.xml")
 			try{
 				if(_socket){
 					close();
