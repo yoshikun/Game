@@ -1,13 +1,15 @@
 // Copyright 2007. Adobe Systems Incorporated. All Rights Reserved.
 package fl.managers {
 	
-	import fl.core.UIComponent;
 	import flash.display.Sprite;
+	import flash.system.ApplicationDomain;
 	import flash.text.TextFormat;
 	import flash.utils.Dictionary;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	import flash.utils.getQualifiedSuperclassName;
+	
+	import fl.core.UIComponent;
 	
 	/**
 	 * The StyleManager class provides static methods that can be used to get and 
@@ -145,7 +147,7 @@ package fl.managers {
 						break;
 					}
 					try {
-						target = SkinManager.instance.applicationDomain.getDefinition(getQualifiedSuperclassName(target)) as Class;
+						target = ApplicationDomain.currentDomain.getDefinition(getQualifiedSuperclassName(target)) as Class;
 					} catch(err:Error) {
 						try {
 							target = getDefinitionByName(getQualifiedSuperclassName(target)) as Class;
@@ -315,7 +317,7 @@ package fl.managers {
 			} catch (e:Error) {
 				if (component is UIComponent) {
 					try {
-						return SkinManager.instance.applicationDomain.getDefinition(getQualifiedClassName(component)) as Class;
+						return  ApplicationDomain.currentDomain.getDefinition(getQualifiedClassName(component)) as Class;
 					} catch (e:Error) {}
 				}
 			}

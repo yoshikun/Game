@@ -127,7 +127,7 @@ package com.yo.core
 			//状态监视
 			ProfilerManager.instance.init(stage);
 			ProfilerManager.instance.start();
-			ProfilerManager.instance.toggleDisplay();
+//			ProfilerManager.instance.toggleDisplay();
 			//键盘管理
 			KeyboardManager.getInstance().init(stage);
 		}

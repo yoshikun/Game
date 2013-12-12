@@ -2,6 +2,7 @@ package com.yo.manager.resource
 {
 	import flash.events.Event;
 	import flash.system.ApplicationDomain;
+	import flash.system.Capabilities;
 	import flash.system.LoaderContext;
 	import flash.system.SecurityDomain;
 	import flash.utils.Dictionary;
@@ -20,7 +21,7 @@ package com.yo.manager.resource
 		
 		/**
 		 * 应用程序域 
-		 */		
+		 */	
 		private var _domain:ApplicationDomain;
 
 		/**
@@ -33,12 +34,16 @@ package com.yo.manager.resource
 		public function ResourceManager()
 		{
 		}
-		
+
 		public function setup(urlCreator:IURLCreator):void
 		{
-			_domain = new ApplicationDomain(ApplicationDomain.currentDomain);
+			_domain = ApplicationDomain.currentDomain;
 			_context = new LoaderContext(true, _domain);
-			_context.securityDomain = SecurityDomain.currentDomain;
+			
+			//在浏览器插件中运行
+			if(Capabilities.playerType == "Plugin") {
+				_context.securityDomain = SecurityDomain.currentDomain;
+			}
 		}
 		
 		/**
@@ -173,7 +178,7 @@ package com.yo.manager.resource
 		 * 获取资源唯一标示符 
 		 */        
 		private function getResourceId(resourceName:String, resourceType:String):String{
-			return "com.yile.resource." + resourceType + "." + resourceName;
+			return "com.yo.resource." + resourceType + "." + resourceName;
 		}
 		
 		/**
@@ -184,7 +189,7 @@ package com.yo.manager.resource
 			var config:Object = _url[resourceType];
 			var url:String;
 			if(!config){
-				url = name + ".xml";
+				url = name + "." + resourceType;
 			}else{
 				url = config.path + name + config.extension;
 			}
@@ -223,7 +228,10 @@ package com.yo.manager.resource
 		public function createContext():LoaderContext{
 			var context:LoaderContext = new LoaderContext(false, new ApplicationDomain(ApplicationDomain.currentDomain));
 			context.allowCodeImport = true;
-			context.securityDomain = SecurityDomain.currentDomain;
+			
+			if(Capabilities.playerType == "Plugin") {
+				context.securityDomain = SecurityDomain.currentDomain;
+			}
 			return context;
 		}
 		

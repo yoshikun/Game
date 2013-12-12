@@ -75,7 +75,6 @@
     <classEntry path="fl.managers.IFocusManager"/>
     <classEntry path="fl.managers.IFocusManagerComponent"/>
     <classEntry path="fl.managers.IFocusManagerGroup"/>
-    <classEntry path="fl.managers.SkinManager"/>
     <classEntry path="fl.managers.StyleManager"/>
   </includeClasses>
   <includeResources/>

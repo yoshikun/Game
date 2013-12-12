@@ -1,26 +1,14 @@
 // Copyright 2007. Adobe Systems Incorporated. All Rights Reserved.
 package fl.core {
 
-	import fl.core.InvalidationType;
-	import fl.events.ComponentEvent;
-	import fl.managers.FocusManager;
-	import fl.managers.IFocusManager;
-	import fl.managers.IFocusManagerComponent;
-	import fl.managers.SkinManager;
-	import fl.managers.StyleManager;
-	
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.InteractiveObject;
 	import flash.display.Sprite;
-	import flash.display.Stage;
 	import flash.events.Event;
-	import flash.events.EventPhase;
 	import flash.events.FocusEvent;
 	import flash.events.KeyboardEvent;
-	import flash.events.MouseEvent;
-	import flash.geom.Rectangle;
-	import flash.system.Capabilities;
+	import flash.system.ApplicationDomain;
 	import flash.system.IME;
 	import flash.system.IMEConversionMode;
 	import flash.text.TextField;
@@ -29,6 +17,12 @@ package fl.core {
 	import flash.utils.Dictionary;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
+	
+	import fl.events.ComponentEvent;
+	import fl.managers.FocusManager;
+	import fl.managers.IFocusManager;
+	import fl.managers.IFocusManagerComponent;
+	import fl.managers.StyleManager;
 
 	
     //--------------------------------------
@@ -1413,7 +1407,7 @@ package fl.core {
 				classDef = getDefinitionByName(skin.toString());
 			} catch(e:Error) {
 				try {
-					classDef = SkinManager.instance.applicationDomain.getDefinition(skin.toString()) as Object;
+					classDef = ApplicationDomain.currentDomain.getDefinition(skin.toString()) as Object;
 				} catch (e:Error) {
 					// Nothing
 				}
