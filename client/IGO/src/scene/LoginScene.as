@@ -30,7 +30,7 @@ package scene
 			super.enter();
 			
 			Log.getLog(this).debug("开始连接 " +　Config.host + ":" + Config.port);
-//			Security.loadPolicyFile("xmlsocket://115.28.2.190:7778")
+			Security.loadPolicyFile("xmlsocket://115.28.2.190/crossdomain.xml")
 			NetManager.instance.connect(Config.host, Config.port);
 		}
 		
