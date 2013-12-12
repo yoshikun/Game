@@ -46,8 +46,7 @@ package com.yo.net
 		
 		public function connect(ip:String, port:int):void 
 		{
-			Log.getLog(this).debug("请求crossdomain.xml");
-			Security.loadPolicyFile("xmlsocket://115.28.2.190/crossdomain.xml")
+//			Security.loadPolicyFile("xmlsocket://115.28.2.190/crossdomain.xml")
 			try{
 				if(_socket){
 					close();
@@ -252,7 +251,6 @@ package com.yo.net
 		 */		
 		private function securityError(e:SecurityErrorEvent):void
 		{
-			Log.getLog(this).debug("SECURITY_ERROR " + e.text);
 			try{
 				dispatchEvent(new SecurityErrorEvent(SecurityErrorEvent.SECURITY_ERROR,false,false,e.text));
 			}catch(erro:Error){
