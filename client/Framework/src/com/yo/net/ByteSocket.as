@@ -249,6 +249,7 @@ package com.yo.net
 		 */		
 		private function securityError(e:SecurityErrorEvent):void
 		{
+			Log.getLog(this).debug("SECURITY_ERROR " + e.text);
 			try{
 				dispatchEvent(new SecurityErrorEvent(SecurityErrorEvent.SECURITY_ERROR,false,false,e.text));
 			}catch(erro:Error){
