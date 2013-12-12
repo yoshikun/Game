@@ -10,7 +10,6 @@ package com.yo.net
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.net.Socket;
-	import flash.system.Security;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	import flash.utils.getQualifiedClassName;
@@ -23,18 +22,15 @@ package com.yo.net
 		
 		private var _port:Number;
 		
+		/**
+		 * 头文件长度 
+		 */		
 		private var _headLen:uint = 4;
 		private var _bodyLen:uint;
 		private var _headerBuffer:ByteArray;
 		private var _bodyBuffer:Packet;
 		
 		public var protocol:IProtocol;
-		
-		/**
-		 * 序列号 
-		 */		
-		private var index:uint = 0;
-		private var key:uint = 0;
 		
 		public function ByteSocket(encrypted:Boolean = true) 
 		{
@@ -86,7 +82,7 @@ package com.yo.net
 		{
 			var readLen:uint = 0;
 			while(_socket.bytesAvailable > 0){
-				// 如果消息头长度还不够
+				//如果消息头长度还不够
 				if(_headerBuffer.length < _headLen){
 					readLen = _socket.bytesAvailable >(_headLen - _headerBuffer.length) ?(_headLen - _headerBuffer.length) : _socket.bytesAvailable;
 					if(readLen > 0){
@@ -110,7 +106,7 @@ package com.yo.net
 					}
 				}
 				
-				// 如果消息体长度不够
+				//如果消息体长度不够
 				if(_bodyBuffer.length < _bodyLen){
 					readLen = _socket.bytesAvailable >(_bodyLen - _bodyBuffer.length) ?(_bodyLen - _bodyBuffer.length) : _socket.bytesAvailable;
 					if(readLen > 0){
@@ -118,14 +114,9 @@ package com.yo.net
 						_socket.readBytes(_bodyBuffer, _bodyBuffer.length, readLen);
 						
 						
-						// 还没读够
+						//还没读够
 						if(_bodyBuffer.length < _bodyLen){
 							continue;
-						}
-						
-						// 设置秘钥
-						if(key == 97){
-							key = _bodyBuffer.key;
 						}
 						
 						var r:IResponse = protocol.lookup(_bodyBuffer.module, _bodyBuffer.action);
@@ -135,7 +126,7 @@ package com.yo.net
 							_bodyBuffer.position = 6;
 							try{
 								r.read(_bodyBuffer);
-								// 由于反序列化比较耗，所以暂时硬编码判断
+								//由于反序列化比较耗，所以暂时硬编码判断
 								var log:String = com.adobe.serialization.json.JSON.encode(r);
 								Log.getLog(this).debug('接收协议：(' + _bodyBuffer.module + ':' + _bodyBuffer.action + ") " + getClassName(r) + " 内容： " + log);
 								
@@ -165,9 +156,6 @@ package com.yo.net
 		{
 			if(_socket && _socket.connected){
 				var auth:uint = 0;
-				if(key != 0 && index != 0){
-					auth = key ^ index;
-				}
 				
 				var p:Packet = new Packet();
 				p.module = r.module;

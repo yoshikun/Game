@@ -1,2 +1,2 @@
-1.swf�����ܹ����ӷ�������socket�˿�,����վ�Ͼ���������
-�����Ҳ��Ҫ��ȫ�����ļ�,crossdomain.xml���ڸ�Ŀ¼��
+﻿1.swf本地能够连接服务器的socket端口,放网站上就连不上了,报安全沙箱错误
+ $服务端843端口监听并返回安全策略文件crossdomain.xml
