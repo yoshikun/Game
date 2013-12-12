@@ -251,6 +251,7 @@ package com.yo.net
 		{
 			try{
 				dispatchEvent(new SecurityErrorEvent(SecurityErrorEvent.SECURITY_ERROR,false,false,e.text));
+				Log.getLog(this).debug("SECURITY_ERROR " + e.text);
 			}catch(erro:Error){
 				trace(erro.getStackTrace());
 			}
