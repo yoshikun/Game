@@ -61,7 +61,9 @@ package com.yo.core
 		protected var _skip:Number;
 		
 		protected var _frameLast:uint = 0;
+		
 		protected var _frameListSum:uint = 0;
+		
 		protected var _frameList:Vector.<uint> = new Vector.<uint>;
 		
 		public function Game()
@@ -92,6 +94,9 @@ package com.yo.core
 			
 		}
 		
+		/**
+		 * 初始化数据
+		 */		
 		protected function initModel():void
 		{
 			FP.assignedFrameRate = 30;
@@ -104,8 +109,7 @@ package com.yo.core
 			stage.displayState = StageDisplayState.NORMAL;
 			
 			_rate = 1000 / FP.assignedFrameRate;
-			if(!FP.fixed)
-			{
+			if(!FP.fixed){
 				_skip = _rate * _maxFrameSkip;
 				_last = _prev = getTimer();
 				_timer = new Timer(_tickRate);
@@ -156,6 +160,9 @@ package com.yo.core
 			this.contextMenu = _contextMenu;
 		}		
 		
+		/**
+		 * 选择菜单选项
+		 */		
 		protected function __menuItemSelect(e:ContextMenuEvent):void{
 			var item:ContextMenuItem = e.currentTarget as ContextMenuItem;
 			switch(item.caption)
