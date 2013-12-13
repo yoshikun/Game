@@ -121,18 +121,18 @@ package com.yo.net
 						
 						var r:IResponse = protocol.lookup(_bodyBuffer.module, _bodyBuffer.action);
 						if(!r){
-							Log.getLog(this).warn("没有绑定协议处理器，协议(" + _bodyBuffer.module + ':' + _bodyBuffer.action + ")");
+							Log.getLog(this).warn("没有绑定协议处理器，协议(" + _bodyBuffer.module + ":" + _bodyBuffer.action + ")");
 						}else{
 							_bodyBuffer.position = 6;
 							try{
 								r.read(_bodyBuffer);
 								//由于反序列化比较耗，所以暂时硬编码判断
 								var log:String = com.adobe.serialization.json.JSON.encode(r);
-								Log.getLog(this).debug('接收协议：(' + _bodyBuffer.module + ':' + _bodyBuffer.action + ") " + getClassName(r) + " 内容： " + log);
+								Log.getLog(this).debug("接收协议：(" + _bodyBuffer.module + ":" + _bodyBuffer.action + ") " + getClassName(r) + "(" + _bodyLen + ")" + " 内容： " + log);
 								
-								dispatchEvent(new ProtocolEvent(_bodyBuffer.module + ':' + _bodyBuffer.action, r));
+								dispatchEvent(new ProtocolEvent(_bodyBuffer.module + ":" + _bodyBuffer.action, r));
 							}catch(e:Error){
-								Log.getLog(this).warn("协议解析错误，协议(" + _bodyBuffer.module + ':' + _bodyBuffer.action + ")");
+								Log.getLog(this).warn("协议解析错误，协议(" + _bodyBuffer.module + ":" + _bodyBuffer.action + ")");
 							}
 						}
 						_headerBuffer.clear();
@@ -155,8 +155,6 @@ package com.yo.net
 		public function send(r:IRequest):void 
 		{
 			if(_socket && _socket.connected){
-				var auth:uint = 0;
-				
 				var p:Packet = new Packet();
 				p.module = r.module;
 				p.action = r.action;
@@ -170,15 +168,15 @@ package com.yo.net
 				_socket.flush();
 				
 				var log:String = com.adobe.serialization.json.JSON.encode(r);
-				Log.getLog(this).debug('发送协议：(' + r.module + ':' + r.action + ") " + getClassName(r) + " 内容： " + log);
+				Log.getLog(this).debug("发送协议：(" + r.module + ":" + r.action + ") " + getClassName(r) + "(" + _bodyLen + ")" + " 内容： " + log);
 			}
 		}
 		
 		private function getClassName(o:*):String{
 			var name:String = getQualifiedClassName(o);
-			var index:int = name.lastIndexOf('::');
+			var index:int = name.lastIndexOf("::");
 			if(index != -1){
-				return name.slice(name.lastIndexOf('::') + 2)
+				return name.slice(name.lastIndexOf("::") + 2)
 			}
 			return name;
 		}

@@ -12,21 +12,18 @@ package com.yo.net
 	{
 		private var _module:uint = 0;
 		private var _action:uint = 0;
-		private var _key:uint;
-		
+
 		public function Packet() 
 		{
 			this.endian = Endian.LITTLE_ENDIAN;
-			position = 6;
-			//			position = 2;
+			position = 2;
 		}
 		
 		public function get action():uint
 		{
 			if (_action == 0) {
 				var op:uint = position;
-				position = 3;
-				//				position = 1;
+				position = 1;
 				_action = readUnsignedByte();
 				position = op;
 			}
@@ -37,8 +34,7 @@ package com.yo.net
 		{
 			_action = value;
 			var op:uint = position;
-			position = 3;
-			//            position = 1;
+       		position = 1;
 			writeByte(value);
 			position = op;
 		}
