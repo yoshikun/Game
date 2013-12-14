@@ -24,18 +24,18 @@ package net
 		{{/data}}
 		public function Protocol()
 		{
-		
+			register();
 		}
 		
 		/**
 		 * 查找协议 
 		 */        
 		public function lookup(module:uint, action:uint):IResponse {
-		    var c:Class = _protoMap[_toString(module, action)];
-		    if (! c) {
+		    var c:Class = _protoMap[module + ":" + action];
+		    if(!c){
 		        return null;
 		    }
-			return new c;
+			return new c;//
 		}
 		
 		/**
@@ -43,16 +43,8 @@ package net
 		 */    
 		public function register():void {
 			{{#data}}
-			_protoMap[_key({{value}})] = {{responseClassName}};
+			_protoMap[{{value}}] = {{responseClassName}};
 			{{/data}}
-		}
-		
-		private static function _key(o:Object):String {
-			return _toString(o.module, o.action);
-		}
-		
-		private static function _toString(module:uint, action:uint):String {
-			return module + ':' + action;
 		}
 	}
 }

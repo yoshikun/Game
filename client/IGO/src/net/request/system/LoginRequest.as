@@ -48,7 +48,7 @@ package net.request.system
             p.writeMultiBytes(account, 48);
             p.writeShort(gameType);
             p.writeUnsignedInt(gameZone);
-            p.writeShort(netType);
+            p.writeByte(netType);
         }
     }
 }

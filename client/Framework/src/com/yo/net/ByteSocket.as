@@ -123,7 +123,7 @@ package com.yo.net
 						if(!r){
 							Log.getLog(this).warn("没有绑定协议处理器，协议(" + _bodyBuffer.module + ":" + _bodyBuffer.action + ")");
 						}else{
-							_bodyBuffer.position = 6;
+							_bodyBuffer.position = 2;
 							try{
 								r.read(_bodyBuffer);
 								//由于反序列化比较耗，所以暂时硬编码判断

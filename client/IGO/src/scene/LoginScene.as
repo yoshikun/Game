@@ -14,6 +14,7 @@ package scene
 	import net.Protocol;
 	import net.request.system.LoginGateRequest;
 	import net.request.system.LoginRequest;
+	import net.response.system.LoginResponse;
 	
 	import ui.LoginController;
 
@@ -47,10 +48,26 @@ package scene
 			
 		}
 		
+		/**
+		 * 结果 0成功,1维护 2未到开服时间 3网关未开
+		 */		
 		private function __loginResponse(e:ProtocolEvent):void
 		{
-			Log.getLog(this).debug("登陆成功");
-			SceneManager.instance.changeState(State.LOAD_SCENE);
+			var r:LoginResponse = e.response as LoginResponse;
+			switch(r.result){
+				case 0:
+					Log.getLog(this).debug("登陆成功");
+					SceneManager.instance.changeState(State.LOAD_SCENE);
+					break;
+				case 1:
+					break;
+				case 2:
+					break;
+				case 3:
+					break;
+				default:
+					break;
+			}
 		}
 		
 		private function __connect(e:Event):void

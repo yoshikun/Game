@@ -24,34 +24,26 @@ package net
 		
 		public function Protocol()
 		{
-		
+			register();
 		}
 		
 		/**
 		 * 查找协议 
 		 */        
 		public function lookup(module:uint, action:uint):IResponse {
-		    var c:Class = _protoMap[_toString(module, action)];
-		    if (! c) {
+		    var c:Class = _protoMap[module + ":" + action];
+		    if(!c){
 		        return null;
 		    }
-			return new c;
+			return new c;//
 		}
 		
 		/**
 		 * 注册协议 
 		 */    
 		public function register():void {
-			_protoMap[_key(LOGIN)] = LoginResponse;
-			_protoMap[_key(LOGIN_GATE)] = LoginGateResponse;
+			_protoMap[LOGIN] = LoginResponse;
+			_protoMap[LOGIN_GATE] = LoginGateResponse;
 			}
-		
-		private static function _key(o:Object):String {
-			return _toString(o.module, o.action);
-		}
-		
-		private static function _toString(module:uint, action:uint):String {
-			return module + ':' + action;
-		}
 	}
 }

@@ -31,8 +31,6 @@ package
 			super.initModel();
 			
 			Config.stage = stage;
-			
-			Log.getLog(this).debug("初始化数据");
 		}
 		
 		override protected function initManager():void{
@@ -48,8 +46,6 @@ package
 		
 		private function __configLoadComplete(e:Event):void
 		{
-			Log.getLog(this).debug("成功加载配置表");
-			
 			var config:XML = ResourceManager.instance.getResource("config", "config");
 			
 			Config.host = config.host;
