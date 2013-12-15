@@ -158,7 +158,7 @@ package com.yo.net
 				var p:Packet = new Packet();
 				p.module = r.module;
 				p.action = r.action;
-				r.write(p);
+				r.write(p);	
 				
 				var allBytes:ByteArray = new ByteArray();
 				allBytes.endian = Endian.LITTLE_ENDIAN;
