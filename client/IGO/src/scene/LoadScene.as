@@ -1,9 +1,5 @@
 package scene
 {
-	import com.yo.manager.resource.ResourceManager;
-	
-	import core.URLCreator;
-	
 	import enum.State;
 
 	public class LoadScene extends GameScene

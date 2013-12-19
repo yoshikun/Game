@@ -18,13 +18,13 @@ package
 	[SWF(width="1000", height="600", frameRate="60", backgroundColor="#0")]
 	public class IGO extends Game
 	{
-		[Embed(source="../../../resource/zh_cn/icon/map.jpg")]
+		[Embed(source="../../../resource/zh_cn/image/bg.jpg")]
 		private var Map:Class;
 		
 		public function IGO()
 		{
 			var bitmap:Bitmap = new Map() as Bitmap;
-			this.addChild(bitmap);
+//			this.addChild(bitmap);
 		}
 		
 		override protected function initModel():void{

@@ -4,7 +4,6 @@ package scene
 	import com.yo.net.ProtocolEvent;
 	
 	import flash.events.Event;
-	import flash.system.Security;
 	
 	import core.Config;
 	
@@ -16,7 +15,7 @@ package scene
 	import net.request.system.LoginRequest;
 	import net.response.system.LoginResponse;
 	
-	import ui.LoginController;
+	import ui.login.LoginController;
 
 	public class LoginScene extends GameScene
 	{
