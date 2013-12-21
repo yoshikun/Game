@@ -276,7 +276,7 @@ package com.yo.manager.resource
 		 */        
 		public function clearLoader(name:String):void{
 			var loader:BulkLoader = BulkLoader.getLoader(name);
-			if (loader){
+			if(loader){
 				loader.clear();
 			}
 		}

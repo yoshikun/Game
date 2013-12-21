@@ -4,7 +4,14 @@ package core
 
 	public class GlobalEvent extends Event
 	{
+		/**
+		 * 登陆 
+		 */		
 		public static const CONNECT:String = "connect";
+		
+		public static const LOGIN_BTN_CLICK:String = "login_btn_click";
+		
+		public static const REGIST_BTN_CLICK:String = "registBtnClick";
 		
 		private var _data:Object;
 		

@@ -2,6 +2,7 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="com.yo.core.FP"/>
+    <classEntry path="com.yo.manager.layer.Layer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

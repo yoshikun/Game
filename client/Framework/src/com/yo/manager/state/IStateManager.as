@@ -6,10 +6,8 @@ package com.yo.manager.state
 		
 		function update():void;
 		
-		function changeState(name:String, data:Object = null):void;
+		function changeState(name:String):void;
 		
 		function get currentState():IState;
-		
-		function get currentStateName():String;
 	}
 }

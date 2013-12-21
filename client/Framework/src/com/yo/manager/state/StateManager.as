@@ -1,6 +1,9 @@
 package com.yo.manager.state
 {
 
+	/**
+	 * 状态机
+	 */	
 	public class StateManager implements IStateManager
 	{
 		protected var _owner:*;
@@ -8,10 +11,6 @@ package com.yo.manager.state
 		protected var _stateCreator:IStateCreator;
 		
 		protected var _currentState:IState;
-		
-		protected var _currentStateName:String;
-		
-		protected var _data:Object;
 		
 		public function StateManager(owner:* = null)
 		{
@@ -29,10 +28,9 @@ package com.yo.manager.state
 			}
 		}
 		
-		public function changeState(name:String, data:Object = null):void
+		public function changeState(name:String):void
 		{
 			var nextState:IState = _stateCreator.getState(name);
-			_data = data;
 			
 			if(!nextState || nextState == _currentState){
 				return;
@@ -40,22 +38,16 @@ package com.yo.manager.state
 			
 			if(_currentState){
 				_currentState.exit();
+				_currentState = null;
 			}
 			
 			_currentState = nextState;
 			_currentState.enter();
-			
-			_currentStateName = name;
 		}
 		
 		public function get currentState():IState
 		{
 			return _currentState;
-		}
-
-		public function get currentStateName():String
-		{
-			return _currentStateName;
 		}
 	}
 }

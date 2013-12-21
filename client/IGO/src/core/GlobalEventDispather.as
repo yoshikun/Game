@@ -1,10 +1,8 @@
 package core
 {
-	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import flash.utils.Dictionary;
 	
-	public class GlobalEventDispatcher
+	public class GlobalEventDispather
 	{
 		private static var _dispatcher:EventDispatcher = new EventDispatcher();
 		

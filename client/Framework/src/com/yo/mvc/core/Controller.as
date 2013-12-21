@@ -104,7 +104,9 @@ package com.yo.mvc.core
 			if(!_view){
 				initView();
 			}
-			_view.show();
+			if(_view){
+				_view.show();
+			}
 		}
 		
 		/**
@@ -117,7 +119,10 @@ package com.yo.mvc.core
 		
 		public function dispose():void
 		{
-			
+			if(_view){
+				_view.dispose();
+				_view = null;
+			}
 		}
 	}
 }

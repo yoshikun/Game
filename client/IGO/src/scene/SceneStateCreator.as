@@ -17,18 +17,25 @@ package scene
 		}
 		
 		override public function getState(name:String):IState{
+			var state:IState = null;
 			switch(name)
 			{
 				case State.LOAD_SCENE:
-					return new LoadScene(); 
+					state = new LoadScene();
+					break;
 				case State.LOGIN_SCENE:
-					return new LoginScene();
+					state = new LoginScene();
+					break;
 				case State.CITY_SCENE:
-					return new CityScene();
+					state = new CityScene();
+					break;
 				default:
-					return null;
+					break;
 			}
-			return null;
+			if(state){
+				state.name = name;
+			}
+			return state;
 		}
 		
 		override public function dispose():void

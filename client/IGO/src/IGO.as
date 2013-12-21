@@ -1,8 +1,9 @@
 package
 {
 	import com.yo.core.Game;
-	import com.yo.logger.Log;
+	import com.yo.manager.layer.LayerManager;
 	import com.yo.manager.resource.ResourceManager;
+	import com.yo.manager.ui.UIManager;
 	
 	import flash.display.Bitmap;
 	import flash.events.Event;
@@ -38,6 +39,8 @@ package
 			
 			ResourceManager.instance.setup(new URLCreator());
 			SceneManager.instance.setup(new SceneStateCreator());
+			LayerManager.instance.setup(this);
+			UIManager.instance.setup();
 		}
 		
 		override protected function initView():void{

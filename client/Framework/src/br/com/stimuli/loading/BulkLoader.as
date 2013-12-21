@@ -163,7 +163,7 @@ package br.com.stimuli.loading {
 
         public static var XML_EXTENSIONS : Array = ["xml"];
 
-        /** @private */
+        
         public static var _customTypesExtensions : Object ;
         /**
          *   The name of the event
@@ -257,32 +257,32 @@ package br.com.stimuli.loading {
         /** @private
          */
         public var _name : String;
-        /** @private */
+        
         public var _id : int;
-        /** @private */
+        
         public static var _instancesCreated : int = 0;
-        /** @private */
+        
         public var _items : Array = [];
-        /** @private */
+        
         public var _contents : Dictionary = new Dictionary(true);
-        /** @private */
+        
         public static var _allLoaders : Object = {};
-        /** @private */
+        
         public var _additionIndex : int = 0;
         // Maximum number of simultaneous open requests
         public static const DEFAULT_NUM_CONNECTIONS : int = 12;
-        /** @private */
+        
         public var _numConnections : int = DEFAULT_NUM_CONNECTIONS;
 
         public var maxConnectionsPerHost : int = 2;
-        /** @private */
+        
         public var _connections : Object;
 
         /**
          *   @private
          **/
         public var _loadedRatio : Number = 0;
-        /** @private */
+        
         public var _itemsTotal : int = 0;
         /**  @private        */
         public var _itemsLoaded : int = 0;
@@ -326,7 +326,7 @@ package br.com.stimuli.loading {
          */
         public var _lastBytesCheck : int;
 
-        /** @private */
+        
         public var _speed : Number;
         /**Time in seconds for the whole loading. Only available after everything is laoded*/
         public var totalTime : Number;
@@ -348,22 +348,22 @@ package br.com.stimuli.loading {
          * @see #LOG_INFO
          */
         public static const DEFAULT_LOG_LEVEL : int = LOG_ERRORS;
-        /** @private */
+        
         public var logLevel: int = DEFAULT_LOG_LEVEL;
-        /** @private */
+        
         public var _allowsAutoIDFromFileName : Boolean = false;
-        /** @private */
+        
         public var _isRunning : Boolean;
-        /** @private */
+        
         public var _isFinished : Boolean;
-        /** @private */
+        
         public var _isPaused : Boolean = true;
 
-        /** @private */
+        
         public var _logFunction : Function = trace;
-        /** @private */
+        
         public var _stringSubstitutions : Object;
-        /** @private */
+        
         public static var _typeClasses : Object = {
             image: ImageItem,
             movieclip: ImageItem,
@@ -429,7 +429,7 @@ package br.com.stimuli.loading {
             return BulkLoader._allLoaders[name] as BulkLoader;
         }
 
-        /** @private */
+        
         public static function _hasItemInBulkLoader(key : *, atLoader : BulkLoader) : Boolean{
             var item : LoadingItem = atLoader.get(key);
             if (item && item._isLoaded) {
@@ -795,7 +795,7 @@ package br.com.stimuli.loading {
     }
 
     // if toLoad is specified it will take precedence over whoever is queued cut line
-    /** @private */
+    
     public function _loadNext(toLoad : LoadingItem = null) : Boolean{
         if(_isFinished){
             return false;
@@ -824,7 +824,7 @@ package br.com.stimuli.loading {
         return next;
     }
 
-    /** @private */
+    
     public function _onItemComplete(evt : Event) : void {
         var item : LoadingItem  = evt.target as LoadingItem;
         removeFromConnections(item);
@@ -847,7 +847,7 @@ package br.com.stimuli.loading {
         _itemsLoaded ++;
     }
 
-    /** @private */
+    
     public function _updateStats() : void {
         avgLatency = 0;
         speedAvg = 0;
@@ -867,7 +867,7 @@ package br.com.stimuli.loading {
         speedAvg = _speedTotal / num;
     }
 
-    /** @private */
+    
     public function removeFromItems(item : LoadingItem) : Boolean{
         var removeIndex : int = _items.indexOf(item);
         if(removeIndex > -1){
@@ -889,7 +889,7 @@ package br.com.stimuli.loading {
         return true;
     }
 
-    /** @private */
+    
     public function removeFromConnections(item : *) : Boolean{
         if(!_connections || _getNumConnectionsForItem(item) == 0) return false;
         var connectionsForHost : Array = _getConnectionsForHostName(item.hostName);(item);
@@ -910,7 +910,7 @@ package br.com.stimuli.loading {
         return conns.length;
     }
 
-    /** @private */
+    
     public function _getNumConnectionsForItem(item :LoadingItem) : int{
         var conns : Array = _getConnectionsForHostName(item.hostName);(item);
         if (!conns) {
@@ -919,7 +919,7 @@ package br.com.stimuli.loading {
         return conns.length;
     }
 
-    /** @private */
+    
     public function _getAllConnections() : Array {
         var conns : Array = [];
         for (var hostname : String in _connections){
@@ -951,7 +951,7 @@ package br.com.stimuli.loading {
         return true;
     }
 
-    /** @private */
+    
     public function _onItemError(evt : ErrorEvent) : void{
         var item : LoadingItem  = evt.target as LoadingItem;
         removeFromConnections(item);
@@ -962,10 +962,7 @@ package br.com.stimuli.loading {
         //evt.currentTarget = item;
         dispatchEvent(evt);
     }
-
-
-
-    /** @private */
+    
     public function _onItemStarted(evt : Event) : void{
         var item : LoadingItem  = evt.target as LoadingItem;
 
@@ -973,7 +970,7 @@ package br.com.stimuli.loading {
         dispatchEvent(evt);
     }
 
-    /** @private */
+    
     public function _onProgress(evt : Event = null) : void{
         // TODO: check these values are correct! tough _onProgress
         var e : BulkProgressEvent = getProgressForItems(_items);
@@ -1513,14 +1510,14 @@ package br.com.stimuli.loading {
         return -1;
     }
 
-    /** @private  */
+    
     public function _isAllDoneP() : Boolean{
         return _items.every(function(item : LoadingItem, ...rest):Boolean{
                 return item._isLoaded;
                 });
     }
 
-    /** @private  */
+    
     public function _onAllLoaded() : void {
         if(_isFinished){
             return;
@@ -1840,7 +1837,7 @@ package br.com.stimuli.loading {
         return type;
     }
 
-    /** @private  */
+    
     public static function substituteURLString(raw : String, substitutions : Object) : String{
         if(!substitutions) return raw;
         var subRegex : RegExp = /(?P<var_name>\{\s*[^\}]*\})/g;
@@ -1886,7 +1883,7 @@ package br.com.stimuli.loading {
         buffer.push(raw.substring(match.end));
         return buffer.join("");
     }
-    /** @private  */
+    
     public static function getFileName(text : String, allowExtension : Boolean=false) : String{
         if (text.lastIndexOf("/") == text.length -1){
             return getFileName(text.substring(0, text.length-1));
@@ -1912,7 +1909,6 @@ package br.com.stimuli.loading {
      */
     public function _swallowError(e:Event):void{}
 
-    /** @private  */
     public static function __debug_print_loaders() : void{
         var theNames : Array = []
             for each(var instNames : String in BulkLoader._allLoaders){
@@ -1923,7 +1919,7 @@ package br.com.stimuli.loading {
         theNames.forEach(function(item:*, ...rest):void{trace("\t", item)})
             trace("===========");
     }
-    /** @private  */
+    
     public static function __debug_print_num_loaders() : void{
         var num : int = 0;
         for each(var instNames : String in BulkLoader._allLoaders){
@@ -1932,7 +1928,6 @@ package br.com.stimuli.loading {
         trace("BulkLoader has ", num, "instances");
     }
 
-    /** @private  */
     public static function __debug_printStackTrace() : void{
         try{
             throw new Error("stack trace");

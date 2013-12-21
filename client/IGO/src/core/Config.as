@@ -27,7 +27,7 @@ package core
 		/**
 		 * 资源路径
 		 */
-		public static var resource:String = "assets/" + Config.lang + "/";
+		public static var resource:String = "../../../resource/" + Config.lang + "/";
 		
 		/**
 		 * 加密路径 
