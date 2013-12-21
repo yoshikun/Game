@@ -4,6 +4,6 @@
     <port>7778</port>
     <lang>zh_cn</lang>
     <encrypt>0</encrypt>
-    <resource>../resource/</resource>
+    <resource>../../../resource/</resource>
     <encryptResource>../encryptResource/</encryptResource>
 </root>

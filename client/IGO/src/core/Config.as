@@ -27,12 +27,12 @@ package core
 		/**
 		 * 资源路径
 		 */
-		public static var resource:String = "../../../resource/" + Config.lang + "/";
+		public static var resource:String;
 		
 		/**
 		 * 加密路径 
 		 */		
-		public static var encryptResource:String = "encryptResource/" + Config.lang + "/";
+		public static var encryptResource:String;
 		
 		/**
 		 * 加密 
@@ -44,7 +44,7 @@ package core
 			if(encrypt){
 				path = Config.encryptResource;
 			}
-			return path;
+			return path + Config.lang + "/";
 		}
 	}
 }

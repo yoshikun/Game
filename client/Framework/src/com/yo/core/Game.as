@@ -69,7 +69,7 @@ package com.yo.core
 		public function Game()
 		{
 			if(stage){
-				init();
+				loadConfig();
 			}else{
 				this.addEventListener(Event.ADDED_TO_STAGE, __addedToStage);
 			}
@@ -78,8 +78,15 @@ package com.yo.core
 		protected function __addedToStage(e:Event):void
 		{
 			this.removeEventListener(Event.ADDED_TO_STAGE, __addedToStage);
-			init();
+			loadConfig();
 		}		
+
+		/**
+		 * 加载配置文件
+		 */		
+		protected function loadConfig():void{
+
+		}
 		
 		protected function init():void {
 			initModel();
