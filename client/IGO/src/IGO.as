@@ -1,6 +1,7 @@
 package
 {
 	import com.yo.core.Game;
+	import com.yo.logger.Log;
 	import com.yo.manager.layer.LayerManager;
 	import com.yo.manager.resource.ResourceManager;
 	import com.yo.manager.ui.UIManager;
@@ -28,6 +29,7 @@ package
 		}
 		
 		override protected function loadConfig():void{
+			Log.getLog(this).debug("加载配置");
 			_loader = new URLLoader();
 			_loader.addEventListener(Event.COMPLETE, __configLoadComplete);
 			_loader.load(new URLRequest("config.xml"));
