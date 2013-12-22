@@ -17,7 +17,7 @@ package
 	import scene.SceneManager;
 	import scene.SceneStateCreator;
 	
-	[SWF(width="1200", height="800", frameRate="60", backgroundColor="#0")]
+	[SWF(width="1000", height="600", frameRate="60", backgroundColor="#0")]
 	public class IGO extends Game
 	{
 		protected var _loader:URLLoader;
