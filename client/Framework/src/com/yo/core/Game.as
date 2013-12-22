@@ -235,7 +235,7 @@ package com.yo.core
 			var rect:Rectangle = new flash.geom.Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
 			stage.fullScreenSourceRect = rect;
 //			stage.displayState = StageDisplayState.FULL_SCREEN;
-			stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+//			stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
 		}
 		
 		/**
