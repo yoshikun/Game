@@ -5,5 +5,5 @@
     <lang>zh_cn</lang>
     <encrypt>0</encrypt>
     <resource>../../../resource/</resource>
-    <encryptResource>../encryptResource/</encryptResource>
+    <encryptResource>../../../encryptResource/</encryptResource>
 </root>
