@@ -114,7 +114,7 @@ package ui.login
 			_view = new LoginView(_model);
 		}
 		override protected function loadResource():void{
-			loadResourceName("login");
+			loadResourceName("Login");
 		}
 		
 		public function get model():LoginModel{
@@ -129,7 +129,7 @@ package ui.login
 			NetManager.instance.removeEventListener(Event.CONNECT, __connect);
 			NetManager.instance.removeEventListener(Protocol.LOGIN, __loginResponse);
 			
-			ResourceManager.instance.clearLoader("login");
+			ResourceManager.instance.clearLoader("Login");
 		}
 	}
 }
