@@ -317,7 +317,7 @@ package gs {
 	public class TweenMax extends TweenFilterLite implements IEventDispatcher {
 		public static var version:Number = 3.41;
 		protected static const _RAD2DEG:Number = 180 / Math.PI; //precalculate for speed
-		private static var _overwriteMode:int = (OverwriteManager.enabled) ? OverwriteManager.mode : OverwriteManager.init(); //OverwriteManager is optional for TweenLite and TweenFilterLite, but it is used by default in TweenMax.
+		private static var _overwriteMode:int = (RewriteManager.enabled) ? RewriteManager.mode : RewriteManager.init(); //OverwriteManager is optional for TweenLite and TweenFilterLite, but it is used by default in TweenMax.
 		public static var killTweensOf:Function = TweenLite.killTweensOf;
 		public static var killDelayedCallsTo:Function = TweenLite.killTweensOf;
 		public static var removeTween:Function = TweenLite.removeTween;

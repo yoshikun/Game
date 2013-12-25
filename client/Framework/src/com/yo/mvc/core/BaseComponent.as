@@ -1,41 +1,23 @@
 package com.yo.mvc.core
 {
-	import com.yo.mvc.interfaces.IModel;
-	import com.yo.mvc.interfaces.IView;
+	import com.yo.mvc.interfaces.IClearable;
 	
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	
-	
-	/**
-	 * 视图管理器, 相当于Mediator
-	 */	
-	public class View extends Sprite implements IView
+	public class BaseComponent extends Sprite implements IClearable
 	{
-		protected var _model:IModel;
-		
 		protected var _asset:MovieClip;
 		
-		public function View(model:IModel)
+		public function BaseComponent()
 		{
-			_model = model;
-			
 			init();
 		}
 		
 		protected function init():void
 		{
-			initModel();
 			initView();
 			initEvent();
-		}
-		
-		/**
-		 * 初始化面板数据
-		 */		
-		protected function initModel():void
-		{
-			
 		}
 		
 		/**
@@ -51,14 +33,6 @@ package com.yo.mvc.core
 		 */		
 		protected function initEvent():void
 		{
-			
-		}
-		
-		public function show():void{
-			
-		}
-		
-		public function hide():void{
 			
 		}
 		

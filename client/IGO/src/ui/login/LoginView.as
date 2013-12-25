@@ -2,7 +2,7 @@ package ui.login
 {
 	import com.yo.manager.resource.ResourceManager;
 	import com.yo.manager.ui.UIManager;
-	import com.yo.mvc.core.View;
+	import com.yo.mvc.core.BaseView;
 	import com.yo.mvc.interfaces.IModel;
 	
 	import flash.display.MovieClip;
@@ -13,7 +13,7 @@ package ui.login
 	import core.GlobalEvent;
 	import core.GlobalEventDispather;
 	
-	public class LoginView extends View
+	public class LoginView extends BaseView
 	{
 		private var _loginBtn:SimpleButton;
 		

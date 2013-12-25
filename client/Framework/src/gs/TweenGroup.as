@@ -182,7 +182,7 @@ package gs {
 				} catch ($e:Error) {
 					_TweenMax = Array;
 				}
-				var overwriteMode:int = (OverwriteManager.enabled) ? OverwriteManager.mode : OverwriteManager.init(2); //forces OverwriteManager to init() in AUTO mode (if it's not already initted) because AUTO overwriting is much more intuitive when working with sequences and groups. If you prefer to manage overwriting manually to save the 1kb, just comment this line out.
+				var overwriteMode:int = (RewriteManager.enabled) ? RewriteManager.mode : RewriteManager.init(2); //forces OverwriteManager to init() in AUTO mode (if it's not already initted) because AUTO overwriting is much more intuitive when working with sequences and groups. If you prefer to manage overwriting manually to save the 1kb, just comment this line out.
 				TweenLite.timingSprite.addEventListener(Event.ENTER_FRAME, checkExpiration, false, -1, true);
 				_classInitted = true;
 			}

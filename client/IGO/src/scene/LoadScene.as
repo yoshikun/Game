@@ -1,7 +1,5 @@
 package scene
 {
-	import com.yo.logger.Log;
-	
 	import enum.State;
 
 	public class LoadScene extends GameScene
@@ -13,8 +11,7 @@ package scene
 		
 		override public function enter():void{
 			super.enter();
-			Log.getLog(this).debug("进入加载场景");
-			SceneManager.instance.changeState(State.CITY_SCENE);
+			SceneManager.instance.changeState(State.CREATE_ROLE);
 		}
 		
 		override public function update():void{

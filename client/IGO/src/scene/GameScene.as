@@ -1,5 +1,6 @@
 package scene
 {
+	import com.yo.logger.Log;
 	import com.yo.manager.layer.LayerManager;
 	import com.yo.manager.state.IState;
 	import com.yo.manager.ui.UIManager;
@@ -17,6 +18,8 @@ package scene
 		
 		public function enter():void
 		{
+			Log.getLog(this).debug("进入" + _name);
+			
 			initController();
 			initEvent();
 			initView();

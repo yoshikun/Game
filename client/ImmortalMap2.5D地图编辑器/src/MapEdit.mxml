@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ui="com.megagrand.mapedit.view.ui.*"
+					   width="800" height="630"
+					   creationComplete="app_creationCompleteHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.megagrand.mapedit.ApplicationFacade;
+			
+			import mx.events.FlexEvent;
+			public static var instance :MapEdit;
+			private var applicationFacede :ApplicationFacade = ApplicationFacade.getInstance();
+			protected function app_creationCompleteHandler(event:FlexEvent):void
+			{
+				applicationFacede.startup(this);
+				instance=this;
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<ui:ViewPanel id="viewPanel" top="0" left="0" bottom="0" right="0">
+		
+		
+	</ui:ViewPanel>
+</s:WindowedApplication>

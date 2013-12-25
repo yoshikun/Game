@@ -85,7 +85,7 @@ package com.yo.core
 		 * 加载配置文件
 		 */		
 		protected function loadConfig():void{
-
+			init();
 		}
 		
 		protected function init():void {
@@ -138,7 +138,7 @@ package com.yo.core
 			//状态监视
 			ProfilerManager.instance.init(stage);
 			ProfilerManager.instance.start();
-			ProfilerManager.instance.toggleDisplay();
+//			ProfilerManager.instance.toggleDisplay();
 			//键盘管理
 			KeyboardManager.getInstance().init(stage);
 		}

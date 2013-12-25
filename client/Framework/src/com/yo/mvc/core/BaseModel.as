@@ -5,9 +5,9 @@ package com.yo.mvc.core
 	/**
 	 * 数据模型容器
 	 */	
-	public class Model implements IModel
+	public class BaseModel implements IModel
 	{
-		public function Model()
+		public function BaseModel()
 		{
 		}
 		

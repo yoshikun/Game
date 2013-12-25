@@ -29,6 +29,9 @@ package scene
 				case State.CITY_SCENE:
 					state = new CityScene();
 					break;
+				case State.CREATE_ROLE:
+					state = new CreateRoleScene();
+					break;
 				default:
 					break;
 			}

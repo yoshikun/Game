@@ -2,8 +2,8 @@ package ui.login
 {
 	import com.yo.logger.Log;
 	import com.yo.manager.resource.ResourceManager;
-	import com.yo.mvc.core.Controller;
-	import com.yo.mvc.core.Model;
+	import com.yo.mvc.core.BaseController;
+	import com.yo.mvc.core.BaseModel;
 	import com.yo.net.ProtocolEvent;
 	
 	import flash.events.Event;
@@ -22,7 +22,7 @@ package ui.login
 	
 	import scene.SceneManager;
 	
-	public class LoginController extends Controller
+	public class LoginController extends BaseController
 	{
 		public function LoginController()
 		{
@@ -36,6 +36,11 @@ package ui.login
 			
 			NetManager.instance.addEventListener(Event.CONNECT, __connect);
 			NetManager.instance.addEventListener(Protocol.LOGIN, __loginResponse);
+		}
+		
+		override protected function init():void{
+			super.init();
+			show();
 		}
 		
 		private function __loginBtnClick(e:GlobalEvent):void

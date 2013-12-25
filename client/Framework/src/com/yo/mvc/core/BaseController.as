@@ -10,7 +10,7 @@ package com.yo.mvc.core
 	/**
 	 * 控制器
 	 */	
-	public class Controller implements IController
+	public class BaseController implements IController
 	{
 		protected var _view:IView;
 		
@@ -21,7 +21,7 @@ package com.yo.mvc.core
 		 */		
 		protected var _resourceLoaded:Boolean = false;
 		
-		public function Controller()
+		public function BaseController()
 		{
 			init();
 		}
@@ -56,7 +56,7 @@ package com.yo.mvc.core
 		/**
 		 * 验证是否加载资源功能
 		 */		
-		public function show():void{
+		protected function show():void{
 			if(!_resourceLoaded){
 				loadResource();
 			}else{

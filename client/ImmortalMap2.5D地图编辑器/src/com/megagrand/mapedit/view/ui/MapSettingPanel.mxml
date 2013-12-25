@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--地图设置面板-->
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" title="地图设置">
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:Label     x="26"  y="10" text="地图名称：" verticalAlign="middle" height="19"/>
+	<s:TextInput x="90"  y="10" id="txtMapName" text="tileLayer"/>
+	<s:TextInput x="90"  y="48" width="58" id="txtMapWidth" text="168"/>
+	<s:TextInput x="202" y="48" width="62" id="txtMapHeight" text="61"/>
+	<s:Label     x="26"  y="48" text="地图行列：" verticalAlign="middle" height="22"/>
+	<s:Label     x="26"  y="91" text="网格宽高：" verticalAlign="middle" height="22"/>
+	<s:Label     x="167" y="48" text="X" verticalAlign="middle" height="23"/>
+	<s:TextInput x="90"  y="91" width="54" id="txtTileWidth" text="100"/>
+	<s:Label     x="167" y="91" text="X" verticalAlign="middle" width="13" height="22"/>
+	<s:TextInput x="203" y="91" width="58" id="txtTileHeight" text="50"/>
+	<s:Button    x="24"  y="234" label="确定" id="btnOK"/>
+	<s:Button    x="222" y="232" label="取消" id="btnCanel"/>
+	<s:Label 	 x="26"  y="136" text="资源路径：" height="21" verticalAlign="middle"/>
+	<s:Button 	 x="286" y="136" label="打开" id="btnOpenSource"/>
+	<s:TextInput x="90"  y="135" id="txtSource" width="175"/>
+	<s:Label x="26" y="178" text="背景图片："/>
+	<s:TextInput x="90" y="173" width="175" id="txtImg" text="C:\Users\leo\Desktop\all.jpg"/>
+	<s:Button x="286" y="174" label="打开" id="btnOpenImg"/>
+	<s:Label x="26" y="208" text="背景图偏移："/>
+	<s:TextInput x="138" y="203" width="37" id="txtX" text="0"/>
+	<s:TextInput x="226" y="203" width="38" id="txtY" text="965"/>
+	<s:Label x="106" y="208" text="X" width="20" height="17" verticalAlign="middle"/>
+	<s:Label x="194" y="204" text="Y" width="20" height="21" verticalAlign="middle"/>
+</s:Panel>

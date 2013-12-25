@@ -102,7 +102,7 @@ package gs {
 	import flash.errors.*;
 	import flash.utils.*;
 	
-	public class OverwriteManager {
+	public class RewriteManager {
 		public static const version:Number = 1.0;
 		public static const NONE:int = 0;
 		public static const ALL:int = 1;
@@ -115,7 +115,7 @@ package gs {
 			if (TweenLite.version < 9.29) {
 				trace("TweenLite warning: Your TweenLite class needs to be updated to work with OverwriteManager (or you may need to clear your ASO files). Please download and install the latest version from http://www.tweenlite.com.");
 			}
-			TweenLite.overwriteManager = OverwriteManager;
+			TweenLite.overwriteManager = RewriteManager;
 			mode = $mode;
 			enabled = true;
 			return mode;

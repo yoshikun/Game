@@ -3,6 +3,7 @@
   <includeClasses>
     <classEntry path="com.yo.core.FP"/>
     <classEntry path="com.yo.manager.layer.Layer"/>
+    <classEntry path="com.yo.mvc.core.BaseComponent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

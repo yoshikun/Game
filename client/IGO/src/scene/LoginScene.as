@@ -15,12 +15,10 @@ package scene
 		
 		override public function enter():void{
 			super.enter();
-			Log.getLog(this).debug("进入登陆场景");
 		}
 		
 		override protected function initController():void{
 			_loginController = new LoginController();
-			_loginController.show();
 		}
 		
 		override protected function initEvent():void{
