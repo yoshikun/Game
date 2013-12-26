@@ -1,6 +1,7 @@
 package com.yo.core
 {
 	import com.adobe.utils.DateUtil;
+	import com.yo.manager.InputManager;
 	import com.yo.manager.ProfilerManager;
 	
 	import flash.display.Sprite;
@@ -20,8 +21,6 @@ package com.yo.core
 	import flash.utils.Endian;
 	import flash.utils.Timer;
 	import flash.utils.getTimer;
-	
-	import org.aswing.KeyboardManager;
 	
 //	[SWF(width="1000", height="600", frameRate="60", backgroundColor="#0")]
 	public class Game extends Sprite
@@ -139,8 +138,9 @@ package com.yo.core
 			ProfilerManager.instance.init(stage);
 			ProfilerManager.instance.start();
 //			ProfilerManager.instance.toggleDisplay();
+			
 			//键盘管理
-			KeyboardManager.getInstance().init(stage);
+			InputManager.instance.setup(stage);
 		}
 		
 		/**
