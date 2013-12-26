@@ -6,14 +6,14 @@ package
 	import com.yo.manager.resource.ResourceManager;
 	import com.yo.manager.ui.UIManager;
 	
-	import flash.events.Event;
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
-	
 	import core.Config;
 	import core.URLCreator;
 	
 	import enum.State;
+	
+	import flash.events.Event;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
 	
 	import scene.SceneManager;
 	import scene.SceneStateCreator;
@@ -43,7 +43,7 @@ package
 			Config.lang = config.lang;
 			Config.resource = config.resource;
 			Config.encryptResource = config.encryptResource;
-			Config.encrypt = int(config.encrypt);
+			Config.encrypt = Boolean(int(config.encrypt));
 			
 			_loader.removeEventListener(Event.COMPLETE, __configLoadComplete);
 			_loader.data = null;

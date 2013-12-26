@@ -12,12 +12,18 @@ package com.yo.manager.layer
 	{
 		private static var _instance:LayerManager;
 		
+		/**
+		 * 游戏容器 
+		 */		
 		private var _container:Sprite;
 		
+		/**
+		 * 游戏层 
+		 */		
 		private var _layers:Array;
 		
 		/**
-		 * 层次数量 
+		 * 层数量 
 		 */		
 		private const COUNT:int = 9;
 		

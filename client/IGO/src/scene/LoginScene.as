@@ -1,7 +1,5 @@
 package scene
 {
-	import com.yo.logger.Log;
-	
 	import ui.login.LoginController;
 
 	public class LoginScene extends GameScene
