@@ -1,13 +1,2 @@
-﻿─client			-客户端
- ├─Framework
- ├─IGO
- ├─MapEditor
- ├─Nav-Edit
- ├─UI
- └─UITest
-─resource		-资源
- ├─proto		 ├─协议
- └─table		 ├─数据表
- └─data			 ├─
-─server			-服务端
-─tool			-工具
+﻿This just for fun and test.
+You can see the demo at "fxgox.com".

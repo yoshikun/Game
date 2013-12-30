@@ -59,7 +59,7 @@
 			}
 			
 			private function worldTest():void{
-				_world = new IsoWorld();
+				_world = new IsoWorld(20, 20);
 				centerWorld();
 				
 				_container.addChild(_world);
@@ -120,12 +120,12 @@
 					var delta:int = InputManager.instance.mouseWheelDelta;
 					if(delta > 0){
 						//上,放大
-						_world.scaleX *= 1.1;
-						_world.scaleY *= 1.1;
+						_world.scaleX *= 1.2;
+						_world.scaleY *= 1.2;
 					}else if(delta < 0){
 						//下,缩小
-						_world.scaleX /= 1.1;
-						_world.scaleY /= 1.1;
+						_world.scaleX /= 1.2;
+						_world.scaleY /= 1.2;
 					}
 				}
 				
