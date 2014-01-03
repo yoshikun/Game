@@ -25,7 +25,7 @@ package ui
 		override protected function __configLoadComplete(e:Event):void{
 			var config:XML = new XML(_loader.data);
 			Config.picturePath = config.picturePath;
-			
+
 			Config.stage = stage;
 			
 			super.__configLoadComplete(e);

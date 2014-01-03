@@ -17,8 +17,8 @@ package iso
 		 */		
 		protected function draw():void {
 			graphics.clear();
-			graphics.beginFill(_color);
-			graphics.lineStyle(0, 0, 0.5);
+//			graphics.beginFill(_color);
+			graphics.lineStyle(1, _color);
 			graphics.moveTo(-size,0);
 			graphics.lineTo(0, -size * 0.5);
 			graphics.lineTo(size, 0);
