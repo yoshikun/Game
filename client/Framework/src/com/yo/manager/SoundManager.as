@@ -51,6 +51,7 @@ package com.yo.manager
 		private var _musicPlayList:Array;
 		
 		public static const DEFAULT_MUSIC_VOLUME:Number = 30;
+		
 		private var _musicVolume:Number = DEFAULT_MUSIC_VOLUME;
 		
 		/**
@@ -63,7 +64,9 @@ package com.yo.manager
 		private var _soundLoop:int;
 		
 		public static const DEFAULT_SOUND_VOLUME:Number = 50;
+		
 		private var _soundVolume:Number = DEFAULT_SOUND_VOLUME;
+		
 		private var _log:Log;
 		
 		private var _musicTransform:SoundTransform;
@@ -167,7 +170,7 @@ package com.yo.manager
 		
 		private function killTweenLite():void{
 			if(_tweenLite){
-				_tweenLite.kill();
+				_tweenLite.clear();
 			}
 		}
 		
@@ -241,14 +244,20 @@ package com.yo.manager
 			
 			if(list.length > 0){
 				_currentMusicName = list[0];
-				_currentMusicName = ResourceManager.instance.getResourceName(_currentMusicName, "music");
 				var url:String = ResourceManager.instance.getResourceUrl(_currentMusicName, "music");
 				url = url.split("?")[0];
 				
 				_musicTransform.volume = 0;
 				_netStream.soundTransform = _musicTransform;
 				_netStream.play(url);
-				Global.stage.addEventListener(Event.ENTER_FRAME, onEnter);
+				
+//				if(_musicTransform.volume * 100 < _musicVolume) {
+//					_musicTransform.volume += 0.02;
+//					_netStream.soundTransform = _musicTransform;
+//				}else{
+//					_musicTransform.volume = _musicVolume / 100;
+//					_netStream.soundTransform = _musicTransform;
+//				}
 				
 				if(!_allowMusic){
 					_netStream.removeEventListener(NetStatusEvent.NET_STATUS, __onMusicStaus);
@@ -256,18 +265,6 @@ package com.yo.manager
 				}else{
 					_netStream.addEventListener(NetStatusEvent.NET_STATUS, __onMusicStaus);
 				}
-			}
-		}
-		
-		protected function onEnter(event:Event):void
-		{
-			if(_musicTransform.volume * 100 < _musicVolume) {
-				_musicTransform.volume += 0.02;
-				_netStream.soundTransform = _musicTransform;
-			}else{
-				_musicTransform.volume = _musicVolume / 100;
-				_netStream.soundTransform = _musicTransform;
-				Global.stage.removeEventListener(Event.ENTER_FRAME, onEnter);
 			}
 		}
 		

@@ -35,10 +35,5 @@ package
 			var bar:ScrollBar = new ScrollBar();
 			this.addChild(bar);
 		}
-		
-		override protected function initView():void{
-			super.initView();
-			
-		}
 	}
 }
