@@ -82,13 +82,11 @@ package com.yo.manager
 		{
 			keyStatus[e.keyCode] = true;
 			keysHit[e.keyCode] = true;
-			return;
 		}
 		
 		public function keyUpHandler(e:KeyboardEvent):void
 		{
 			keyStatus[e.keyCode] = false;
-			return;
 		}
 		
 		public function mouseDownHandler(e:MouseEvent):void

@@ -650,12 +650,7 @@ package fl.controls {
 		override public function get selected():Boolean {
 			return (_toggle) ? _selected : false;
 		}		
-		/**
-         * @private (setter)
-         *
-         * @langversion 3.0
-         * @playerversion Flash 9.0.28.0
-		 */		
+
 		override public function set selected(value:Boolean):void {
 			_selected = value;
 			if (_toggle) {
@@ -663,12 +658,6 @@ package fl.controls {
 			}
 		}
 		
-		/**
-         * @private (protected)
-         *
-         * @langversion 3.0
-         * @playerversion Flash 9.0.28.0
-		 */
 		override protected function configUI():void {
 			super.configUI();
 			
@@ -678,12 +667,6 @@ package fl.controls {
 			addChild(textField);
 		}
 		
-		/**
-         * @private (protected)
-         *
-         * @langversion 3.0
-         * @playerversion Flash 9.0.28.0
-		 */		
 		override protected function draw():void {
 			if (textField.text != _label) { 
 				label = _label;
@@ -705,12 +688,6 @@ package fl.controls {
 			validate(); // because we're not calling super.draw
 		}
 		
-		/**
-         * @private (protected)
-         *
-         * @langversion 3.0
-         * @playerversion Flash 9.0.28.0
-		 */
 		protected function drawIcon():void {			
 			var oldIcon:DisplayObject = icon;
 			
@@ -736,13 +713,7 @@ package fl.controls {
 				removeChild(oldIcon);
 			}
 		}
-		
-		/**
-         * @private (protected)
-         *
-         * @langversion 3.0
-         * @playerversion Flash 9.0.28.0
-		 */
+
 		protected function drawTextFormat():void {
 			// Apply a default textformat
 			var uiStyles:Object = UIComponent.getStyleDefinition();
@@ -760,12 +731,6 @@ package fl.controls {
 			setEmbedFont();
 		}
 		
-		/**
-         * @private (protected)
-         *
-         * @langversion 3.0
-         * @playerversion Flash 9.0.28.0
-		 */
 		protected function setEmbedFont() {
 			var embed:Object = getStyleValue("embedFonts");
 			if (embed != null) {
@@ -773,12 +738,6 @@ package fl.controls {
 			}	
 		}
 		
-		/**
-         * @private (protected)
-         *
-         * @langversion 3.0
-         * @playerversion Flash 9.0.28.0
-		 */
 		override protected function drawLayout():void {
 			var txtPad:Number = Number(getStyleValue("textPadding"));
 			var placement:String = (icon == null && mode == "center") ? ButtonLabelPlacement.TOP : _labelPlacement;
@@ -830,47 +789,7 @@ package fl.controls {
 			}
 			super.drawLayout();			
 		}
-	
-		
-		/**
-         * @private (protected)
-         *
-         * @langversion 3.0
-         * @playerversion Flash 9.0.28.0
-		 */		
-		override protected function keyDownHandler(event:KeyboardEvent):void {
-			if (!enabled) { return; }
-			if (event.keyCode == Keyboard.SPACE) {
-				if(oldMouseState == null) {
-					oldMouseState = mouseState;
-				}
-				setMouseState("down");
-				startPress();
-			}
-		}
-		
-		/**
-         * @private (protected)
-         *
-         * @langversion 3.0
-         * @playerversion Flash 9.0.28.0
-		 */		
-		override protected function keyUpHandler(event:KeyboardEvent):void {
-			if (!enabled) { return; }
-			if (event.keyCode == Keyboard.SPACE) {
-				setMouseState(oldMouseState);
-				oldMouseState = null;
-				endPress();
-				dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-			}
-		}
 
-		/**
-         * @private (protected)
-         *
-         * @langversion 3.0
-         * @playerversion Flash 9.0.28.0
-		 */
 		override protected function initializeAccessibility():void {
 			if (LabelButton.createAccessibilityImplementation != null)
 				LabelButton.createAccessibilityImplementation(this);

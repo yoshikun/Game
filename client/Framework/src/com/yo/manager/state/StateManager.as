@@ -30,6 +30,9 @@ package com.yo.manager.state
 		
 		public function changeState(name:String):void
 		{
+			if(!_stateCreator){
+				return;
+			}
 			var nextState:IState = _stateCreator.getState(name);
 			
 			if(!nextState || nextState == _currentState){

@@ -1,6 +1,7 @@
 package com.yo.core
 {
 	import com.adobe.utils.DateUtil;
+	import com.yo.logger.Log;
 	import com.yo.manager.InputManager;
 	import com.yo.manager.ProfilerManager;
 	
@@ -14,6 +15,8 @@ package com.yo.core
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
 	import flash.net.LocalConnection;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
 	import flash.system.System;
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
@@ -25,6 +28,8 @@ package com.yo.core
 //	[SWF(width="1000", height="600", frameRate="60", backgroundColor="#0")]
 	public class Game extends Sprite
 	{
+		protected var _loader:URLLoader;
+		
 		protected var _contextMenu:ContextMenu;
 		
 		/**
@@ -78,12 +83,25 @@ package com.yo.core
 		{
 			this.removeEventListener(Event.ADDED_TO_STAGE, __addedToStage);
 			loadConfig();
-		}		
-
+		}
+		
 		/**
 		 * 加载配置文件
 		 */		
 		protected function loadConfig():void{
+			Log.getLog(this).debug("加载配置");
+			_loader = new URLLoader();
+			_loader.addEventListener(Event.COMPLETE, __configLoadComplete);
+			_loader.load(new URLRequest("config.xml"));
+		}
+
+		protected function __configLoadComplete(e:Event):void
+		{
+			_loader.removeEventListener(Event.COMPLETE, __configLoadComplete);
+			_loader.data = null;
+			_loader.close();
+			_loader = null;
+			
 			init();
 		}
 		
@@ -92,12 +110,6 @@ package com.yo.core
 			initManager();
 			initEvent();
 			initContextMenu();
-			initView();
-		}
-		
-		protected function initView():void
-		{
-			
 		}
 		
 		/**
