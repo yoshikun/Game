@@ -29,10 +29,23 @@ package
 		}
 		
 		override protected function loadConfig():void{
+			if(!debugMode){
+				return;
+			}
 			Log.getLog(this).debug("加载配置");
 			_loader = new URLLoader();
 			_loader.addEventListener(Event.COMPLETE, __configLoadComplete);
 			_loader.load(new URLRequest("config.xml"));
+		}
+		
+		private function get debugMode():Boolean{
+			var obj:Object;
+			try{
+				trace(obj.parent);
+			}catch(e:Error){
+				return true;
+			}
+			return false;
 		}
 		
 		private function __configLoadComplete(e:Event):void
