@@ -1,5 +1,6 @@
 package iso 
 {
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	
 	public class IsoWorld extends Sprite
@@ -62,7 +63,7 @@ package iso
 			sort();
 		}
 		
-		public function addChildToFloor(child:IsoObject):void
+		public function addChildToFloor(child:DisplayObject):void
 		{
 			_floor.addChild(child);
 		}
@@ -75,7 +76,6 @@ package iso
 				_world.setChildIndex(_objects[i], i);
 			}
 		}
-		
 		
 		private function childPosExist(p:Point3D):Boolean{
 			for(var i:int = 0; i < _objects.length; i++)
@@ -90,5 +90,22 @@ package iso
 			return false;
 		}
 		
+		public function getChildByPos(pos:Point3D):IsoObject{
+			for(var i:int = 0; i < _floor.numChildren; i++)
+			{       
+				var child:IsoObject = _floor.getChildAt(i) as IsoObject;              
+				if(child && child.position.equal(pos)){
+					return child;
+				}
+			}
+			return null;
+		}
+		
+		override public function removeChildren(beginIndex:int=0, endIndex:int=int.MAX_VALUE):void{
+			_floor.removeChildren(beginIndex, endIndex);
+			_world.removeChildren(beginIndex, endIndex);
+			
+			_objects = [];
+		}
 	}
 }

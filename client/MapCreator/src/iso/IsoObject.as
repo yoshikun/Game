@@ -10,7 +10,7 @@ package iso
 		
 		protected var _position:Point3D;
 		protected var _size:Number;
-		protected var _walkable:Boolean=false;
+		protected var _walkable:Boolean=true;
 		
 		//public static const Y_CORRECT:Number=Math.cos(- Math.PI/6)*Math.SQRT2;
 		public static const Y_CORRECT:Number=1.2247448713915892;
@@ -78,10 +78,10 @@ package iso
 			return (_position.x + _position.z) * .866 - _position.y * .707;
 		}
 		
-		//这个暂时也不用理
 		public function set walkable(value:Boolean):void {
 			_walkable=value;
 		}
+		
 		public function get walkable():Boolean {
 			return _walkable;
 		}

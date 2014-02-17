@@ -16,9 +16,16 @@ package iso
 		 * 画矩形"贴片"
 		 */		
 		protected function draw():void {
+			var color:uint = _color;
 			graphics.clear();
-//			graphics.beginFill(_color);
-			graphics.lineStyle(1, _color);
+			
+			graphics.beginFill(color, 0);
+			
+			if(!_walkable){
+				color = 0xFF0000;
+				graphics.beginFill(color, 0.5);
+			}
+			graphics.lineStyle(0, color, 0.5);
 			graphics.moveTo(-size,0);
 			graphics.lineTo(0, -size * 0.5);
 			graphics.lineTo(size, 0);
@@ -44,8 +51,14 @@ package iso
 			_color=value;
 			draw();
 		}
+		
 		public function get color():uint {
 			return _color;
+		}
+		
+		override public function set walkable(value:Boolean):void {
+			_walkable=value;
+			draw();
 		}
 	}
 }

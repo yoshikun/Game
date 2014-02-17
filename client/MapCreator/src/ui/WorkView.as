@@ -6,58 +6,50 @@ package ui
 	import com.yo.mvc.interfaces.IModel;
 	
 	import core.Config;
+	import core.GlobalEvent;
+	import core.GlobalEventDispatcher;
 	
-	import fl.controls.Button;
+	import de.polygonal.ds.NullIterator;
 	
 	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.Loader;
-	import flash.display.LoaderInfo;
+	import flash.display.BlendMode;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.filesystem.File;
-	import flash.filesystem.FileMode;
-	import flash.filesystem.FileStream;
 	import flash.geom.Point;
-	import flash.net.FileFilter;
-	import flash.net.URLRequest;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
 	import flash.ui.Mouse;
 	import flash.ui.MouseCursor;
-	import flash.utils.ByteArray;
-	
-	import gs.easing.Back;
 	
 	import iso.DrawnIsoBox;
 	import iso.DrawnIsoTile;
 	import iso.IsoWorld;
 	import iso.Point3D;
 	
+	import mx.core.Container;
+	
 	import utils.IsoUtils;
 	
 	public class WorkView extends BaseView
 	{
 		/**
-		 * 背景 
+		 * 图片背景
 		 */		
-		private var _background:Sprite;
+		private var _backgroundLayer:Sprite;
 		
 		/**
 		 * 地图数据 
 		 */		
-		private var _mapContainer:Sprite;
+		private var _dataLayer:Sprite;
 		
 		/**
-		 * 界面 
+		 * 主容器 
 		 */		
-		private var _uiContainer:Sprite;
-		
 		private var _container:Sprite;
 		
 		private var _world:IsoWorld;
-		
-		private var _openBtn:Button;
 		
 		public function WorkView(model:IModel=null)
 		{
@@ -68,70 +60,110 @@ package ui
 			_container = new Sprite();
 			this.addChild(_container);
 			
-			_background = new Sprite();
-			_container.addChild(_background);
+			_dataLayer = new Sprite();
+			_dataLayer.cacheAsBitmap = true;
+			_container.addChild(_dataLayer);
 			
-			_mapContainer = new Sprite();
-			_container.addChild(_mapContainer);
+			_backgroundLayer = new Sprite();
+			_dataLayer.addChild(_backgroundLayer);
 			
-			_uiContainer = new Sprite();
-			this.addChild(_uiContainer);
+			_world = new IsoWorld(26, 26);
+			_dataLayer.addChild(_world);
 			
-			_openBtn = new Button();
-			_openBtn.label = "打开";
-			_uiContainer.addChild(_openBtn);
-			
-			createWorld();
+			initWorld();
 		}
 		
 		override protected function initEvent():void{
 			super.initEvent();
 			
-			_openBtn.addEventListener(MouseEvent.CLICK, __openBtnClick);
+			_world.addEventListener(MouseEvent.MOUSE_DOWN, __worldMouseDown);
+			_world.addEventListener(MouseEvent.MOUSE_UP, __worldMouseUp);
+			_world.addEventListener(MouseEvent.CLICK, __worldClick);
+			
 			this.addEventListener(Event.ENTER_FRAME, __enterFrame);
+			
+			GlobalEventDispatcher.addEventListener(GlobalEvent.LOAD_MAP_COMPLETE, __loadComplete);
 		}
 		
-		private function createWorld():void{
-			_world = new IsoWorld(10, 30);
-			_mapContainer.addChild(_world);
+		protected function __worldClick(e:MouseEvent):void
+		{
+			setWalkable();
+		}
+		
+		private function initWorld():void{
+			_world.removeChildren();
 			
 			for(var i:int = 0; i < _world.cols; i++){
 				for (var j:int = 0; j < _world.rows; j++){
-					var tile:DrawnIsoTile = new DrawnIsoTile(_world.cellSize, 0x00FF00);
+					var tile:DrawnIsoTile = new DrawnIsoTile(_world.cellSize, 0xCCCCCC);
 					tile.position = new Point3D(i * _world.cellSize, 0, j * _world.cellSize);
+					
+					//输出坐标
+					var tf:TextField = new TextField();
+					tf.blendMode = BlendMode.LAYER;
+					tf.cacheAsBitmap = true;
+					tf.selectable = tf.mouseEnabled = tf.border = false;
+					tf.autoSize = "center";
+					tf.defaultTextFormat = new TextFormat(null,10,0,false,false,false,null,null,"center");
+					tf.text = i + "," + j;
+					tf.x = -tile.width / 4;
+					tf.y = -tile.width / 4;
+//					tile.addChild(tf);
+					
 					_world.addChildToFloor(tile);
 				}
 			}
 			
-			_world.graphics.lineStyle(1, 0xFF0000);
-			_world.graphics.moveTo(0, 0);
-			_world.graphics.lineTo(0, _world.height);
-			_world.graphics.moveTo(-_world.width / 2, _world.height / 2);
-			_world.graphics.lineTo(_world.width / 2, _world.height / 2);
-			_world.graphics.endFill();
+			//将_world居中在自己的容器中
+			_world.x = -_world.width / 2 - _world.getBounds(_world).x;
+			_world.y = -_world.height / 2 - _world.getBounds(_world).y;
 			
-//			_world.x = (Config.stage.stageWidth - _world.width) / 2 + _world.width / 2;
-			_world.y = -_world.height / 2;
-			
-			Config.stage.addEventListener(MouseEvent.CLICK, __worldClick);
+			centerMapContainer();
 		}
 		
-		private function __worldClick(event:MouseEvent):void
+		private function centerMapContainer():void
 		{
-			return;
-			var box:DrawnIsoBox = new DrawnIsoBox(_world.cellSize, Math.random() * 0xffffff, _world.cellSize);
+			_container.x = (Config.stage.stageWidth - _container.width) / 2 - _container.getBounds(_container).left * _container.scaleX;
+			_container.y = (Config.stage.stageHeight - _container.height) / 2 - _container.getBounds(_container).top * _container.scaleY;
+		}
+		
+		private function __worldMouseDown(e:MouseEvent):void
+		{
+			_world.addEventListener(MouseEvent.MOUSE_MOVE, __mouseMove);
+		}
+		
+		private function setWalkable():void
+		{
+			if(InputManager.instance.keyDown(Keyboard.SPACE)){
+				return;
+			}
+			
+			var walkable:Boolean = false;
+			if(InputManager.instance.keyDown(Keyboard.CONTROL)){
+				walkable = true;
+			}
+			
+			var box:DrawnIsoBox = new DrawnIsoBox(_world.cellSize, 0xFF0000, _world.cellSize);
 			var pos:Point3D = IsoUtils.screenToIso(new Point(_world.mouseX, _world.mouseY));
 			pos.x = Math.round(pos.x / _world.cellSize) * _world.cellSize;
 			pos.y = Math.round(pos.y / _world.cellSize) * _world.cellSize;
 			pos.z = Math.round(pos.z / _world.cellSize) * _world.cellSize;
 			box.position = pos;
-			_world.addChildToWorld(box);
+			
+			var tile:DrawnIsoTile = _world.getChildByPos(pos) as DrawnIsoTile;
+			if(tile){
+				tile.walkable = walkable;
+			}
 		}
 		
-		private function initContainerPos():void
+		protected function __worldMouseUp(e:MouseEvent):void
 		{
-			_container.x = 0;
-			_container.y = 0;
+			_world.removeEventListener(MouseEvent.MOUSE_MOVE, __mouseMove);
+		}
+		
+		protected function __mouseMove(e:MouseEvent):void
+		{
+			setWalkable();
 		}
 		
 		protected function __enterFrame(e:Event):void
@@ -150,6 +182,7 @@ package ui
 				_container.stopDrag();
 			}
 			
+			//鼠标滚轮放大缩小
 			if(InputManager.instance.mouseWheel){
 				var delta:int = InputManager.instance.mouseWheelDelta;
 				var preWidth:int = _container.width;
@@ -163,57 +196,33 @@ package ui
 					_container.scaleX /= 1.2;
 					_container.scaleY /= 1.2;
 				}
-				initContainerPos();
 			}
 			
 			if(InputManager.instance.keyDown(Keyboard.ESCAPE)){
 				//esc还原
 				_container.scaleX = 1;
 				_container.scaleY = 1;
-				initContainerPos();
+				
+				centerMapContainer();
 			}
 		}
 		
-		private function __openBtnClick(e:MouseEvent):void
+		private function __loadComplete(e:core.GlobalEvent):void
 		{
-			var file:File = new File(Config.picturePath);
-			var filter:FileFilter = new FileFilter("地图背景", "*.jpg");
-			file.browseForOpen("选择地图背景",[filter]);
-			file.addEventListener(Event.SELECT, __fileSelect);
-		}
-		
-		/**
-		 * 添加背景
-		 */		
-		private function __fileSelect(e:Event):void
-		{
-			var file:File = e.target as File;
-			file.removeEventListener(Event.SELECT, __fileSelect);
+			var bm:Bitmap = e.data as Bitmap;
 			
-			var fs:FileStream = new FileStream();
-			fs.open(file, FileMode.READ);
+			_backgroundLayer.removeChildren();
+			_backgroundLayer.addChild(bm);
 			
-			var bytes:ByteArray = new ByteArray();
-			fs.readBytes(bytes, 0, fs.bytesAvailable);
-			fs.close();
+			//居中背景图
+			_backgroundLayer.x = -_backgroundLayer.width / 2;
+			_backgroundLayer.y = -_backgroundLayer.height / 2;
 			
-			var loader:Loader = new Loader();
-			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, __loadComplete);
-			loader.loadBytes(bytes);
-		}
-		
-		private function __loadComplete(e:Event):void
-		{
-			var loaderInfo:LoaderInfo = e.currentTarget as LoaderInfo;
-			loaderInfo.removeEventListener(Event.COMPLETE, __loadComplete);
-			var bm:Bitmap = loaderInfo.content as Bitmap;
+			//图片的斜边长比小三角的斜边长
+			var column:int = Math.ceil((_backgroundLayer.height + _backgroundLayer.width / 2) * Math.atan(30) / (20 * Math.atan(30)));
+			_world.cols = _world.rows = Math.max(column, _world.cols);
 			
-			_background.removeChildren();
-			_background.addChild(bm);
-			_background.x = (Config.stage.stageWidth - _background.width) / 2;
-			_background.y = (Config.stage.stageHeight - _background.height) / 2;
-			
-			initContainerPos();
+			initWorld();
 		}
 		
 		override public function show():void{
