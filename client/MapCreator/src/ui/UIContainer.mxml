@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="1000" height="600" creationComplete="complete(event)">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import core.GlobalEvent;
+			import core.GlobalEventDispatcher;
+			
+			import mx.collections.XMLListCollection;
+			import mx.events.FlexEvent;
+			import mx.events.MenuEvent;
+			
+			[Bindable]
+			private var _menuCollection:XMLListCollection;
+			
+			protected function complete(e:Event):void
+			{
+				_menuCollection = new XMLListCollection(WorkModel.menuXML);
+			}
+			
+			protected function __itemClick(e:MenuEvent):void
+			{
+				GlobalEventDispatcher.dispatchEvent(GlobalEvent.BUTTON_BAR_CLICK, menuBar.selectedIndex);
+			}
+			
+		]]>
+	</fx:Script>
+	<mx:MenuBar id="menuBar" dataProvider="{_menuCollection}" focusEnabled="false" itemClick="__itemClick(event)" labelField="@label"></mx:MenuBar>
+	<s:Panel x="840" y="0" width="160" height="100" title="位置和大小">
+		<s:Label x="81" y="15" width="20" text="y:" textAlign="right"/>
+		<s:Label x="81" y="45" width="20" text="高:" textAlign="right"/>
+		<s:TextInput x="104" y="10" width="40" text="20"/>
+		<s:TextInput x="104" y="40" width="40" text="20"/>
+		
+		<s:Label x="4" y="15" width="20" text="x:" textAlign="right" verticalAlign="top"/>
+		<s:Label x="4" y="45" width="20" text="宽:" textAlign="right" verticalAlign="top"/>
+		<s:TextInput x="27" y="10" width="40" text="20"/>
+		<s:TextInput x="27" y="40" width="40" text="20"/>
+	</s:Panel>
+	<s:Panel x="840" y="100" width="160" height="100" title="操作项">
+		<s:CheckBox x="10" y="10" label="可行走"/>
+	</s:Panel>
+</s:Group>
