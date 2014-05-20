@@ -3,7 +3,10 @@ package iso
 	public class DrawnIsoTile extends IsoObject {
 		
 		protected var _height:Number;
+		
 		protected var _color:uint;
+		
+		protected var _index:int;
 		
 		public function DrawnIsoTile(size:Number,color:uint,height:Number=0) {
 			super(size);
@@ -33,9 +36,6 @@ package iso
 			graphics.lineTo(-size,0);
 		}
 		
-		/**
-		 * height属性暂时不用管（在draw里也没用到）
-		 */		
 		override public function set height(value:Number):void {
 			_height=value;
 			draw();
@@ -60,5 +60,16 @@ package iso
 			_walkable=value;
 			draw();
 		}
+
+		public function get index():int
+		{
+			return _index;
+		}
+
+		public function set index(value:int):void
+		{
+			_index = value;
+		}
+
 	}
 }

@@ -1,10 +1,10 @@
 package scene
 {
-	import ui.WorkController;
+	import ui.MapEditorController;
 
 	public class WorkScene extends GameScene
 	{
-		private var _workController:WorkController;
+		private var _workController:MapEditorController;
 		
 		public function WorkScene()
 		{
@@ -12,7 +12,7 @@ package scene
 		}
 		
 		override protected function initController():void{
-			_workController = new WorkController();
+			_workController = new MapEditorController();
 		}
 	}
 }

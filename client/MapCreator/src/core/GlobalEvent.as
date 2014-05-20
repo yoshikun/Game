@@ -13,6 +13,10 @@ package core
 		
 		public static const BUTTON_BAR_CLICK:String = "button_bar_click";
 		
+		public static const UPDATE_WALKABLE_CHECKBOX:String = "update_walkable_checkbox";
+		
+		public static const WALKABLE_CHECKBOX_CLICK:String = "walkable_checkbox_click";
+		
 		public function GlobalEvent(type:String, data:Object = null)
 		{
 			super(type);

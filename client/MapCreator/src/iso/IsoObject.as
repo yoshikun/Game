@@ -9,7 +9,9 @@ package iso
 	public class IsoObject extends Sprite {
 		
 		protected var _position:Point3D;
+		
 		protected var _size:Number;
+		
 		protected var _walkable:Boolean=true;
 		
 		//public static const Y_CORRECT:Number=Math.cos(- Math.PI/6)*Math.SQRT2;

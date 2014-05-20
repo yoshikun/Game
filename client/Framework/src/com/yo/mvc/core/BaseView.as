@@ -14,6 +14,7 @@ package com.yo.mvc.core
 		public function BaseView(model:IModel = null)
 		{
 			_model = model;
+			super();
 		}
 		
 		override protected function init():void

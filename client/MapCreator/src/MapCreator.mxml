@@ -13,7 +13,6 @@
 			
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
-			import mx.events.ItemClickEvent;
 			
 			import ui.MapEditor;
 			import ui.UIContainer;
@@ -52,68 +51,7 @@
 			
 			private function initEvent():void
 			{
-				GlobalEventDispatcher.addEventListener(GlobalEvent.BUTTON_BAR_CLICK, __buttonBarClick);
-			}
-			
-			/**
-			 * 打开地图文件
-			 */
-			private function openFile():void
-			{
-				var file:File = new File(Config.picturePath);
-				var filter:FileFilter = new FileFilter("地图背景", "*.jpg");
-				file.browseForOpen("选择地图背景",[filter]);
-				file.addEventListener(Event.SELECT, __fileSelect);
-			}
-			
-			/**
-			 * 添加背景
-			 */		
-			private function __fileSelect(e:Event):void
-			{
-				var file:File = e.target as File;
-				file.removeEventListener(Event.SELECT, __fileSelect);
 				
-				var fs:FileStream = new FileStream();
-				fs.open(file, FileMode.READ);
-				
-				var bytes:ByteArray = new ByteArray();
-				fs.readBytes(bytes, 0, fs.bytesAvailable);
-				fs.close();
-				
-				var loader:Loader = new Loader();
-				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, __loadComplete);
-				loader.loadBytes(bytes);
-			}
-			
-			/**
-			 * 地图文件加载完成
-			 */
-			private function __loadComplete(e:Event):void
-			{
-				var loaderInfo:LoaderInfo = e.currentTarget as LoaderInfo;
-				loaderInfo.removeEventListener(Event.COMPLETE, __loadComplete);
-				var bm:Bitmap = loaderInfo.content as Bitmap;
-				
-				GlobalEventDispatcher.dispatchEvent(GlobalEvent.LOAD_MAP_COMPLETE, bm);
-			}
-			
-			private function __buttonBarClick(e:GlobalEvent):void
-			{
-				var selectedIndex:int = int(e.data);
-				switch(selectedIndex){
-					case 0:
-						openFile();
-						break;
-					case 1:
-						
-						break;
-					case 2:
-						
-						break;
-					default:
-						break;
-				}
 			}
 			
 		]]>
