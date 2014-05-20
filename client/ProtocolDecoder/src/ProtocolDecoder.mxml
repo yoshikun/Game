@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   width="380" height="400" creationComplete="creationComplete()"
+					   preloaderChromeColor="#FFFFFF" showStatusBar="false">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import br.com.stimuli.loading.BulkLoader;
+			import br.com.stimuli.loading.BulkProgressEvent;
+			
+			import builder.BaseDataBuilder;
+			import builder.InfoBuilder;
+			import builder.ProtocolBuilder;
+			import builder.RequestBuilder;
+			import builder.ResponseBuilder;
+			
+			import com.api.services.base.AsTranslater;
+			import com.api.services.base.CommandObj;
+			import com.api.services.base.Obj;
+			
+			import core.AsyncPool;
+			import core.GlobalEvent;
+			import core.GlobalEventDispatcher;
+			import core.PathManager;
+			import core.TaskEnum;
+			
+			private var _loader:BulkLoader;
+			
+			private var _cmds:Array;
+			
+			/**
+			 * 模板数组
+			 */
+			private var _tplArr:Array;
+			
+			private var _baseDataArr:Array;
+			
+			/**
+			 * 多选的File对象数组
+			 */
+			private var _files:Array = [];
+			
+			private var _ff:FileFilter;
+			
+			/**
+			 * 协议文件夹路径
+			 */
+			private var _protocolPath:String;
+			
+			private var _dataXmlPath:String;
+			
+			private var _data:Object;
+			
+			private var _baseDataBuilder:BaseDataBuilder;
+			
+			private var _infoBuilder:InfoBuilder;
+			
+			private var _protocolBuilder:ProtocolBuilder;
+			
+			private var _requestBuilder:RequestBuilder;
+			
+			private var _responseBuilder:ResponseBuilder;
+			
+			private function creationComplete():void{
+				if(stage){
+					init();
+				}else{
+					this.addEventListener(Event.ADDED_TO_STAGE, __addedToStage);
+				}
+			}
+			
+			private function __addedToStage(e:Event):void{
+				this.removeEventListener(Event.ADDED_TO_STAGE, __addedToStage);
+				
+				init();
+			}
+			
+			private function init():void{
+				GlobalEventDispatcher.addEventListener(GlobalEvent.BUILD_COMPLETE, __buildComplete);
+				this.addEventListener(Event.ENTER_FRAME, __enterFrame);
+				
+				_tplArr = ["tpl/Protocol.tpl", "tpl/BaseData.tpl", "tpl/Response.tpl"];
+				_data = {};
+				_progressContainer.visible = false;
+				
+				_loader = new BulkLoader();
+				_loader.start();
+				
+				loadConfig();
+			}
+			
+			/**
+			 * 解析config文件
+			 */
+			private function decodeConfig():void{
+				var data:XML = _loader.getXML("Config.xml", true);
+				PathManager.protocolInputPath = data.protocolInputPath;
+				PathManager.protocolOutputPath = data.protocolOutputPath;
+				PathManager.dataXmlInputPath = data.dataXmlInputPath;
+				PathManager.dataXmlOutputPath = data.dataXmlOutputPath;
+				
+				PathManager.copyRight = data.copyRight;
+				
+				PathManager.iResponsePath = data.iResponsePath;
+				PathManager.responsePackagePath = data.responsePackagePath;
+				PathManager.iRequestPath = data.iRequestPath;
+				PathManager.requestPackagePath = data.requestPackagePath;
+				PathManager.voPackagePath = data.voPackagePath;
+				PathManager.packetPath = data.packetPath;
+				PathManager.byteArrayPath = data.byteArrayPath;
+				PathManager.packagePrefix = data.packagePrefix;
+				PathManager.constantFile = data.constantFile;
+				PathManager.infoFile = data.infoFile;
+				PathManager.protocolFile = data.protocolFile;
+				PathManager.baseData = data.baseData;
+				PathManager.maxSize = data.maxSize;
+
+				PathManager.appPath = File.applicationDirectory.nativePath.replace("client\\ProtocolDecoder\\bin-debug", "").replace(/\\/g, "/");
+				
+				_protocolInputTf.text = PathManager.appPath + data.protocolInputPath;
+				_protocolOutputTf.text = PathManager.appPath + data.protocolOutputPath;
+				_dataXmlInputTf.text = PathManager.appPath + data.dataXmlInputPath;
+				_dataXmlOutputTf.text = PathManager.appPath + data.dataXmlOutputPath;
+			}
+			
+			private function __startBtnClick(e:MouseEvent):void{
+				_btnStart.enabled = false;
+				
+				if(_loader){
+					_loader.clear();
+				}
+				_loader = new BulkLoader();
+				_loader.addEventListener(BulkProgressEvent.PROGRESS, __progressHandler);
+				_loader.start();
+				
+				_progressContainer.visible = true;
+				
+				loadData();
+			}
+			
+			private function loadConfig():void{
+				_loader.addEventListener(BulkProgressEvent.COMPLETE, __loadConfigComplete);
+				_loader.add("Config.xml");
+			}
+			
+			private function __loadConfigComplete(e:Event):void{
+				_loader.removeEventListener(BulkProgressEvent.COMPLETE, __loadConfigComplete);
+				decodeConfig();
+			}
+			
+			/**
+			 * 开始加载数据源的xml文件
+			 */
+			private function loadData():void{
+				_loader.addEventListener(BulkProgressEvent.COMPLETE, __loadDataComplete);
+				
+				_btnStart.enabled = true;
+				
+				_protocolPath = _protocolInputTf.text;
+				_dataXmlPath = _dataXmlInputTf.text;
+				
+				var file:File = File.applicationDirectory.resolvePath(_protocolPath);
+				_files = file.getDirectoryListing();
+				
+				file = File.applicationDirectory.resolvePath(_dataXmlPath);
+				_files = _files.concat(file.getDirectoryListing());
+				
+				//加载tpl
+				appendText("开始加载模板文件");
+				var len:int = _tplArr.length;
+				for (var j:int = 0; j < len; j++){
+					var fileName:String = getFileNameByUrl(_tplArr[j]);
+					_loader.add(_tplArr[j], {id:fileName});
+				}
+				
+				//加载xml
+				for(var i:int = 0; i < _files.length; i++){
+					file = _files[i] as File;
+					if(file.extension == "xml" || file.extension == "xsd"){
+						appendText("开始加载" + file.name);
+						_loader.add(file.url, {id:file.name});
+					}else{
+						_files.splice(i--, 1);
+					}
+				}
+			}
+			
+			protected function __loadDataComplete(e:Event):void
+			{
+				_progressContainer.visible = false;
+				
+				appendText("加载全部完成");
+				
+				var len:int = _tplArr.length;
+				for (var j:int = 0; j < len; j++) 
+				{
+					var fileName:String = getFileNameByUrl(_tplArr[j]);
+					Obj.tplMap[fileName] = _loader.getText(fileName, true);
+				}
+				
+				for(var i:int = 0; i < _files.length; i++){
+					var file:File = _files[i] as File;
+					var data:XML = null;
+					if(file.extension == "xsd"){
+						data = new XML(_loader.getText(file.name, true));
+					}else if(file.extension == "xml"){
+						data = _loader.getXML(file.name, true);
+					}
+					_data[file.name] = data;
+				}
+				
+				parseInfo(PathManager.infoFile);
+				parseCommands(PathManager.protocolFile);
+				
+				appendText("开始创建文件,请稍后...");
+				
+				buildInfoFile();
+				buildBaseDataFile();
+				buildProtocol();
+				buildRequestFile();
+				buildResponseFile();
+				
+				appendText("全部处理完成");
+			}
+			
+			/**
+			 * 清除文件
+			 */
+			private function _btnClick(e:MouseEvent):void{
+				removeOldAS(PathManager.appPath + PathManager.protocolOutputPath + "/request");
+				removeOldAS(PathManager.appPath + PathManager.protocolOutputPath + "/response");
+				removeOldAS(PathManager.appPath + PathManager.protocolOutputPath + "/vo");
+				removeOldAS(PathManager.appPath + PathManager.dataXmlOutputPath);
+				
+				//打开文件夹
+//				_protocolPath = protocolInputTf.text + "/";
+//				_file = new File(_protocolPath);
+//				
+//				_ff = new FileFilter("xml", "*.xml");
+//				_file.browseForOpenMultiple("selectedXml", [_ff]);
+//				_file.addEventListener(FileListEvent.SELECT_MULTIPLE, filesSelected);
+			}
+			
+//			private function filesSelected(e:FileListEvent):void
+//			{
+//				_files = e.files;
+//			}
+			
+			private function buildBaseDataFile():void{
+				_baseDataArr = [];
+				var arr:Array = PathManager.baseData.split(",");
+				while(arr.length > 0){
+					parseBaseData(arr[0]);
+					arr.shift();
+				}
+				if(!_baseDataBuilder){
+					_baseDataBuilder = new BaseDataBuilder(null, null, _baseDataArr);
+				}
+				_baseDataBuilder.build();
+			}
+			
+			private function getFileNameByUrl(url:String):String{
+				var arr:Array = url.split("/");
+				return arr[arr.length - 1];
+			}
+			
+			/**
+			 * 开始解析baseData的两个文件
+			 */
+			private function parseBaseData(value:String):void{
+				if(value){
+					value = trim(value);
+					parseXmlFile(value);
+				}
+			}
+			
+			private function trim(str:String):String
+			{
+				return str.replace(/(^\s*)|(\s*$)/g,"");
+			}
+			
+			/**
+			 * baseData的xml文件
+			 */
+			private function parseXmlFile(value:String):void{
+				var data:XML = _data[value + ".xml"];
+				
+				if(data){
+					data = data.children()[0];
+					var obj:Object = new Object();
+					obj["parFileName"] = value;
+					obj["className"] = data.localName() + "BaseData";
+					parseXsdFile(obj);
+				}
+			}
+			
+			/**
+			 * baseData的xsd文件
+			 */
+			private function parseXsdFile(obj:Object):void{
+				var data:XML = _data[obj["parFileName"] + ".xsd"];
+				var myPattern:RegExp = /xs:/g;  
+				var str:String = data.toString().replace(myPattern, "");
+				
+				myPattern = /unsignedShort/g;
+				str = str.replace(myPattern, "int");
+				
+				myPattern = /string/g;
+				str = str.replace(myPattern, "String");
+				
+				data = new XML(str);
+				data = data.children()[0];
+				
+				var proArr:Array = [];
+				for each(var xml:XML in data..element){
+					var proObj:Object = {};
+					proObj["propertyName"] = xml.@name;
+					proObj["propertyType"] = AsTranslater.typeSwitch(xml.@type.toString());
+					proObj["propertyInfo"] = xml..documentation.toString();
+					
+					if(proObj["propertyName"] && proObj["propertyType"] && proObj["propertyName"] != "" && proObj["propertyType"] != ""){
+						proArr.push(proObj);
+					}else{
+						
+					}
+				}
+				obj["data"] = proArr;
+				_baseDataArr.push(obj);
+			}
+			
+			private function parseInfo(name:String):void{
+				var infoXML:XML = _data[name];
+				for each (var xml:XML in infoXML.obj){
+					var obj:Obj = new Obj(xml);
+				}
+				appendText(name + "完成解析");
+			}
+			
+			private function parseCommands(name:String):void
+			{
+				_cmds = [];
+				var index:int = 1;
+				var protocolXML:XML = _data[name];
+				for each (var xml:XML in protocolXML.command)
+				{
+					var cmd:CommandObj = new CommandObj(xml, index);
+					_cmds.push(cmd);
+					index++;
+				}
+				appendText(name + "完成解析");
+			}
+			
+			private function buildProtocol():void{
+				if(!_protocolBuilder){
+					_protocolBuilder = new ProtocolBuilder(_cmds, Obj.objMap);
+				}
+				_protocolBuilder.build();
+			}
+			
+			private function buildInfoFile():void
+			{
+				if(!_infoBuilder){
+					_infoBuilder = new InfoBuilder(_cmds, Obj.objMap);
+				}
+				_infoBuilder.build();
+			}
+			
+			private function buildRequestFile():void{
+				if(!_requestBuilder){
+					_requestBuilder = new RequestBuilder(_cmds, Obj.objMap);
+				}
+				_requestBuilder.build();
+			}
+			
+			private function buildResponseFile():void
+			{
+				if(!_responseBuilder){
+					_responseBuilder = new ResponseBuilder(_cmds, Obj.objMap);
+				}
+				_responseBuilder.build();
+			}
+			
+			private function removeOldAS(filePath:String):void
+			{
+				if(filePath == ".svn"){
+					return;
+				}
+				var file:File = new File(filePath);
+				if(file.isDirectory && !file.isHidden)
+				{
+					var filelist:Array = file.getDirectoryListing();
+					for each(var filed:File in filelist)
+					{
+						removeOldAS(filed.url);
+					}
+				}else if(file.extension == "as" && !file.isHidden){
+					AsyncPool.instance.getAsyncTask(TaskEnum.BUILD).add(function():void{
+						file.deleteFile();
+						appendText("成功删除文件" + file.name)
+					});
+				}
+			}
+			
+			private function appendText(value:String, async:Boolean = true):void{
+				if(async){
+					AsyncPool.instance.getAsyncTask(TaskEnum.BUILD).add(function():void{
+						_ta.appendText("\n" + value);
+						_ta.scroller.verticalScrollBar.value = _ta.scroller.verticalScrollBar.maximum;
+					});
+				}else{
+					_ta.appendText("\n" + value);
+					_ta.scroller.verticalScrollBar.value = _ta.scroller.verticalScrollBar.maximum;
+				}
+			}
+			
+			protected function __progressHandler(e:BulkProgressEvent):void
+			{
+				_progress.setProgress(e.itemsLoaded, e.itemsTotal);
+			}
+			
+			protected function __enterFrame(e:Event):void
+			{
+				AsyncPool.instance.update();
+			}
+			
+			protected function __buildComplete(e:GlobalEvent):void
+			{
+				appendText(e.data.toString(), false);
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Button id="_btnClear" x="108" y="369" label="清除文件" click="_btnClick(event)"/>
+	<s:Button id="_btnStart" x="203" y="369" label="直接开始" click="__startBtnClick(event)"/>
+	<s:TextInput id="_protocolInputTf" width="256" x="112" y="4" alpha="0.5"/>
+	<s:TextInput id="_protocolOutputTf" width="256" x="112" y="24" alpha="0.5"/>
+	<s:TextInput id="_dataXmlInputTf" width="256" x="112" y="44" alpha="0.5"/>
+	<s:TextInput id="_dataXmlOutputTf" width="256" x="112" y="64" alpha="0.5"/>
+	<s:TextArea id="_ta" x="11" y="90" width="357" height="271" text="请在上面设置输入输出路径"/>
+	<s:Label x="13" y="8" text="docs路径"/>
+	<s:Label x="13" y="28" text="协议类输出路径"/>
+	<s:Label x="13" y="48" text="配置表类输入路径"/>
+	<s:Label x="13" y="68" text="配置表类输出路径"/>
+	<s:BorderContainer id="_progressContainer" x="0" y="0" width="380" height="400" backgroundAlpha="0.05" backgroundColor="#000000" color="#000000">
+		<mx:ProgressBar id="_progress" x="85" y="214" height="9" mode="manual" labelPlacement="center"/>
+	</s:BorderContainer>
+</s:WindowedApplication>
