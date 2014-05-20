@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<!-- 输出文件路径 -->
+	<outputPath>E:/trunk/client/doll/src/com/yile/games/doll/ui/</outputPath>
+	<!-- 基础导入controller路径 -->
+	<controllerPath>com.yile.games.doll.controller.ModuleController</controllerPath>
+	<!-- 基础导入model路径 -->
+	<modelPath>com.yile.games.doll.ui.rank.IModel</modelPath>
+	<!-- 基础导入view路径 -->
+	<viewPath>com.yile.games.doll.ui.preparation.BaseView</viewPath>
+	<!-- 基础导入item路径 -->
+	<itemPath>com.yile.games.doll.ui.preparation.BaseItem</itemPath>
+	<!-- 基础导入iData路径 -->
+	<iDataPath>com.yile.games.doll.ui.rank.IData</iDataPath>
+</config>

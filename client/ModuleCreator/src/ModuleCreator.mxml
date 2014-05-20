@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   width="380" height="280" backgroundColor="#FFFFFF" showStatusBar="false" creationComplete="creationComplete(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.yile.framework.loader.BulkLoader;
+			
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			
+			private var _loader:BulkLoader;
+			
+			private var _mustache:Mustache;
+			
+			private var _dataList:Array = ["Config.xml", "tpl/Controller.tpl", "tpl/View.tpl", "tpl/Model.tpl", "tpl/Item.tpl", "tpl/ItemVo.tpl", "tpl/BaseView.tpl"];
+			
+			protected function creationComplete(e:FlexEvent):void
+			{
+				if(stage){
+					__addedToStage(null);
+				}else{
+					this.addEventListener(Event.ADDED_TO_STAGE, __addedToStage);
+				}
+			}
+			
+			protected function __addedToStage(e:Event):void
+			{
+				this.removeEventListener(Event.ADDED_TO_STAGE, __addedToStage);
+				
+				_mustache = new Mustache();
+				
+				_loader = new BulkLoader();
+				_loader.addEventListener(BulkLoader.COMPLETE, __loadComplete);
+				
+				var len:int = _dataList.length;
+				for (var i:int = 0; i < len; i++) 
+				{
+					_loader.add(_dataList[i], {id:_dataList[i]});
+				}
+				_loader.start();
+				
+				stage.focus = moduleNameTf;
+			}
+			
+			protected function __loadComplete(e:Event):void
+			{
+				_loader.removeEventListener(BulkLoader.COMPLETE, __loadComplete);
+				
+				var xml:XML = _loader.getXML("Config.xml");
+				Global.outputPath = xml..outputPath;
+				Global.controllerPath = xml..controllerPath
+				Global.modelPath = xml..modelPath
+				Global.viewPath = xml..viewPath;
+				Global.itemPath = xml..itemPath;
+				Global.iDataPath = xml..iDataPath;
+				
+				var len:int = _dataList.length;
+				for (var i:int = 1; i < len; i++) 
+				{
+					Global.tplMap[_dataList[i]] = _loader.get(_dataList[i]).content;
+				}
+			}
+			
+			protected function _clearBtnClick(e:MouseEvent):void
+			{
+
+			}
+			
+			protected function __startBtnClick(e:MouseEvent):void
+			{
+				if(moduleNameTf.text == ""){
+					ta.appendText("\n请输入模块名称");
+					return;
+				}
+				var moduleName:String = moduleNameTf.text;
+				
+				Global.moduleName = moduleName.charAt(0).toLocaleUpperCase() + moduleName.slice(1);
+				Global.packageName = moduleName.charAt(0).toLocaleLowerCase() + moduleName.slice(1);
+				
+				var dataObj:Object = {};
+				dataObj.moduleName = Global.moduleName;
+				dataObj.controllerPath = Global.controllerPath;
+				dataObj.viewPath = Global.viewPath;
+				dataObj.modelPath = Global.modelPath;
+				dataObj.itemPath = Global.itemPath;
+				dataObj.iDataPath = Global.iDataPath;
+				dataObj.description = moduleDescriptionTf.text;
+				dataObj.packagePath = Global.outputPath.split("src\/")[1].toString().replace(/\//g, ".") + Global.packageName;
+				
+				//包是否存在
+				var file:File = new File(Global.outputPath + Global.packageName);
+				if(!file.exists){
+					file.createDirectory();
+				}
+				
+				var classNameArr:Array = ["", "Controller", "View", "Model", "Item", "ItemVo", "BaseView"];
+				var len:int = _dataList.length;
+				for (var i:int = 0; i < len; i++) 
+				{
+					var className:String = classNameArr[i];
+					if(className != ""){
+						var value:String = _mustache.to_html(Global.tplMap[_dataList[i]], dataObj);
+						writeFile(Global.outputPath + Global.packageName + "/" + Global.moduleName + className + ".as", value);
+					}
+				}
+			}
+			
+			protected function writeFile(path:String, value:String):void
+			{
+				var file:File = new File(path);
+				if(file.exists && file.extension == "as" && !file.isHidden)
+				{
+					file.deleteFile();
+				}
+				var fs:FileStream = new FileStream();
+				fs.open(file, FileMode.WRITE);
+				fs.writeUTFBytes(value);
+				fs.close();
+				
+				ta.appendText("\n生成" + file.name);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:Button id="btnClear" x="108" y="249" label="清除文件" click="_clearBtnClick(event)"/>
+	<s:Button id="btnStart" x="203" y="249" label="直接开始" click="__startBtnClick(event)"/>
+	<s:TextInput id="moduleNameTf" width="299" x="69" y="4" alpha="0.5"/>
+	<s:TextInput id="moduleDescriptionTf" width="299" x="69" y="24" alpha="0.5"/>
+	<s:TextArea id="ta" x="11" y="54" width="357" height="187" text="请在上面设置"/>
+	<s:Label x="13" y="8" text="模块名称" textAlign="left" verticalAlign="middle"/>
+	<s:Label x="13" y="28" text="模块说明" textAlign="left" verticalAlign="middle"/>
+</s:WindowedApplication>
