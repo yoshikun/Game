@@ -11,7 +11,7 @@ package {{packagePath}}
     		super(model);
     	}
     	
-		private function get model():{{moduleName}}Model{
+		protected function get model():{{moduleName}}Model{
 			return _model as {{moduleName}}Model;
 		}
     }

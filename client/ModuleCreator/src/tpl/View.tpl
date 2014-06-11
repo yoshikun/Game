@@ -3,8 +3,11 @@ package {{packagePath}}
 	import {{viewPath}};
 	import {{modelPath}};
 	import flash.display.MovieClip;
+	import com.yile.framework.resource.ResourceManager;
+	import com.yile.framework.ui.UIManager;
+	import com.yile.framework.ui.config.Layers;
 	
-    public class {{moduleName}}View extends {{moduleName}}View
+    public class {{moduleName}}View extends {{moduleName}}BaseView
     {
     	public function {{moduleName}}View(model:IModel)
     	{
