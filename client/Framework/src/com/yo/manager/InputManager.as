@@ -15,10 +15,10 @@ package com.yo.manager
 		public var keysHit:Array;
 		public var keyStatus:Array;
 		
-		public var mousex:int;
-		public var mousey:int;
-		public var mouseStatus:int;
-		public var mouseButtonHit:int;
+		private var _mouseX:int;
+		private var _mouseY:int;
+		private var _mouseStatus:int;
+		private var _mouseButtonHit:int;
 		
 		private var _mouseWheel:Boolean;
 		private var _mouseWheelDelta:int;
@@ -91,55 +91,51 @@ package com.yo.manager
 		
 		public function mouseDownHandler(e:MouseEvent):void
 		{
-			mouseStatus = 1;
-			mouseButtonHit = 1;
-			return;
+			_mouseStatus = 1;
+			_mouseButtonHit = 1;
 		}
 		
 		public function mouseUpHandler(e:MouseEvent):void
 		{
-			mouseStatus = 0;
-			return;
+			_mouseStatus = 0;
 		}
 		
 		public function mouseMoveHandler(e:MouseEvent):void
 		{
-			mousex = e.stageX;
-			mousey = e.stageY;
-			return;
+			_mouseX = e.stageX;
+			_mouseY = e.stageY;
 		}
 		
 		public function focusOutHandler(e:flash.events.FocusEvent):void
 		{
 			var keyStatusCount:uint = 0;
-			if (last)
+			if(last)
 			{
-				if (e.type == flash.events.FocusEvent.FOCUS_OUT)
+				if(e.type == flash.events.FocusEvent.FOCUS_OUT)
 				{
-					if (last.type != flash.events.FocusEvent.MOUSE_FOCUS_CHANGE)
+					if(last.type != flash.events.FocusEvent.MOUSE_FOCUS_CHANGE)
 					{
 						keyStatusCount = 0;
-						while (keyStatusCount < keyStatus.length) 
+						while(keyStatusCount < keyStatus.length) 
 						{
 							keyStatus[keyStatusCount] = false;
 							++keyStatusCount;
 						}
-						mouseStatus = 0;
+						_mouseStatus = 0;
 					}
 				}
 			}
 			last = e;
-			return;
 		}
 		
 		public function mouseX():int
 		{
-			return mousex;
+			return _mouseX;
 		}
 		
 		public function mouseY():int
 		{
-			return mousey;
+			return _mouseY;
 		}
 		
 		public function keyDown(key:int):int
@@ -151,34 +147,34 @@ package com.yo.manager
 		{
 			// 复制数组
 			var keyArray:Array = keyArray.slice();
-			if (except) {
+			if(except){
 				keyArray.splice(ArrayUtil.getItemIndex(except, keyArray), 1);
 			}
 			var status:Boolean = true;
-			for each (var key:int in keyArray) {
+			for each(var key:int in keyArray){
 				status = keyStatus[key];
-				if (! status) {
+				if(! status){
 					return status;
 				}
 			}
 			return status;
 		}
 		
-		public function clear():void {
+		public function clear():void{
 			keyStatus = [];
 			keysHit = [];
 		}
 		
 		public function mouseDown():int
 		{
-			return mouseStatus;
+			return _mouseStatus;
 		}
 		
 		public function keyHit(key:int, keyup:Boolean = true):int
 		{
 			var status:int;
 			status = keysHit[key];
-			if (keyup)
+			if(keyup)
 			{
 				keysHit[key] = false;
 			}
@@ -187,8 +183,8 @@ package com.yo.manager
 		
 		public function mouseHit():int
 		{
-			var mouseHitStatus:int = mouseButtonHit;
-			mouseButtonHit = 0;
+			var mouseHitStatus:int = _mouseButtonHit;
+			_mouseButtonHit = 0;
 			return mouseHitStatus;
 		}
 		

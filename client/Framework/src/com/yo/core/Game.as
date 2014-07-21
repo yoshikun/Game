@@ -25,10 +25,15 @@ package com.yo.core
 	import flash.utils.Timer;
 	import flash.utils.getTimer;
 	
-//	[SWF(width="1000", height="600", frameRate="60", backgroundColor="#0")]
+	[SWF(width="1000", height="600", frameRate="60", backgroundColor="#0")]
 	public class Game extends Sprite
 	{
 		protected var _loader:URLLoader;
+		
+		/**
+		 * 游戏配置文件 
+		 */		
+		protected var _config:XML;
 		
 		protected var _contextMenu:ContextMenu;
 		
@@ -86,6 +91,19 @@ package com.yo.core
 		}
 		
 		/**
+		 * 自动测试客户端是debug版本,还是release版本
+		 */		
+		protected function get debugMode():Boolean{
+			var obj:Object;
+			try{
+				trace(obj.parent);
+			}catch(e:Error){
+				return true;
+			}
+			return false;
+		}
+		
+		/**
 		 * 加载配置文件
 		 */		
 		protected function loadConfig():void{
@@ -97,6 +115,8 @@ package com.yo.core
 
 		protected function __configLoadComplete(e:Event):void
 		{
+			_config = new XML(_loader.data);
+			
 			_loader.removeEventListener(Event.COMPLETE, __configLoadComplete);
 			_loader.data = null;
 			_loader.close();

@@ -13,8 +13,6 @@ package core
 		
 		public static var loginState:int;
 		
-		public static var resourcePath:String = "";
-		
 		public static var host:String = "115.28.2.190";
 		
 		public static var port:uint = 7778;
@@ -27,12 +25,12 @@ package core
 		/**
 		 * 资源路径
 		 */
-		public static var resource:String;
+		public static var resourcePath:String;
 		
 		/**
 		 * 加密路径 
 		 */		
-		public static var encryptResource:String;
+		public static var encryptResourcePath:String;
 		
 		/**
 		 * 加密 
@@ -40,9 +38,9 @@ package core
 		public static var encrypt:Boolean;
 		
 		public static function getAssetPath():String{
-			var path:String = Config.resource;
+			var path:String = Config.resourcePath;
 			if(encrypt){
-				path = Config.encryptResource;
+				path = Config.encryptResourcePath;
 			}
 			return path + Config.lang + "/";
 		}

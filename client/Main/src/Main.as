@@ -5,6 +5,7 @@ package
 	public class Main extends Sprite
 	{
 		private var _loader:
+		
 		public function Main()
 		{
 			
