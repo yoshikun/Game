@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	width="550" height="402" creationComplete="initPanel(event)" 
+	removedEffect="{removeEffect}" creationCompleteEffect="{showEffect}">
+
+	<mx:Script>
+		<![CDATA[
+			import com.heptafish.mapeditor.utils.Global;
+			
+			import flash.net.URLLoader;
+			import flash.net.URLRequest;
+			import flash.net.navigateToURL;
+			
+			import mx.managers.PopUpManager;
+			
+			private var serverFlag:String           = Global.serverFlag;
+			private var version:String              = Global.version;
+			
+			[Bindable]
+			private var versionStr:String = "MapEditor V" + Global.versionNo;
+			
+			private var urlLoader:URLLoader  = new URLLoader();
+			
+			private function initPanel(evet:Event):void{
+				newVersion.visible = false;
+				if(Global.running == false){
+					checkVersion();
+				}
+				
+				newVersion.addEventListener(MouseEvent.CLICK, __onTextClick);
+				addEventListener(MouseEvent.CLICK, closePanel);
+			}
+			
+			private function __onTextClick(e:MouseEvent):void{
+				e.stopPropagation();
+			}
+			
+			/**
+			 * 验证版本
+			 */
+			private function checkVersion():void{
+				var date:Date      = new Date();
+				var dateStr:String = serverFlag;
+				var rand:Number    = Math.random();
+				
+				var urlStr:String  = "http://stat.eb163.com/me/mapeditorstat.php?ver=" + version + "&date=" + dateStr + "&rand=" + rand;
+				
+				var urlRequest:URLRequest = new URLRequest(urlStr);
+				
+                urlLoader.addEventListener(Event.COMPLETE, onURLLoaderCompleteHandler);
+				urlLoader.addEventListener(IOErrorEvent.IO_ERROR, onNetworkError);
+                urlLoader.load(urlRequest);
+
+				var timer:Timer = new Timer(5000, 1);
+				timer.addEventListener(TimerEvent.TIMER, onTimeOut);
+				timer.start();
+				function onTimeOut(e:TimerEvent):void{
+					urlLoader.removeEventListener(Event.COMPLETE,onURLLoaderCompleteHandler);
+					urlLoader.removeEventListener(IOErrorEvent.IO_ERROR, onNetworkError);
+					urlLoader = null;
+
+					timer.removeEventListener(TimerEvent.TIMER, onTimeOut);
+				}
+ 
+			}
+			
+			private function onURLLoaderCompleteHandler(e:Event):void{
+				
+				var loader:URLLoader = e.currentTarget as URLLoader;
+				var returnData:* = loader.data;
+				if(returnData != "1"){
+					try{
+						var xml:XML = new XML(returnData);
+						var htmlStr:String = "";
+						for (var x:* in xml.elements()){
+							htmlStr += xml.article[x] + "<br />";	
+						}
+						newVersion.visible = true;
+						Global.news = htmlStr;
+					}catch(error:Error){
+						newVersion.removeEventListener(MouseEvent.CLICK, __onTextClick);
+					}
+				}else{
+					newVersion.removeEventListener(MouseEvent.CLICK, __onTextClick);
+				}
+				
+				Global.running = true;
+			}
+			
+			private function onNetworkError(e:IOErrorEvent):void{
+				
+			}
+			
+			private function closePanel(evet:Event):void{
+				removeEventListener(MouseEvent.CLICK,closePanel);
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+			private function clickToUrl(urlStr:String):void{
+				var urlStr:String = urlStr;
+				var url:URLRequest = new URLRequest(urlStr);
+				navigateToURL(url, "_blank");
+			}		
+		]]>
+	</mx:Script>
+	
+	<mx:Fade alphaFrom="1" alphaTo="0" duration="100" id="removeEffect" />
+	<mx:Fade alphaFrom="0" alphaTo="1" duration="100" id="showEffect" />
+	<mx:Rotate duration="1500" originX="{logo.width/2+1.5}" originY="{logo.height/2+4}" id="imageShow" />
+
+	<mx:Text x="266" y="66" text="{versionStr}" height="35" fontFamily="Times New Roman" fontSize="20" color="#32B1CC"/>
+	<mx:Text x="185" y="154" text="技术开发： iiacm、baiyu" fontFamily="Times New Roman" fontSize="12" height="21"/>
+	<mx:Text x="185" y="125" text="策划：小超" fontFamily="Times New Roman" fontSize="12"/>
+	<mx:Text x="185" y="185" text="技术支持：" fontFamily="Times New Roman" fontSize="12"/>
+	<mx:Image id="logo" creationCompleteEffect="{imageShow}" source="@Embed(source='images/icons/logo120.png')" y="86" x="38"/>
+	<mx:Text x="185" y="62" text="EB"  height="35" fontFamily="Georgia" fontSize="24" color="#006699" width="38"/>
+	<mx:Text x="217" y="64" text="163"  height="35" fontFamily="Times New Roman" fontSize="24" color="#FF6600"/>
+	<mx:Text x="185" y="214" text="帮助&amp;反馈：" fontFamily="Times New Roman" fontSize="12"/>
+	<mx:LinkButton x="245" y="211" label="http://www.9ria.com/"  click="clickToUrl('http://www.9ria.com/')" fontSize="12" fontFamily="Times New Roman"/>
+	<mx:LinkButton x="345" y="182" label="http://www.9ria.com/"  click="clickToUrl('http://www.9ria.com/')" fontSize="12" fontFamily="Times New Roman"/>
+	<mx:Text id="newVersion" selectable="true" x="185" y="243" width="292" height="109" htmlText="{Global.news}" />
+</mx:Panel>

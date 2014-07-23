@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns="*" xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			[Bindable]
+			private var _px:String = "";
+			[Bindable]
+			private var _py:String = "";
+			[Bindable]
+			private var _ix:String = "";
+			[Bindable]
+			private var _iy:String = "";
+			
+			//填充内容信息
+			public function createContent(obj:Object):void{
+				_px = obj.px + "";
+				_py = obj.py + "";
+				_ix = obj.ix + "";
+				_iy = obj.iy + "";
+			}
+		]]>
+	</mx:Script>
+	<mx:Canvas>
+		<mx:Label x="0" y="2" text="像素坐标X：{_px}" color="0xFFFFFF"/>
+		<mx:Label x="0" y="32" text="像素坐标Y：{_py}" color="0xFFFFFF"/>
+		<mx:Label x="100" y="2" text="网格索引X：{_ix}" color="0xFFFFFF"/>
+		<mx:Label x="100" y="32" text="网格索引Y：{_iy}" color="0xFFFFFF"/>
+	</mx:Canvas>
+</mx:Canvas>

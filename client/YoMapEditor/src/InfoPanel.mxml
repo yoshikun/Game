@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute" width="200" height="204" 
+	xmlns:flexlib="http://code.google.com/p/flexlib/"
+	creationComplete="creationComplete(event)" verticalScrollPolicy="off"
+	creationCompleteEffect="{showEffect}"
+	showEffect="{showEffect}" hideEffect="{removeEffect}" styleName="panel" backgroundAlpha="0.6">
+	
+	<mx:Style>
+		.panel{
+			color:#000000;
+			backgroundAlpha:1;
+		}
+	</mx:Style>
+	
+	<mx:Fade alphaFrom="1" alphaTo="0" duration="100" id="removeEffect" />
+	<mx:Fade alphaFrom="0" alphaTo="1" duration="100" id="showEffect" />
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Image;
+			
+			private var closeImage:Image;
+			
+			private function creationComplete(e:Event):void{
+				closeImage.addEventListener(MouseEvent.MOUSE_DOWN, __closePanel);
+			}
+			
+			/**
+			 * 加入titlebar按钮
+			 */
+			override protected function createChildren():void
+			{
+				super.createChildren();
+	             
+				closeImage = new Image();
+				closeImage.data = Assets.getTexture("ShutDownBtn");
+				closeImage.toolTip = "关闭";
+				closeImage.buttonMode = true;
+				
+				titleBar.addChild(closeImage);
+			}
+			
+			override protected function updateDisplayList (unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+				
+				closeImage.width = 22;
+				closeImage.height = 22;
+				closeImage.x = this.width - 26;
+				closeImage.y = 4;
+			} 
+			
+			private function __closePanel(e:Event):void{
+				if(this.visible){
+					this.visible = false;
+				}
+			}
+		]]>
+	</mx:Script>
+</mx:Panel>
