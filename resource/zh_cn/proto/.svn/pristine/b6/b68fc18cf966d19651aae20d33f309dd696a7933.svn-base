@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 (http://www.altova.com) by Administrator (EMBRACE) -->
+<!--
+文件格式定义：
+====obj 一个数据对象
+========value 对象名称，采用一个或多个单词，每个单词首字字母大写,最后一个单词为Info
+============attrib 对象的一组数据格式
+================value 一个变量名称，采用一个或多个单词，首字母小写，后面的每个单词首字字母大写
+====================如果数据是一个数组，则在名称后加[]，例如FRIEND_LIST命令中的info[num]，
+====================其中info为变量名，[]表示数组，num表示数组中的数值变量，这个num取自num变量
+================type 服务器数据类型
+================info 参数说明
+-->
+<root xsi:noNamespaceSchemaLocation="Protocol.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<obj value="ServerInfo" info="服务器信息">
+		<attrib value="serverID" type="uint16_t" info="服务器id"/>
+		<attrib value="serverType" type="uint16_t" info="服务器类型"/>
+		<attrib value="name" type="char[33]" info="名字"/>
+		<attrib value="ip" type="char[33]" info="内网ip"/>
+		<attrib value="port" type="uint16_t" info="内网端口"/>
+		<attrib value="extip" type="char[33]" info="外网ip"/>
+		<attrib value="extport" type="uint16_t" info="外网端口"/>
+		<attrib value="netType" type="uint16_t" info="网络类型（1电信，2网通）"/>
+		<attrib value="load" type="uint32_t" info="最大负载"/>
+		<attrib value="inuse" type="uint32_t" info="当前负载"/>
+	</obj>
+</root>
