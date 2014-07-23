@@ -1,9 +1,9 @@
 package scene
 {
-	import com.yo.logger.Log;
-	import com.yo.manager.layer.LayerManager;
-	import com.yo.manager.state.IState;
-	import com.yo.manager.ui.UIManager;
+	import com.yo.framework.logger.Log;
+	import com.yo.framework.manager.layer.LayerManager;
+	import com.yo.framework.manager.state.IState;
+	import com.yo.framework.manager.ui.UIManager;
 	
 	/**
 	 * 场景的Abstract父类

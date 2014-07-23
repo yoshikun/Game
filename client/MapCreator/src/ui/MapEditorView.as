@@ -1,9 +1,9 @@
 package ui
 {
-	import com.yo.manager.InputManager;
-	import com.yo.manager.ui.UIManager;
-	import com.yo.mvc.core.BaseView;
-	import com.yo.mvc.interfaces.IModel;
+	import com.yo.framework.manager.InputManager;
+	import com.yo.framework.manager.ui.UIManager;
+	import com.yo.framework.mvc.core.BaseView;
+	import com.yo.framework.mvc.interfaces.IModel;
 	
 	import core.Config;
 	import core.GlobalEvent;

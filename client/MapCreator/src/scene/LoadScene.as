@@ -1,6 +1,6 @@
 package scene
 {
-	import com.yo.manager.resource.ResourceManager;
+	import com.yo.framework.manager.resource.ResourceManager;
 	
 	import enum.LoaderName;
 	import enum.State;

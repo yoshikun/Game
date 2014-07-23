@@ -1,7 +1,7 @@
 package manager
 {
-	import com.yo.manager.state.IState;
-	import com.yo.manager.state.StateCreator;
+	import com.yo.framework.manager.state.IState;
+	import com.yo.framework.manager.state.StateCreator;
 	
 	import enum.State;
 	

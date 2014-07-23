@@ -1,9 +1,9 @@
 package
 {
-	import com.yo.core.FP;
-	import com.yo.core.Game;
-	import com.yo.manager.InputManager;
-	import com.yo.manager.resource.ResourceManager;
+	import com.yo.framework.core.FP;
+	import com.yo.framework.core.Game;
+	import com.yo.framework.manager.InputManager;
+	import com.yo.framework.manager.resource.ResourceManager;
 	
 	import fl.containers.ScrollPane;
 	import fl.controls.Button;

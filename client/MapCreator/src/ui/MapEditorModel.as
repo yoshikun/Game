@@ -1,6 +1,6 @@
 package ui
 {
-	import com.yo.mvc.core.BaseModel;
+	import com.yo.framework.mvc.core.BaseModel;
 	
 	import mx.collections.XMLListCollection;
 	import mx.controls.MenuBar;

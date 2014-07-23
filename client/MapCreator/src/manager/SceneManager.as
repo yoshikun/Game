@@ -1,6 +1,6 @@
 package manager
 {
-	import com.yo.manager.state.StateManager;
+	import com.yo.framework.manager.state.StateManager;
 	
 	public class SceneManager extends StateManager
 	{

@@ -1,7 +1,7 @@
 package ui
 {
-	import com.yo.manager.ui.UIManager;
-	import com.yo.mvc.core.BaseController;
+	import com.yo.framework.manager.ui.UIManager;
+	import com.yo.framework.mvc.core.BaseController;
 	
 	import core.Config;
 	import core.GlobalEvent;

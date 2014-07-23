@@ -1,12 +1,12 @@
-package com.yile.games.doll.net
+package com.yo.game.net
 {
-    import com.yile.framework.net.IProtocol;
-    import com.yile.framework.net.IResponse;
+    import com.yo.framework.net.IProtocol;
+    import com.yo.framework.net.IResponse;
 	{{#data}}
-	import com.yile.games.doll.net.response.{{subPath}}.{{responseClassName}};
+	import com.yo.game.net.response.{{subPath}}.{{responseClassName}};
 	{{/data}}
 	{{#data}}{{#requestClassName}}
-	import com.yile.games.doll.net.request.{{subPath}}.{{requestClassName}};
+	import com.yo.game.net.request.{{subPath}}.{{requestClassName}};
 	{{/requestClassName}}{{/data}}
 	
 	public class Protocol implements IProtocol
