@@ -15,24 +15,37 @@
 ================info 参数说明
 -->
 <root xsi:noNamespaceSchemaLocation="Protocol.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<command value="System">
-		<param value="LOGIN" path="C > S" info="登录到登陆服">
-			<attrib value="account" type="char[48]" info="用户账号"/>
+	<command value="Login">
+		<param value="LOGIN" path="C > S" info="登录请求">
+			<attrib value="account" type="char[32]" info="用户账号"/>
+			<attrib value="passwd" type="char[32]" info="密码"/>
 			<attrib value="gameType" type="uint16_t" info="游戏平台类型 从1000开始"/>
 			<attrib value="gameZone" type="uint32_t" info="游戏区 从1开始"/>
 			<attrib value="netType" type="uint8_t" info="1:电信 2:网通"/>
 		</param>
-		<param value="LOGIN" path="S > C" info="登录到登陆服返回结果">
-			<attrib value="result" type="uint8_t" info="结果 0成功,1维护 2未到开服时间 3网关未开"/>
-			<attrib value="ip" type="char[32]" info="网关ip"/>
-			<attrib value="port" type="uint16_t" info="网关端口"/>
+		<param value="LOGIN_RESULT" path="S > C" info="登录到登陆服返回结果 一般返回的都是错误信息">
+			<attrib value="result" type="uint32_t" info="结果 1维护 2未到开服时间 3网关未开"/>
+		</param>
+		<param value="LOGIN_SUCCESS" path="S > C" info="登录成功返回登陆信息">
+			<attrib value="accid" type="uint32_t" info="用户id"/>
+			<attrib value="loginTempID" type="uint32_t" info="用户分配的临时id 用于登陆网关的验证"/>
+			<attrib value="account" type="char[32]" info="用户账号"/>
+			<attrib value="gateIp" type="char[16]" info="分配给你的网关ip"/>
+			<attrib value="port" type="uint16_t" info="端口"/>
+			<attrib value="des_key" type="char[32]" info="生成的key 用于网关的验证"/>
+		</param>
+		<param value="VERIFY_VERSION" path="C > S" info="版本号的验证 不对就直接断开连接">
+			<attrib value="version" type="uint32_t" info="版本号"/>
 		</param>
 		<param value="LOGIN_GATE" path="C > S" info="登录到网关">
-			<attrib value="accid" type="uint32_t" info="用户唯一ID"/>
-			<attrib value="key" type="uint32_t" info="用户登录用key"/>
+			<attrib value="loginTempID" type="uint32_t" info="登陆返回的临时id"/>
+			<attrib value="accid" type="uint32_t" info="用户ID"/>
+			<attrib value="des_key" type="char[32]" info="用户登录验证key"/>
 		</param>
-		<param value="LOGIN_GATE" path="S > C" info="登录到网关返回结果">
-			<attrib value="result" type="uint8_t" info="结果 1成功,2其他地方登录 3验证错误 4网关人数满 5版本号不对 6IP冻结 7无效key"/>
+		<param value="LOGIN_RESULT" path="S > C" info="登录到网关返回结果">
+			<attrib value="result" type="uint8_t" info="结果 1,2其他地方登录 3验证错误 4网关人数满 5版本号不对 6IP冻结 7无效key"/>
+		</param>
+		<param value="SELECT_ROLE_INFO" path="S > C" info="该区所有的角色信息 长度为0时 请发注册协议 为1时 直接发选择角色协议 >1时 玩家选择后再发协议">
 		</param>
 	</command>
 </root>
