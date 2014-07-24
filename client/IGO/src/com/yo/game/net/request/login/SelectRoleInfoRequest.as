@@ -8,15 +8,10 @@ package com.yo.game.net.request.login
     import com.yo.framework.net.Packet;
 
     /**
-     * 版本号的验证 不对就直接断开连接(1:5)
+     * 占个坑(1:9)
      */
-    public class VerifyVersionRequest implements IRequest
+    public class SelectRoleInfoRequest implements IRequest
     {
-        /**
-         * 版本号
-         */
-        public var version:uint;
-    
         public function get module():uint
         {
             return 1;
@@ -24,13 +19,12 @@ package com.yo.game.net.request.login
 
         public function get action():uint
         {
-            return 5;
+            return 9;
         }
 
         public function write(p:Packet):void
         {
             
-            p.writeUnsignedInt(version);
         }
     }
 }

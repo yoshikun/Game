@@ -19,10 +19,7 @@ package com.yo.game.net
 		/**
 		 * {{info}}
 		 */
-		public static const {{value}}:Object = {
-			module: {{cmdIndex}},
-			action: {{paramIndex}}{{#requestClassName}}, request:{{requestClassName}}{{/requestClassName}}//
-		};
+		public static const {{value}}:String = "{{cmdIndex}}:{{paramIndex}}";
 		
 		{{/data}}
 		public function Protocol()
@@ -35,7 +32,7 @@ package com.yo.game.net
 		 */        
 		public function lookup(module:uint, action:uint):IResponse {
 		    var c:Class = _protoMap[_toString(module, action)];
-		    if (! c) {
+		    if (!c) {
 		        return null;
 		    }
 			return new c;
@@ -55,7 +52,7 @@ package com.yo.game.net
 		}
 		
 		private static function _toString(module:uint, action:uint):String {
-			return module + ':' + action;
+			return module + ":" + action;
 		}
 	}
 }

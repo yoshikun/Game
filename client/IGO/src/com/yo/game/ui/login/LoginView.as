@@ -38,6 +38,7 @@ package com.yo.game.ui.login
 			
 			_accountTf = _asset["accountTf"];
 			_passwordTf = _asset["passwordTf"];
+			_passwordTf.displayAsPassword = true;
 		}
 		
 		override protected function initEvent():void{

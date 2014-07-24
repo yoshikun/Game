@@ -12,6 +12,7 @@ package com.yo.game.ui.login
 	import com.yo.game.net.Protocol;
 	import com.yo.game.net.request.login.LoginGateRequest;
 	import com.yo.game.net.request.login.LoginRequest;
+	import com.yo.game.net.response.login.LoginResponse;
 	import com.yo.game.scene.SceneManager;
 	
 	import flash.events.Event;
@@ -85,6 +86,7 @@ package com.yo.game.ui.login
 		{
 			var r:LoginRequest = new LoginRequest();
 			r.account = model.account;
+			r.passwd = model.password;
 			r.gameType = 1000;
 			r.gameZone = 1;
 			r.netType = 1;
@@ -94,8 +96,8 @@ package com.yo.game.ui.login
 		private function requestLoginGate():void
 		{
 			var request:LoginGateRequest = new LoginGateRequest();
-			request.accid = uint(2);
-			request.key = 0;
+			request.accid = 2;
+			request.desKey = "0";
 			NetManager.instance.send(request);
 		}
 		

@@ -10,13 +10,19 @@ package com.yo.game.net.response.login
     /*@import*/
 
     /**
-     * 该区所有的角色信息 长度为0时 请发注册协议 为1时 直接发选择角色协议 >1时 玩家选择后再发协议(1:10)
+     * 登录到登陆服返回结果 一般返回的都是错误信息(1:2)
      */
-    public class SelectRoleInfoResponse implements IResponse
+    public class LoginResponse implements IResponse
     {
+        /**
+         * 结果 1维护 2未到开服时间 3网关未开
+         */
+        public var result:uint;
+
         public function read(p:Packet):void
         {
 
+            result = p.readUnsignedInt();
         }
     }
 }

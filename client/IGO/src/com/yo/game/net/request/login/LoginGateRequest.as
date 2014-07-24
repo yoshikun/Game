@@ -8,7 +8,7 @@ package com.yo.game.net.request.login
     import com.yo.framework.net.Packet;
 
     /**
-     * 登录到网关(1:5)
+     * 登录到网关(1:7)
      */
     public class LoginGateRequest implements IRequest
     {
@@ -25,7 +25,7 @@ package com.yo.game.net.request.login
         /**
          * 用户登录验证key
          */
-        public var des_key:String;
+        public var desKey:String;
     
         public function get module():uint
         {
@@ -34,7 +34,7 @@ package com.yo.game.net.request.login
 
         public function get action():uint
         {
-            return 5;
+            return 7;
         }
 
         public function write(p:Packet):void
@@ -42,7 +42,7 @@ package com.yo.game.net.request.login
             
             p.writeUnsignedInt(loginTempID);
             p.writeUnsignedInt(accid);
-            p.writeMultiBytes(des_key, 32);
+            p.writeMultiBytes(desKey, 32);
         }
     }
 }

@@ -30,7 +30,7 @@ package com.yo.framework.net
 		private var _headerBuffer:ByteArray;
 		private var _bodyBuffer:Packet;
 		
-		public var protocol:IProtocol;
+		private var _protocol:IProtocol;
 		
 		public function ByteSocket(encrypted:Boolean = true) 
 		{
@@ -113,13 +113,12 @@ package com.yo.framework.net
 						//处理数据
 						_socket.readBytes(_bodyBuffer, _bodyBuffer.length, readLen);
 						
-						
 						//还没读够
 						if(_bodyBuffer.length < _bodyLen){
 							continue;
 						}
 						
-						var r:IResponse = protocol.lookup(_bodyBuffer.module, _bodyBuffer.action);
+						var r:IResponse = _protocol.lookup(_bodyBuffer.module, _bodyBuffer.action);
 						if(!r){
 							Log.getLog(this).warn("没有绑定协议处理器，协议(" + _bodyBuffer.module + ":" + _bodyBuffer.action + ")");
 						}else{
@@ -168,7 +167,7 @@ package com.yo.framework.net
 				_socket.flush();
 				
 				var log:String = com.adobe.serialization.json.JSON.encode(r);
-				Log.getLog(this).debug("发送协议：(" + r.module + ":" + r.action + ") " + getClassName(r) + "(" + _bodyLen + ")" + " 内容： " + log);
+				Log.getLog(this).debug("发送协议：(" + r.module + ":" + r.action + ") " + getClassName(r) + "(" + allBytes.length + ")" + " 内容： " + log);
 			}
 		}
 		
@@ -246,10 +245,22 @@ package com.yo.framework.net
 		
 		public function dispose():void
 		{
-			if(_socket &&　_socket.connected){
+			if(_socket &&　_socket.connected)
+			{
 				_socket.close();
 			}
 			_socket = null;
 		}
+
+		public function get protocol():IProtocol
+		{
+			return _protocol;
+		}
+
+		public function set protocol(value:IProtocol):void
+		{
+			_protocol = value;
+		}
+
 	}
 }

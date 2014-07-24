@@ -23,12 +23,10 @@
 			<attrib value="gameZone" type="uint32_t" info="游戏区 从1开始"/>
 			<attrib value="netType" type="uint8_t" info="1:电信 2:网通"/>
 		</param>
-		<param value="LOGIN" path="S > C" num="2" info="登录到登陆服返回结果 一般返回的都是错误信息">
+		<param value="LOGIN_RESULT" path="S > C" num="2" info="登录到登陆服返回结果 一般返回的都是错误信息">
 			<attrib value="result" type="uint32_t" info="结果 1维护 2未到开服时间 3网关未开"/>
 		</param>
-		<param value="LOGIN_SUCCESS" path="C > S" num="3" info="占个坑" >
-		</param>
-		<param value="LOGIN_SUCCESS" path="S > C" num="4" info="登录成功返回登陆信息">
+		<param value="LOGIN_SUCCESS" path="S > C" num="3" info="登录成功返回登陆信息">
 			<attrib value="accid" type="uint32_t" info="用户id"/>
 			<attrib value="loginTempID" type="uint32_t" info="用户分配的临时id 用于登陆网关的验证"/>
 			<attrib value="account" type="char[32]" info="用户账号"/>
@@ -36,22 +34,18 @@
 			<attrib value="port" type="uint16_t" info="端口"/>
 			<attrib value="desKey" type="char[32]" info="生成的key 用于网关的验证"/>
 		</param>
-		<param value="VERIFY_VERSION" path="C > S" num="11" info="版本号的验证 不对就直接断开连接">
+		<param value="VERIFY_VERSION" path="C > S" num="10" info="版本号的验证 不对就直接断开连接">
 			<attrib value="version" type="uint32_t" info="版本号"/>
 		</param>
-		<param value="VERIFY_VERSION" path="S > C" num="12" info="占个坑">
-		</param>
-		<param value="LOGIN_GATE" path="C > S" num="13" info="登录到网关">
+		<param value="LOGIN_GATE" path="C > S" num="11" info="登录到网关">
 			<attrib value="loginTempID" type="uint32_t" info="登陆返回的临时id"/>
 			<attrib value="accid" type="uint32_t" info="用户ID"/>
 			<attrib value="desKey" type="char[32]" info="用户登录验证key"/>
 		</param>
-		<param value="LOGIN_GATE" path="S > C" num="14" info="登录到网关返回结果">
+		<param value="LOGIN_GATE_RESULT" path="S > C" num="12" info="登录到网关返回结果">
 			<attrib value="result" type="uint8_t" info="结果 1,2其他地方登录 3验证错误 4网关人数满 5版本号不对 6IP冻结 7无效key"/>
 		</param>
-		<param value="SELECT_ROLE_INFO" path="C > S" num="15" info="占个坑">
-		</param>
-		<param value="SELECT_ROLE_INFO" path="S > C" num="16" info="该区所有的角色信息 长度为0时 请发注册协议 为1时 直接发选择角色协议 >1时 玩家选择后再发协议">
+		<param value="SELECT_ROLE_INFO" path="S > C" num="13" info="该区所有的角色信息 长度为0时 请发注册协议 为1时 直接发选择角色协议 >1时 玩家选择后再发协议">
 		</param>
 	</command>
 </root>

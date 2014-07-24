@@ -10,13 +10,19 @@ package com.yo.game.net.response.login
     /*@import*/
 
     /**
-     * 该区所有的角色信息 长度为0时 请发注册协议 为1时 直接发选择角色协议 >1时 玩家选择后再发协议(1:10)
+     * 登录到网关返回结果(1:8)
      */
-    public class SelectRoleInfoResponse implements IResponse
+    public class LoginGateResponse implements IResponse
     {
+        /**
+         * 结果 1,2其他地方登录 3验证错误 4网关人数满 5版本号不对 6IP冻结 7无效key
+         */
+        public var result:uint;
+
         public function read(p:Packet):void
         {
 
+            result = p.readUnsignedByte();
         }
     }
 }

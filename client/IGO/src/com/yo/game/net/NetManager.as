@@ -3,6 +3,7 @@ package com.yo.game.net
 	import com.yo.framework.logger.Log;
 	import com.yo.framework.net.ByteSocket;
 	import com.yo.framework.net.IRequest;
+	import com.yo.game.core.Config;
 	
 	import flash.events.Event;
 

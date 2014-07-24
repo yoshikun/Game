@@ -10,7 +10,7 @@ package com.yo.game.net.response.login
     /*@import*/
 
     /**
-     * 登录成功返回登陆信息(1:3)
+     * 登录成功返回登陆信息(1:4)
      */
     public class LoginSuccessResponse implements IResponse
     {
@@ -42,7 +42,7 @@ package com.yo.game.net.response.login
         /**
          * 生成的key 用于网关的验证
          */
-        public var des_key:String;
+        public var desKey:String;
 
         public function read(p:Packet):void
         {
@@ -52,7 +52,7 @@ package com.yo.game.net.response.login
             account = p.readMultiByte(32, "utf-8");
             gateIp = p.readMultiByte(16, "utf-8");
             port = p.readUnsignedShort();
-            des_key = p.readMultiByte(32, "utf-8");
+            desKey = p.readMultiByte(32, "utf-8");
         }
     }
 }

@@ -13,9 +13,9 @@ package com.yo.game.core
 		
 		public static var loginState:int;
 		
-		public static var host:String = "115.28.2.190";
+		public static var host:String;
 		
-		public static var port:uint = 7778;
+		public static var port:uint;
 		
 		/**
 		 * 语言
