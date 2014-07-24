@@ -1,5 +1,6 @@
 package com.yo.game.ui.login
 {
+	import com.yo.framework.core.SharedObjectManager;
 	import com.yo.framework.logger.Log;
 	import com.yo.framework.manager.resource.ResourceManager;
 	import com.yo.framework.mvc.core.BaseController;
@@ -11,7 +12,6 @@ package com.yo.game.ui.login
 	import com.yo.game.net.NetManager;
 	import com.yo.game.net.Protocol;
 	import com.yo.game.net.request.login.LoginGateRequest;
-	import com.yo.game.net.request.login.LoginRequest;
 	import com.yo.game.net.response.login.LoginResponse;
 	import com.yo.game.scene.SceneManager;
 	
@@ -30,7 +30,7 @@ package com.yo.game.ui.login
 			GlobalEventDispather.addEventListener(GlobalEvent.LOGIN_BTN_CLICK, __loginBtnClick);
 			
 			NetManager.instance.addEventListener(Event.CONNECT, __connect);
-			NetManager.instance.addEventListener(Protocol.LOGIN, __loginResponse);
+			NetManager.instance.addEventListener(Protocol.LOGIN_GATE, __loginGateResponse);
 		}
 		
 		override protected function init():void{
@@ -55,7 +55,7 @@ package com.yo.game.ui.login
 		/**
 		 * 结果 0成功,1维护 2未到开服时间 3网关未开
 		 */		
-		private function __loginResponse(e:ProtocolEvent):void
+		private function __loginGateResponse(e:ProtocolEvent):void
 		{
 			var r:LoginResponse = e.response as LoginResponse;
 			switch(r.result){
@@ -76,29 +76,19 @@ package com.yo.game.ui.login
 		
 		private function __connect(e:Event):void
 		{
-			requestLogin();
-		}
-		
-		/**
-		 * 请求登陆
-		 */		
-		private function requestLogin():void
-		{
-			var r:LoginRequest = new LoginRequest();
-			r.account = model.account;
-			r.passwd = model.password;
-			r.gameType = 1000;
-			r.gameZone = 1;
-			r.netType = 1;
-			NetManager.instance.send(r);
+			requestLoginGate();
 		}
 		
 		private function requestLoginGate():void
 		{
-			var request:LoginGateRequest = new LoginGateRequest();
-			request.accid = 2;
-			request.desKey = "0";
-			NetManager.instance.send(request);
+			var data:Object = {account:model.account};
+			SharedObjectManager.instance.setProperty(data);
+			
+			var r:LoginGateRequest = new LoginGateRequest();
+			r.accid = uint(model.account);
+			r.desKey = "";
+			r.loginTempID = 0;
+			NetManager.instance.send(r);
 		}
 		
 		override protected function initModel():void{
@@ -123,7 +113,7 @@ package com.yo.game.ui.login
 			GlobalEventDispather.removeEventListener(GlobalEvent.LOGIN_BTN_CLICK, __loginBtnClick);
 			
 			NetManager.instance.removeEventListener(Event.CONNECT, __connect);
-			NetManager.instance.removeEventListener(Protocol.LOGIN, __loginResponse);
+			NetManager.instance.removeEventListener(Protocol.LOGIN_GATE, __loginGateResponse);
 			
 			ResourceManager.instance.clearLoader("Login");
 		}

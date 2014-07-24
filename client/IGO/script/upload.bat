@@ -1,0 +1,1 @@
+winscp.exe /console /script=upload.ini

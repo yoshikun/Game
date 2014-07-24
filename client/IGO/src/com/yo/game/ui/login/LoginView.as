@@ -1,5 +1,6 @@
 package com.yo.game.ui.login
 {
+	import com.yo.framework.core.SharedObjectManager;
 	import com.yo.framework.manager.resource.ResourceManager;
 	import com.yo.framework.manager.ui.UIManager;
 	import com.yo.framework.mvc.core.BaseView;
@@ -37,6 +38,7 @@ package com.yo.game.ui.login
 			_registBtn = _asset["registBtn"];
 			
 			_accountTf = _asset["accountTf"];
+			_accountTf.text = SharedObjectManager.instance.getProperty("account");
 			_passwordTf = _asset["passwordTf"];
 			_passwordTf.displayAsPassword = true;
 		}

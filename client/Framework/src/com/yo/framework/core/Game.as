@@ -173,6 +173,8 @@ package com.yo.framework.core
 			
 			//键盘管理
 			InputManager.instance.setup(stage);
+			//共享
+			SharedObjectManager.instance.setup();
 		}
 		
 		/**
