@@ -12,6 +12,7 @@ package com.yo.game.ui.login
 	import com.yo.game.net.NetManager;
 	import com.yo.game.net.Protocol;
 	import com.yo.game.net.request.login.LoginGateRequest;
+	import com.yo.game.net.response.login.LoginGateResponse;
 	import com.yo.game.net.response.login.LoginResponse;
 	import com.yo.game.scene.SceneManager;
 	
@@ -57,7 +58,7 @@ package com.yo.game.ui.login
 		 */		
 		private function __loginGateResponse(e:ProtocolEvent):void
 		{
-			var r:LoginResponse = e.response as LoginResponse;
+			var r:LoginGateResponse = e.response as LoginGateResponse;
 			switch(r.result){
 				case 0:
 					Log.getLog(this).debug("登陆成功");

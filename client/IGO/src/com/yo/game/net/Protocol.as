@@ -7,11 +7,15 @@ package com.yo.game.net
 	import com.yo.game.net.response.login.VerifyVersionResponse;
 	import com.yo.game.net.response.login.LoginGateResponse;
 	import com.yo.game.net.response.login.SelectRoleInfoResponse;
+	import com.yo.game.net.response.login.CheckNameResponse;
+	import com.yo.game.net.response.login.CreateSelectUserResponse;
 	import com.yo.game.net.request.login.LoginRequest;
 	import com.yo.game.net.request.login.LoginSuccessRequest;
 	import com.yo.game.net.request.login.VerifyVersionRequest;
 	import com.yo.game.net.request.login.LoginGateRequest;
 	import com.yo.game.net.request.login.SelectRoleInfoRequest;
+	import com.yo.game.net.request.login.CheckNameRequest;
+	import com.yo.game.net.request.login.CreateSelectUserRequest;
 	public class Protocol implements IProtocol
 	{
 		private static var _protoMap:Object = {
@@ -43,9 +47,19 @@ package com.yo.game.net
 		 */
 		public static const SELECT_ROLE_INFO:String = "1:10";
 		
+		/**
+		 * 返回检查name结果
+		 */
+		public static const CHECK_NAME:String = "1:12";
+		
+		/**
+		 * 创建角色返回
+		 */
+		public static const CREATE_SELECT_USER:String = "1:14";
+		
 		public function Protocol()
 		{
-		
+			register();
 		}
 		
 		/**
@@ -63,16 +77,14 @@ package com.yo.game.net
 		 * 注册协议 
 		 */    
 		public function register():void {
-			_protoMap[_key(LOGIN)] = LoginResponse;
-			_protoMap[_key(LOGIN_SUCCESS)] = LoginSuccessResponse;
-			_protoMap[_key(VERIFY_VERSION)] = VerifyVersionResponse;
-			_protoMap[_key(LOGIN_GATE)] = LoginGateResponse;
-			_protoMap[_key(SELECT_ROLE_INFO)] = SelectRoleInfoResponse;
+			_protoMap[LOGIN] = LoginResponse;
+			_protoMap[LOGIN_SUCCESS] = LoginSuccessResponse;
+			_protoMap[VERIFY_VERSION] = VerifyVersionResponse;
+			_protoMap[LOGIN_GATE] = LoginGateResponse;
+			_protoMap[SELECT_ROLE_INFO] = SelectRoleInfoResponse;
+			_protoMap[CHECK_NAME] = CheckNameResponse;
+			_protoMap[CREATE_SELECT_USER] = CreateSelectUserResponse;
 			}
-		
-		private static function _key(o:Object):String {
-			return _toString(o.module, o.action);
-		}
 		
 		private static function _toString(module:uint, action:uint):String {
 			return module + ":" + action;

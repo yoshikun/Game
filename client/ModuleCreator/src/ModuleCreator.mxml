@@ -6,7 +6,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.yile.framework.loader.BulkLoader;
+			import br.com.stimuli.loading.BulkLoader;
 			
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;

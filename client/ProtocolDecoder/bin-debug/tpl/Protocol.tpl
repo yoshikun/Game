@@ -24,7 +24,7 @@ package com.yo.game.net
 		{{/data}}
 		public function Protocol()
 		{
-		
+			register();
 		}
 		
 		/**
@@ -43,12 +43,8 @@ package com.yo.game.net
 		 */    
 		public function register():void {
 			{{#data}}
-			_protoMap[_key({{value}})] = {{responseClassName}};
+			_protoMap[{{value}}] = {{responseClassName}};
 			{{/data}}
-		}
-		
-		private static function _key(o:Object):String {
-			return _toString(o.module, o.action);
 		}
 		
 		private static function _toString(module:uint, action:uint):String {

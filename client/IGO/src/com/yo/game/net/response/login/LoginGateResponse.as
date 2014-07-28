@@ -15,7 +15,7 @@ package com.yo.game.net.response.login
     public class LoginGateResponse implements IResponse
     {
         /**
-         * 结果 1,2其他地方登录 3验证错误 4网关人数满 5版本号不对 6IP冻结 7无效key
+         * 结果 0:成功 1:失败
          */
         public var result:uint;
 

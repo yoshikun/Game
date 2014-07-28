@@ -40,15 +40,34 @@ package com.yo.framework.manager
 			keyStatus = [];
 			keysHit = [];
 			
+			_area.doubleClickEnabled = true;
+			_area.addEventListener(MouseEvent.RIGHT_CLICK, __rightClickHandler);
+			_area.addEventListener(MouseEvent.DOUBLE_CLICK, __doubleClickHandler);
+			_area.addEventListener(MouseEvent.CLICK, __clickHandler);
 			_area.addEventListener(MouseEvent.MOUSE_WHEEL, __mouseWheel);
-			_area.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
-			_area.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
-			_area.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
-			_area.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
-			_area.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
-			_area.addEventListener(flash.events.FocusEvent.FOCUS_OUT, focusOutHandler);
-			_area.addEventListener(flash.events.FocusEvent.KEY_FOCUS_CHANGE, focusOutHandler);
-			_area.addEventListener(flash.events.FocusEvent.MOUSE_FOCUS_CHANGE, focusOutHandler);
+			_area.addEventListener(KeyboardEvent.KEY_DOWN, __keyDownHandler);
+			_area.addEventListener(KeyboardEvent.KEY_UP, __keyUpHandler);
+			_area.addEventListener(MouseEvent.MOUSE_DOWN, __mouseDownHandler);
+			_area.addEventListener(MouseEvent.MOUSE_UP, __mouseUpHandler);
+			_area.addEventListener(MouseEvent.MOUSE_MOVE, __mouseMoveHandler);
+			_area.addEventListener(flash.events.FocusEvent.FOCUS_OUT, __focusOutHandler);
+			_area.addEventListener(flash.events.FocusEvent.KEY_FOCUS_CHANGE, __focusOutHandler);
+			_area.addEventListener(flash.events.FocusEvent.MOUSE_FOCUS_CHANGE, __focusOutHandler);
+		}
+		
+		protected function __clickHandler(e:MouseEvent):void
+		{
+			
+		}
+		
+		protected function __doubleClickHandler(e:MouseEvent):void
+		{
+			trace("double");
+		}
+		
+		protected function __rightClickHandler(e:MouseEvent):void
+		{
+			
 		}
 		
 		private function __mouseWheel(e:MouseEvent):void
@@ -78,35 +97,35 @@ package com.yo.framework.manager
 			_area.removeEventListener(type, listener);
 		}
 		
-		public function keyDownHandler(e:KeyboardEvent):void
+		public function __keyDownHandler(e:KeyboardEvent):void
 		{
 			keyStatus[e.keyCode] = true;
 			keysHit[e.keyCode] = true;
 		}
 		
-		public function keyUpHandler(e:KeyboardEvent):void
+		public function __keyUpHandler(e:KeyboardEvent):void
 		{
 			keyStatus[e.keyCode] = false;
 		}
 		
-		public function mouseDownHandler(e:MouseEvent):void
+		public function __mouseDownHandler(e:MouseEvent):void
 		{
 			_mouseStatus = 1;
 			_mouseButtonHit = 1;
 		}
 		
-		public function mouseUpHandler(e:MouseEvent):void
+		public function __mouseUpHandler(e:MouseEvent):void
 		{
 			_mouseStatus = 0;
 		}
 		
-		public function mouseMoveHandler(e:MouseEvent):void
+		public function __mouseMoveHandler(e:MouseEvent):void
 		{
 			_mouseX = e.stageX;
 			_mouseY = e.stageY;
 		}
 		
-		public function focusOutHandler(e:flash.events.FocusEvent):void
+		public function __focusOutHandler(e:flash.events.FocusEvent):void
 		{
 			var keyStatusCount:uint = 0;
 			if(last)

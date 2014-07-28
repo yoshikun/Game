@@ -94,13 +94,7 @@ package com.yo.framework.core
 		 * 自动测试客户端是debug版本,还是release版本
 		 */		
 		protected function get debugMode():Boolean{
-			var obj:Object;
-			try{
-				trace(obj.parent);
-			}catch(e:Error){
-				return true;
-			}
-			return false;
+			return new Error().getStackTrace().search(/:[0-9]+]$/m) > -1;
 		}
 		
 		/**
@@ -227,7 +221,7 @@ package com.yo.framework.core
 		 */		
 		protected function getCompilationDate():Date {
 			var swf:ByteArray = stage.loaderInfo.bytes;
-			if (!swf){
+			if (!swf) {
 				return new Date();
 			}
 			swf.endian = Endian.LITTLE_ENDIAN;

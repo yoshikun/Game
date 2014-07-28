@@ -18,6 +18,11 @@ package com.yo.game.core
 		public static var port:uint;
 		
 		/**
+		 * 调试模式 
+		 */		
+		public static var debug:Boolean;
+		
+		/**
 		 * 语言
 		 */
 		public static var lang:String = "zh_cn";

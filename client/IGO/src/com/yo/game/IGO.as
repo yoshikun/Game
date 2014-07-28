@@ -1,6 +1,7 @@
 package com.yo.game
 {
 	import com.yo.framework.core.Game;
+	import com.yo.framework.logger.Log;
 	import com.yo.framework.manager.layer.LayerManager;
 	import com.yo.framework.manager.resource.ResourceManager;
 	import com.yo.framework.manager.ui.UIManager;
@@ -9,6 +10,10 @@ package com.yo.game
 	import com.yo.game.enum.State;
 	import com.yo.game.scene.SceneManager;
 	import com.yo.game.scene.SceneStateCreator;
+	
+	import flash.events.MouseEvent;
+	
+	[Frame(factoryClass="com.yo.game.core.PreLoader")]
 	
 	[SWF(width="1000", height="600", frameRate="60", backgroundColor="#0")]
 	public class IGO extends Game
@@ -34,6 +39,12 @@ package com.yo.game
 			Config.encrypt = Boolean(int(_config.encrypt));
 			
 			Config.stage = stage;
+			
+			var params:Object = loaderInfo.parameters;
+			for(var param:String in params){
+				Config[param] = params[param];
+			}
+			Log.getLog(this).debug(Config["debug"] ? "进入调试模式" : "");
 		}
 		
 		override protected function initManager():void{

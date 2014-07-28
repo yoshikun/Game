@@ -14,9 +14,32 @@ package com.yo.game.net.response.login
      */
     public class SelectRoleInfoResponse implements IResponse
     {
+        /**
+         * 角色个数
+         */
+        public var num:uint;
+
+        /**
+         * 可供选择角色的信息
+         */
+        public var infoList:Array /* of SelectUserInfo */;
+
         public function read(p:Packet):void
         {
 
+            num = p.readUnsignedShort();
+			infoList = [];
+            for(var i:int = 0; i < num; i++){
+                var selectUserInfo:SelectUserInfo = new SelectUserInfo();
+                selectUserInfo.accid = p.readUnsignedInt();
+                selectUserInfo.charid = p.readUnsignedInt();
+                selectUserInfo.nickName = p.readMultiByte(32, "utf-8");
+                selectUserInfo.country = p.readUnsignedShort();
+                selectUserInfo.level = p.readUnsignedShort();
+                selectUserInfo.face = p.readUnsignedByte();
+                selectUserInfo.bitmask = p.readUnsignedInt();
+                infoList.push(selectUserInfo);
+            }
         }
     }
 }

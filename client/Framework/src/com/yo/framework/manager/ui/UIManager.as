@@ -13,8 +13,6 @@ package com.yo.framework.manager.ui
 	{
 		private static var _instance:UIManager;
 		
-		private var _container:Sprite;
-		
 		public static const BELLOW:int = 0;
 		
 		public static const MIDDLE:int = 1;
@@ -25,19 +23,19 @@ package com.yo.framework.manager.ui
 		
 		private var _layers:Array;
 
+		private var _container:Sprite;
+		
 		public function UIManager()
 		{
 		}
 		
 		public function setup():void{
-			var layer:Layer;
-			
 			_container = new Sprite();
 			_layers = [];
 			
 			for(var i:int = 0; i < COUNT; i++) 
 			{
-				layer = new Layer();
+				var layer:Layer = new Layer();
 				_container.addChild(layer);
 				_layers.push(layer);
 			}

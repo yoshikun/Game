@@ -39,7 +39,7 @@ package {{packagePath}}
 		override public function update():void{
 			super.update();
 			
-			if(){
+			if(_vo){
 			
 			}else{
 			
