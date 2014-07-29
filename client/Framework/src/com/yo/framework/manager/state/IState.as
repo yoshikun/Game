@@ -1,8 +1,8 @@
 package com.yo.framework.manager.state
 {
-	import com.yo.framework.mvc.interfaces.IClearable;
+	import com.yo.framework.mvc.interfaces.IDisposable;
 
-	public interface IState extends IClearable
+	public interface IState extends IDisposable
 	{
 		function enter():void;
 

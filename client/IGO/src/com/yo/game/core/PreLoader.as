@@ -1,6 +1,6 @@
 package com.yo.game.core
 {
-	import com.yo.framework.core.Macro;
+	import com.yo.framework.utils.Macro;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Loader;

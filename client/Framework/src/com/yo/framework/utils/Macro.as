@@ -1,6 +1,6 @@
-package com.yo.framework.core
+package com.yo.framework.utils
 {
-	import com.yo.framework.mvc.interfaces.IClearable;
+	import com.yo.framework.mvc.interfaces.IDisposable;
 	
 	import flash.display.DisplayObject;
 
@@ -34,7 +34,7 @@ package com.yo.framework.core
 			animal.y = 0;
 		}
 		
-		public static function dipose(source:IClearable):void{
+		public static function dipose(source:IDisposable):void{
 			if(source){
 				source.dispose();
 			}

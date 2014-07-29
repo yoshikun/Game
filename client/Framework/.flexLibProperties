@@ -2,6 +2,15 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="com.yo.mvc.core.BaseComponent"/>
+    <classEntry path="com.yo.framework.objects.IGameObject"/>
+    <classEntry path="com.yo.framework.objects.IRenderer"/>
+    <classEntry path="com.yo.framework.objects.IEntity"/>
+    <classEntry path="com.yo.framework.objects.IEntityComponent"/>
+    <classEntry path="com.yo.framework.objects.IRenderable"/>
+    <classEntry path="com.yo.framework.objects.DisplayObjectRenderer"/>
+    <classEntry path="com.yo.framework.objects.BitmapRenderer"/>
+    <classEntry path="com.yo.framework.objects.IAnimator"/>
+    <classEntry path="com.yo.framework.objects.IAnimation"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -1,11 +1,11 @@
 package com.yo.framework.mvc.core
 {
-	import com.yo.framework.mvc.interfaces.IClearable;
+	import com.yo.framework.mvc.interfaces.IDisposable;
 	
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	
-	public class BaseComponent extends Sprite implements IClearable
+	public class BaseComponent extends Sprite implements IDisposable
 	{
 		protected var _asset:MovieClip;
 		

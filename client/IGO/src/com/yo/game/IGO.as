@@ -11,6 +11,7 @@ package com.yo.game
 	import com.yo.game.scene.SceneManager;
 	import com.yo.game.scene.SceneStateCreator;
 	
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	[Frame(factoryClass="com.yo.game.core.PreLoader")]
@@ -45,6 +46,7 @@ package com.yo.game
 				Config[param] = params[param];
 			}
 			Log.getLog(this).debug(Config["debug"] ? "进入调试模式" : "");
+			
 		}
 		
 		override protected function initManager():void{

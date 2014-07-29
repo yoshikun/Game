@@ -1,6 +1,6 @@
 package com.yo.framework.mvc.interfaces
 {
-	public interface IClearable
+	public interface IDisposable
 	{
 		function dispose():void;
 	}
