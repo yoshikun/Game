@@ -7,7 +7,7 @@ package com.yo.game.scene
 	import flash.display.MovieClip;
 	import flash.events.Event;
 
-	public class CityScene extends GameScene
+	public class CityScene extends PathfindingScene
 	{
 		public function CityScene()
 		{

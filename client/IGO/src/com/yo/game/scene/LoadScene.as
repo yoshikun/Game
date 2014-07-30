@@ -1,6 +1,6 @@
 package com.yo.game.scene
 {
-	import com.yo.game.enum.State;
+	import com.yo.game.enum.Scene;
 
 	public class LoadScene extends GameScene
 	{
@@ -11,7 +11,7 @@ package com.yo.game.scene
 		
 		override public function enter():void{
 			super.enter();
-			SceneManager.instance.changeState(State.CREATE_ROLE);
+			SceneManager.instance.changeState(Scene.CREATE_ROLE);
 		}
 		
 		override public function update():void{

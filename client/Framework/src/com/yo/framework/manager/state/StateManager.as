@@ -1,6 +1,5 @@
 package com.yo.framework.manager.state
 {
-
 	/**
 	 * 状态机
 	 */	
@@ -23,23 +22,27 @@ package com.yo.framework.manager.state
 		
 		public function update():void
 		{
-			if(_currentState){
+			if(_currentState)
+			{
 				_currentState.update();
 			}
 		}
 		
 		public function changeState(name:String):void
 		{
-			if(!_stateCreator){
+			if(!_stateCreator)
+			{
 				return;
 			}
 			var nextState:IState = _stateCreator.getState(name);
 			
-			if(!nextState || nextState == _currentState){
+			if(!nextState || nextState == _currentState)
+			{
 				return;
 			}
 			
-			if(_currentState){
+			if(_currentState)
+			{
 				_currentState.exit();
 				_currentState = null;
 			}

@@ -8,7 +8,7 @@ package com.yo.game.ui.login
 	import com.yo.game.core.Config;
 	import com.yo.game.core.GlobalEvent;
 	import com.yo.game.core.GlobalEventDispather;
-	import com.yo.game.enum.State;
+	import com.yo.game.enum.Scene;
 	import com.yo.game.net.NetManager;
 	import com.yo.game.net.Protocol;
 	import com.yo.game.net.request.login.LoginGateRequest;
@@ -62,7 +62,7 @@ package com.yo.game.ui.login
 			switch(r.result){
 				case 0:
 					Log.getLog(this).debug("登陆成功");
-					SceneManager.instance.changeState(State.LOAD_SCENE);
+					SceneManager.instance.changeState(Scene.LOAD_SCENE);
 					break;
 				case 1:
 					break;

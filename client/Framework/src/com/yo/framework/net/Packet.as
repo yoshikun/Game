@@ -6,7 +6,6 @@ package com.yo.framework.net
 	
 	/**
 	 * 基本数据包
-	 * @author Dalton
 	 */
 	public class Packet extends ByteArray 
 	{

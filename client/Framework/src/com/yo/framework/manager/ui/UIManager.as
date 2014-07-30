@@ -1,6 +1,6 @@
 package com.yo.framework.manager.ui
 {
-	import com.yo.framework.manager.layer.Layer;
+	import com.yo.framework.manager.layer.GameLayer;
 	import com.yo.framework.manager.layer.LayerManager;
 	
 	import flash.display.DisplayObject;
@@ -35,24 +35,24 @@ package com.yo.framework.manager.ui
 			
 			for(var i:int = 0; i < COUNT; i++) 
 			{
-				var layer:Layer = new Layer();
+				var layer:GameLayer = new GameLayer();
 				_container.addChild(layer);
 				_layers.push(layer);
 			}
 			
-			layer = LayerManager.instance.getLayer(Layer.UI);
+			layer = LayerManager.instance.getLayer(GameLayer.UI);
 			layer.addChild(_container);
 		}
 		
 		public function addChild(displayObject:DisplayObject, index:int = 0):void{
-			var layer:Layer = _layers[index];
+			var layer:GameLayer = _layers[index];
 			layer.addChild(displayObject);
 		}
 		
 		public function clear():void{
 			for(var i:int = 0; i < COUNT; i++) 
 			{
-				var layer:Layer = _layers[i] as Layer;
+				var layer:GameLayer = _layers[i] as GameLayer;
 				layer.removeChildren();
 			}
 		}

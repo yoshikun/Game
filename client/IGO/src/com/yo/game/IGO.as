@@ -7,7 +7,7 @@ package com.yo.game
 	import com.yo.framework.manager.ui.UIManager;
 	import com.yo.game.core.Config;
 	import com.yo.game.core.URLCreator;
-	import com.yo.game.enum.State;
+	import com.yo.game.enum.Scene;
 	import com.yo.game.scene.SceneManager;
 	import com.yo.game.scene.SceneStateCreator;
 	
@@ -26,7 +26,7 @@ package com.yo.game
 		
 		override protected function init():void{
 			super.init();
-			SceneManager.instance.changeState(State.LOGIN_SCENE);
+			SceneManager.instance.changeState(Scene.LOGIN_SCENE);
 		}
 		
 		override protected function initModel():void{

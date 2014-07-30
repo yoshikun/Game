@@ -9,9 +9,5 @@ package com.yo.framework.manager.state
 		function update():void;
 		
 		function exit():void;
-		
-		function get name():String;
-		
-		function set name(value:String):void;
 	}
 }

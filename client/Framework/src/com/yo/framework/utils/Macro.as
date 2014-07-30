@@ -23,6 +23,13 @@ package com.yo.framework.utils
 			}
 		}
 		
+		public static function saveDipose(source:IDisposable):void{
+			if(source){
+				source.dispose();
+			}
+			source = null;
+		}
+		
 		public static function eatPos(hunter:DisplayObject, animal:DisplayObject):void{
 			if(!hunter || !animal){
 				return;
@@ -32,13 +39,6 @@ package com.yo.framework.utils
 			
 			animal.x = 0;
 			animal.y = 0;
-		}
-		
-		public static function dipose(source:IDisposable):void{
-			if(source){
-				source.dispose();
-			}
-			source = null;
 		}
 	}
 }
