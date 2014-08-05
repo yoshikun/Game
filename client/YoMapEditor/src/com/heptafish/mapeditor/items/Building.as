@@ -10,54 +10,48 @@ package com.heptafish.mapeditor.items
 	
 	public class Building extends BaseDisplayObject
 	{
-		public var id:int;
-		public var _bitMap:Bitmap;//显示图像
-		private var _configXml:XML;//配置
+		public var bitmap:Bitmap;
+		
 		public var init:Boolean = false;
+		
 		private var _imageLoader:ImageLoader;
 		
-		public function Building(pid:* = null)
+		private var _info:BuildingInfo;
+		
+		public function Building()
 		{
-			this.id = pid;
+			initView();
+		}
+		
+		private function initView():void
+		{
+			bitmap = new Bitmap();
+			addChild(bitmap);
+			
+			_imageLoader = new ImageLoader();
+			_imageLoader.addEventListener(Event.COMPLETE, __imageLoaded);
 		}
 		
 		public function setBitMap(bitMapData:BitmapData):void{
-			_bitMap = new Bitmap(bitMapData);
-			addChild(_bitMap);
+			bitmap.bitmapData = bitMapData;
 		}
 		
-		public function reset(bitMapData:BitmapData,configXml:XML):void{
-			if(numChildren > 0)
-				removeChildAt(0);
-			_bitMap = new Bitmap(bitMapData);
-			addChild(_bitMap);
-			_configXml = configXml.copy();
-		}
-		
-		public function get configXml():XML{
-			return _configXml;//.copy();
-		}
-		public function set configXml(configXml:XML):void{
-			_configXml = configXml.copy();
-		}
-		public function imageLoaded(evet:Event):void{
-//			var file:File = File(evet.target);
-//			_bitMap = HeptaFishImageUtils.ByteArrayToBitmap(file.data);
-//			file.removeEventListener(Event.COMPLETE,this.imageLoaded);
-			_bitMap = new Bitmap(_imageLoader.data);
-			addChild(_bitMap);
-			_imageLoader.removeEventListener(Event.COMPLETE,imageLoaded);
-			_imageLoader = null;
-//			HeptaFishGC.gc();
+		public function __imageLoaded(evet:Event):void{
+			bitmap.bitmapData = _imageLoader.data
 		}
 		
 		public function loadImage():void{
-			_imageLoader = new ImageLoader();
-			_imageLoader.addEventListener(Event.COMPLETE,imageLoaded);
-			//trace();
-			_imageLoader.load(File(MapEditorConstant.LIB_HOME.resolvePath(String(_configXml.@file[0]))).nativePath);
+			_imageLoader.load(MapEditorConstant.LIB_HOME.resolvePath(_info.id).nativePath);
 		}
-		
 
+		public function get info():BuildingInfo
+		{
+			return _info;
+		}
+
+		public function set info(value:BuildingInfo):void
+		{
+			_info = value;
+		}
 	}
 }

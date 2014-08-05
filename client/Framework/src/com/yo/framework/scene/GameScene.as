@@ -1,9 +1,10 @@
 package com.yo.framework.scene
 {
+	import com.yo.framework.ai.FSM.IState;
 	import com.yo.framework.interfaces.IEntity;
 	import com.yo.framework.interfaces.IEntityContainer;
 	import com.yo.framework.manager.layer.LayerManager;
-	import com.yo.framework.manager.state.IState;
+	import com.yo.framework.manager.scene.IScene;
 	import com.yo.framework.utils.Macro;
 	import com.yo.framework.utils.Transfer;
 	
@@ -13,7 +14,7 @@ package com.yo.framework.scene
 	import flash.geom.Rectangle;
 	import flash.sampler.getSize;
 	
-	public class GameScene implements IState, IEntityContainer
+	public class GameScene implements IScene, IEntityContainer
 	{
 		protected var _bound:Rectangle;
 		
@@ -25,6 +26,8 @@ package com.yo.framework.scene
 		 * 所有实体 
 		 */		
 		protected var _entityVector:Vector.<IEntity>;
+		
+		protected var _name:String;
 		
 		public function GameScene()
 		{
@@ -102,7 +105,31 @@ package com.yo.framework.scene
 		
 		public function enter():void
 		{            
+			init();
+		}
+		
+		protected function init():void{
+			initModel();
+			initController();
+			initEvent();
+			initView();
+		}
+		
+		protected function initModel():void
+		{
 			_entityVector = new Vector.<IEntity>();
+		}
+		
+		protected function initController():void
+		{
+		}
+		
+		protected function initEvent():void
+		{
+		}
+		
+		protected function initView():void
+		{
 		}
 		
 		private function particleRenderState(x:Number, y:Number, z:Number):Point
@@ -122,7 +149,7 @@ package com.yo.framework.scene
 		 * 清理实体
 		 */		
 		protected function clearEntityVector():void {
-			if(_entityVector)
+			if(_entityVector && _entityVector.length > 0)
 			{
 				while(_entityVector[0])
 				{
@@ -145,6 +172,16 @@ package com.yo.framework.scene
 		public function set bound(value:Rectangle):void
 		{
 			_bound = value;
+		}
+
+		public function get name():String
+		{
+			return _name;
+		}
+
+		public function set name(value:String):void
+		{
+			_name = value;
 		}
 
 		

@@ -13,8 +13,7 @@ package com.yo.game.ui.login
 	import com.yo.game.net.Protocol;
 	import com.yo.game.net.request.login.LoginGateRequest;
 	import com.yo.game.net.response.login.LoginGateResponse;
-	import com.yo.game.net.response.login.LoginResponse;
-	import com.yo.game.scene.SceneManager;
+	import com.yo.game.scene.GameSceneManager;
 	
 	import flash.events.Event;
 	
@@ -62,7 +61,7 @@ package com.yo.game.ui.login
 			switch(r.result){
 				case 0:
 					Log.getLog(this).debug("登陆成功");
-					SceneManager.instance.changeState(Scene.LOAD_SCENE);
+					GameSceneManager.instance.changeScene(Scene.LOAD_SCENE);
 					break;
 				case 1:
 					break;

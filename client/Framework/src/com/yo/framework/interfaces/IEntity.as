@@ -7,9 +7,9 @@ package com.yo.framework.interfaces
 
 	public interface IEntity extends IGameObject, IUpdateable, IRenderable
 	{
-		function addComponent(component:IEntityComponent):void;
+		function addComponent(component:IComponent):void;
 		
-		function removeComponent(component:IEntityComponent):void;
+		function removeComponent(component:IComponent):void;
 		
 		function getRenderState():RenderState;
 	}

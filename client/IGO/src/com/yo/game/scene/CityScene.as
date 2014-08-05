@@ -3,11 +3,12 @@ package com.yo.game.scene
 	import com.yo.framework.logger.Log;
 	import com.yo.framework.manager.resource.ResourceManager;
 	import com.yo.framework.manager.ui.UIManager;
+	import com.yo.framework.scene.PathFindingScene;
 	
 	import flash.display.MovieClip;
 	import flash.events.Event;
 
-	public class CityScene extends PathfindingScene
+	public class CityScene extends PathFindingScene
 	{
 		public function CityScene()
 		{

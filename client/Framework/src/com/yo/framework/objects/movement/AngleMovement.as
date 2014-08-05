@@ -11,7 +11,7 @@ package com.yo.framework.objects.movement
 			_angle = angle;
 		}
 		override public function update():void {
-			owner.move(_angle);
+			_owner.move(_angle);
 		}
 	}
 }

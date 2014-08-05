@@ -3,11 +3,10 @@ package com.yo.framework.ai.pathfinder
 	import com.yo.framework.ai.graph.GraphEdge;
 	import com.yo.framework.ai.graph.NaviGraphNode;
 	import com.yo.framework.ai.graph.SparseGraph;
-	import com.yo.framework.core.FP;
 	import com.yo.framework.geom.Geometry;
 	import com.yo.framework.geom.Polygon;
-	import com.yo.framework.interfaces.ITransfer;
 	import com.yo.framework.logger.Log;
+	import com.yo.framework.utils.Transfer;
 	import com.yo.framework.utils.Vector2D;
 	
 	import flash.display.Sprite;
@@ -24,8 +23,6 @@ package com.yo.framework.ai.pathfinder
 		
 		private var _astar:AStar;
 		
-		private var _transfer:ITransfer;
-		
 		private var _debugLayer:Sprite;
 		
 		private var _graphLayer:Sprite;
@@ -36,11 +33,10 @@ package com.yo.framework.ai.pathfinder
 		
 		private var _pathLayer:Sprite;
 		
-		public function RectGrid(graph:SparseGraph, obstacles:Vector.<Polygon>, transfer:ITransfer)
+		public function RectGrid(graph:SparseGraph, obstacles:Vector.<Polygon>)
 		{
 			_naviGraph = graph;
 			_obstacles = obstacles;
-			_transfer = transfer;
 			
 			_astar = new AStar(_naviGraph);
 			
@@ -76,8 +72,8 @@ package com.yo.framework.ai.pathfinder
 				return paths;
 			}
 			
-			var startNodeIndex:int = _transfer.getNodeIndex(startPoint);
-			var endNodeIndex:int = _transfer.getNodeIndex(endPoint);
+			var startNodeIndex:int = Transfer.instance.getNodeIndex(startPoint);
+			var endNodeIndex:int = Transfer.instance.getNodeIndex(endPoint);
 			
 			var opath:Vector.<int> = searchNodePath(startNodeIndex, endNodeIndex)
 			
@@ -86,7 +82,7 @@ package com.yo.framework.ai.pathfinder
 			{
 				var node:NaviGraphNode = _naviGraph.getNode(opath[j]) as NaviGraphNode;
 				if (node) {
-					paths[j] = new Vector2D(node.position.x * _transfer.cellWidth + _transfer.cellWidth / 2, node.position.y * _transfer.cellHeight + _transfer.cellWidth / 2);
+					paths[j] = new Vector2D(node.position.x * Transfer.instance.cellWidth + Transfer.instance.cellWidth / 2, node.position.y * Transfer.instance.cellHeight + Transfer.instance.cellWidth / 2);
 				}
 			}
 			
@@ -152,8 +148,8 @@ package com.yo.framework.ai.pathfinder
 			for each (var node:NaviGraphNode in _naviGraph.nodes) {
 				if (!node || node.type == 1) continue;
 				var i:int = node.index;
-				current.x = int(i % _transfer.maxColumn);
-				current.y = int(i / _transfer.maxColumn);
+				current.x = int(i % Transfer.instance.maxColumn);
+				current.y = int(i / Transfer.instance.maxColumn);
 				
 				var distSQ:int = current.distSQ(endPoint);
 				var distToStartSQ:int = current.distSQ(startPoint);
@@ -210,15 +206,15 @@ package com.yo.framework.ai.pathfinder
 		private function drawPolygon(node:NaviGraphNode, color:int = 0xFF0000):void{
 			var vertices:Vector.<Vector2D> = node.polygon.vertices;
 			//多边形的起点位置
-			var xpos:int = _transfer.getScreenX(vertices[0].x);
-			var ypos:int = _transfer.getScreenY(vertices[0].y);
+			var xpos:int = Transfer.instance.getScreenX(vertices[0].x);
+			var ypos:int = Transfer.instance.getScreenY(vertices[0].y);
 			
 			_obstacleLayer.graphics.lineStyle(1, 0x0, 0.3);
 			_obstacleLayer.graphics.beginFill(color, 0.3);
 			_obstacleLayer.graphics.moveTo(xpos, ypos);
 			
 			for (var i:int=1; i<vertices.length; i++) {
-				_obstacleLayer.graphics.lineTo(_transfer.getScreenX(vertices[i].x), _transfer.getScreenY(vertices[i].y));
+				_obstacleLayer.graphics.lineTo(Transfer.instance.getScreenX(vertices[i].x), Transfer.instance.getScreenY(vertices[i].y));
 			}
 			_obstacleLayer.graphics.lineTo(xpos, ypos);
 			_obstacleLayer.graphics.endFill();
@@ -256,18 +252,18 @@ package com.yo.framework.ai.pathfinder
 			var layer:Sprite = _pathLayer;
 			layer.graphics.clear();
 			layer.graphics.lineStyle(2, 0xFF0000, 0.7);
-			layer.graphics.moveTo(_transfer.getScreenX(startPoint.x), _transfer.getScreenY(startPoint.y));
-			layer.graphics.drawCircle(_transfer.getScreenX(startPoint.x), _transfer.getScreenY(startPoint.y), 5);
+			layer.graphics.moveTo(Transfer.instance.getScreenX(startPoint.x), Transfer.instance.getScreenY(startPoint.y));
+			layer.graphics.drawCircle(Transfer.instance.getScreenX(startPoint.x), Transfer.instance.getScreenY(startPoint.y), 5);
 			for each(var p:Vector2D in pathVector){
-				layer.graphics.lineTo(_transfer.getScreenX(p.x), _transfer.getScreenY(p.y));
-				layer.graphics.drawCircle(_transfer.getScreenX(p.x), _transfer.getScreenY(p.y), 5);
+				layer.graphics.lineTo(Transfer.instance.getScreenX(p.x), Transfer.instance.getScreenY(p.y));
+				layer.graphics.drawCircle(Transfer.instance.getScreenX(p.x), Transfer.instance.getScreenY(p.y), 5);
 			}
 			layer.graphics.endFill();
 		}
 		
 		private function getRealPosition(pos:Vector2D):Point{
-			return new Point(_transfer.getScreenX(pos.x * _transfer.cellWidth + _transfer.cellWidth / 2), 
-							 _transfer.getScreenY(pos.y * _transfer.cellHeight + _transfer.cellHeight / 2));
+			return new Point(Transfer.instance.getScreenX(pos.x * Transfer.instance.cellWidth + Transfer.instance.cellWidth / 2), 
+							 Transfer.instance.getScreenY(pos.y * Transfer.instance.cellHeight + Transfer.instance.cellHeight / 2));
 		}
 		
 		/**
@@ -277,36 +273,36 @@ package com.yo.framework.ai.pathfinder
 			if (node.type == 0) {
 				var neighbors:Array = [];
 				//north
-				if(int(node.index / _transfer.maxColumn) > 0){
-					neighbors.push(_naviGraph.getNode(node.index - _transfer.maxColumn));
+				if(int(node.index / Transfer.instance.maxColumn) > 0){
+					neighbors.push(_naviGraph.getNode(node.index - Transfer.instance.maxColumn));
 					//north east
-					if(int(node.index % _transfer.maxColumn) < _transfer.maxColumn - 1){
-						neighbors.push(_naviGraph.getNode(node.index - _transfer.maxColumn + 1));
+					if(int(node.index % Transfer.instance.maxColumn) < Transfer.instance.maxColumn - 1){
+						neighbors.push(_naviGraph.getNode(node.index - Transfer.instance.maxColumn + 1));
 					}
 				}
 				//south
-				if(int(node.index / _transfer.maxColumn) < _transfer.maxRow - 1){
-					neighbors.push(_naviGraph.getNode(node.index + _transfer.maxColumn));
+				if(int(node.index / Transfer.instance.maxColumn) < Transfer.instance.maxRow - 1){
+					neighbors.push(_naviGraph.getNode(node.index + Transfer.instance.maxColumn));
 					//south west
-					if(int(node.index % _transfer.maxColumn) > 0){
-						neighbors.push(_naviGraph.getNode(node.index + _transfer.maxColumn - 1));
+					if(int(node.index % Transfer.instance.maxColumn) > 0){
+						neighbors.push(_naviGraph.getNode(node.index + Transfer.instance.maxColumn - 1));
 					}
 				}
 				//east
-				if(int(node.index % _transfer.maxColumn)  < _transfer.maxColumn - 1){
+				if(int(node.index % Transfer.instance.maxColumn)  < Transfer.instance.maxColumn - 1){
 					neighbors.push(_naviGraph.getNode(node.index + 1));
 					//east south
-					if(Math.ceil(node.index / _transfer.maxColumn) < _transfer.maxRow - 1){
-						neighbors.push(_naviGraph.getNode(node.index + _transfer.maxColumn + 1));
+					if(Math.ceil(node.index / Transfer.instance.maxColumn) < Transfer.instance.maxRow - 1){
+						neighbors.push(_naviGraph.getNode(node.index + Transfer.instance.maxColumn + 1));
 					}
 				}
 				
 				//west
-				if(int(node.index % _transfer.maxColumn) > 0){
+				if(int(node.index % Transfer.instance.maxColumn) > 0){
 					neighbors.push(_naviGraph.getNode(node.index - 1));
 					//west noth
-					if(int(node.index / _transfer.maxColumn) > 0){
-						neighbors.push(_naviGraph.getNode(node.index - _transfer.maxColumn));
+					if(int(node.index / Transfer.instance.maxColumn) > 0){
+						neighbors.push(_naviGraph.getNode(node.index - Transfer.instance.maxColumn));
 					}
 				}
 				
@@ -330,7 +326,7 @@ package com.yo.framework.ai.pathfinder
 		 * 
 		 */		
 		private function isBlock(cellX:int, cellY:int):Boolean {
-			var node:NaviGraphNode = _naviGraph.getNode(cellX + cellY * _transfer.maxColumn) as NaviGraphNode;
+			var node:NaviGraphNode = _naviGraph.getNode(cellX + cellY * Transfer.instance.maxColumn) as NaviGraphNode;
 			if (!node || node.type == 1) {
 				return true;
 			}
@@ -345,11 +341,11 @@ package com.yo.framework.ai.pathfinder
 		 * 
 		 */		
 		public function lineOfSight(s:Vector2D, e:Vector2D):Boolean {
-			var x0:Number = _transfer.getCellX(s.x);
-			var y0:Number = _transfer.getCellY(s.y);
+			var x0:Number = Transfer.instance.getCellX(s.x);
+			var y0:Number = Transfer.instance.getCellY(s.y);
 			
-			var x1:Number = _transfer.getCellX(e.x);
-			var y1:Number = _transfer.getCellY(e.y);
+			var x1:Number = Transfer.instance.getCellX(e.x);
+			var y1:Number = Transfer.instance.getCellY(e.y);
 			
 			var dx:Number = Math.abs(x1 - x0);
 			var dy:Number = Math.abs(y1 - y0);
@@ -396,11 +392,11 @@ package com.yo.framework.ai.pathfinder
 		 * 
 		 */		
 		public function lineOfSight2(s:Vector2D, e:Vector2D):Boolean {
-			var x0:Number = _transfer.getCellX(s.x);
-			var y0:Number = _transfer.getCellY(s.y);
+			var x0:Number = Transfer.instance.getCellX(s.x);
+			var y0:Number = Transfer.instance.getCellY(s.y);
 			
-			var x1:Number = _transfer.getCellX(e.x);
-			var y1:Number = _transfer.getCellY(e.y);
+			var x1:Number = Transfer.instance.getCellX(e.x);
+			var y1:Number = Transfer.instance.getCellY(e.y);
 			
 			var dx:Number = x1 - x0;
 			var dy:int = y1 - y0;
@@ -461,11 +457,11 @@ package com.yo.framework.ai.pathfinder
 		 * 
 		 */		
 		public function lineOfSight3(s:Vector2D, e:Vector2D):Boolean {
-			var x0:Number = _transfer.getCellX(s.x);
-			var y0:Number = _transfer.getCellY(s.y);
+			var x0:Number = Transfer.instance.getCellX(s.x);
+			var y0:Number = Transfer.instance.getCellY(s.y);
 			
-			var x1:Number = _transfer.getCellX(e.x);
-			var y1:Number = _transfer.getCellY(e.y);
+			var x1:Number = Transfer.instance.getCellX(e.x);
+			var y1:Number = Transfer.instance.getCellY(e.y);
 			
 			var tmp:int;
 			

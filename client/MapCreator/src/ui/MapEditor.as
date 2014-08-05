@@ -34,7 +34,7 @@ package ui
 		override protected function init():void{
 			super.init();
 			
-			SceneManager.instance.changeState(State.LOAD_SCENE);
+			GameSceneManager.instance.changeScene(State.LOAD_SCENE);
 		}
 		
 		override protected function initManager():void

@@ -10,8 +10,11 @@ package com.yo.framework.objects.movement
     public class TargetMovement extends Movement
     {
         private var _target:BaseEntity;
+		
         private var _dist:Number;
-        private var angle:Number;
+		
+        private var _angle:Number;
+		
         private var _delta:Point;
         
         public function TargetMovement(owner:MovingEntity, target:BaseEntity, delta:Point)
@@ -20,17 +23,17 @@ package com.yo.framework.objects.movement
             _target = target;
             _delta = delta;
             
-            _target.addEventListener(EntityEvent.REMOVED, onTargetDispose);
+//            _target.addEventListener(EntityEvent.REMOVED, onTargetDispose);
         }
         
         protected function onTargetDispose(event:Event):void
         {
-            _target.removeEventListener(EntityEvent.REMOVED, onTargetDispose);
+//            _target.removeEventListener(EntityEvent.REMOVED, onTargetDispose);
             dispatchEvent(new MovementEvent(MovementEvent.ARRIVED));
         }
         
         private function _isArrived():Boolean {
-            return _dist <= (owner.speed / FP.frameRate);
+            return _dist <= (_owner.speed / FP.frameRate);
         }
         
         private function _getTargetX():Number {
@@ -42,18 +45,19 @@ package com.yo.framework.objects.movement
         }
         
         override public function update():void {
-            var distX:Number = _getTargetX() - owner.position.x;
-            var distY:Number = _getTargetY() - owner.position.y;
+            var distX:Number = _getTargetX() - _owner.position.x;
+            var distY:Number = _getTargetY() - _owner.position.y;
             _dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
-            angle = Math.atan2(distY, distX);
+            _angle = Math.atan2(distY, distX);
             
-            if (_isArrived()) {
-                owner.position.x = _getTargetX();
-                owner.position.y = _getTargetY();
+            if(_isArrived())
+			{
+				_owner.position.x = _getTargetX();
+				_owner.position.y = _getTargetY();
+				_owner.stop();
 				dispatchEvent(new MovementEvent(MovementEvent.ARRIVED));
-                owner.stop();
-            } else {
-                owner.move(angle);
+            }else{
+				_owner.move(_angle);
             }
         }
     }

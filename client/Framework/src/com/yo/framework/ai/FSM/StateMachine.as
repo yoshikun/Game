@@ -1,5 +1,10 @@
 package com.yo.framework.ai.FSM
 {
+	/**
+	 * 有限状态机
+	 * @author yoshikun
+	 * 
+	 */	
 	public class StateMachine
 	{
 		public var owner:*;
@@ -15,7 +20,7 @@ package com.yo.framework.ai.FSM
 		
 		public function update():void {
 			if(currentState){
-				currentState.execute();
+				currentState.excute();
 			}
 		}
 		
@@ -32,12 +37,15 @@ package com.yo.framework.ai.FSM
 			changeState(_prevState);
 		}
 		
-		public function isInState(s:Class):Boolean {
-			return currentState is s;
+		public function isInState(cls:Class):Boolean {
+			return currentState is cls;
 		}
 		
 		public function dispose():void {
-			currentState && currentState.exit();
+			if(currentState)
+			{
+				currentState.exit();
+			}
 		}
 	}
 }

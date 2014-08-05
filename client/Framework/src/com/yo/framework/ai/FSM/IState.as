@@ -2,11 +2,10 @@ package com.yo.framework.ai.FSM
 {
 	public interface IState
 	{
-		function enter(owner:*):void;
+		function enter(owner:* = null):void;
 		
-		function execute():void;
+		function excute():void;
 		
 		function exit():void; 
-		
 	}
 }

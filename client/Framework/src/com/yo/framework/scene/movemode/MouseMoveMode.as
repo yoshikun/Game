@@ -31,7 +31,7 @@ package com.yo.framework.scene.movemode
 		
 		public const AUTOMOVE_DELAY:int = 500;
         
-        public function MouseMoveMode(target:IEntity, container:flash.display.Sprite, callback:Function)
+        public function MouseMoveMode(target:MovingEntity, container:Sprite, callback:Function)
         {
 			_container.addEventListener(MouseEvent.MOUSE_DOWN, __mouseDownHandler);
 			_container.addEventListener(MouseEvent.CLICK, __clickHandler);

@@ -72,7 +72,7 @@ package com.yo.framework.utils
 			return x + floorX;
 		}
 		
-		public function getScreenY(y:Number, z:Number):Number{
+		public function getScreenY(y:Number, z:Number = 0):Number{
 			return y / 2 + z / Math.SQRT2 + floorY;
 		}
 		

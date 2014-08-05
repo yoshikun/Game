@@ -3,7 +3,7 @@ package com.yo.framework.interfaces
 	import com.yo.framework.mvc.interfaces.IDisposable;
 	import com.yo.framework.mvc.interfaces.IUpdateable;
 
-	public interface IAnimator extends IUpdateable, IDisposable
+	public interface IAnimator extends IComponent
 	{
 		function get animations():Vector.<IAnimation>;
 		

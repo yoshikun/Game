@@ -30,31 +30,23 @@ package com.heptafish.mapeditor.layers
 		}
 		
 		//放置建筑物图片
-		public function placeBuilding(bld:Building, tilePoint:Point):Building
+		public function placeBuilding(building:Building, tilePoint:Point):Building
 		{
-			//获取建筑物的XML信息
-			var blXml:XML = bld.configXml.copy();
-			var nbld:Building = new Building(this.maxNum);
-			nbld.x = bld.x;
-			nbld.y = bld.y;
-			if(bld._bitMap != null){
-				var blBitMap:BitmapData = bld._bitMap.bitmapData.clone();
-				nbld.reset(blBitMap,blXml);
-			}
-			else{
-				nbld.configXml = blXml;
-				nbld.loadImage();
-			}
-			nbld.configXml.@id = maxNum;
-			nbld.configXml.@px = nbld.x;
-			nbld.configXml.@py = nbld.y;
-			nbld.configXml.@ix = tilePoint.x;
-			nbld.configXml.@iy = tilePoint.y;
+//			var info:BuildingInfo = new BuildingInfo();
+			building.x = building.x;
+			building.y = building.y;
 
-			this.buildingArray[maxNum] = nbld;
-			nbld = Building(this.addChild(nbld));
+//			building.info.id = maxNum;
+			building.info.px = building.x;
+			building.info.py = building.y;
+			building.info.ix = tilePoint.x;
+			building.info.iy = tilePoint.y;
+
+			this.buildingArray[maxNum] = building;
+			this.addChild(building);
+			
 			this.maxNum++;
-			return nbld;
+			return building;
 		}
 		
 		//放置障碍物障碍点
@@ -67,13 +59,12 @@ package com.heptafish.mapeditor.layers
 			//阻挡和阴影标记
 			var pt:Point = MapEditorUtils.getPixelPoint(tilePixelWidth, tilePixelHeight, tilePoint.x, tilePoint.y);
 			//获得建筑物障碍点信息的字符串
-			var walkableStr:String = bld.configXml.walkable;
+			var walkableStr:String = bld.info.walkable;
 			//把XML里的障碍点信息转化为数组
 			var wa:Array = walkableStr.split(",");
 			//没有阻挡设置
 			if (walkableStr != null && walkableStr.length >= 3)
 			{
-		
 			     // building的元点在地图坐标系中的tile坐标
 				var pxt:int = pt.x - int(wa[0]) - tilePixelWidth/2;
 				var pyt:int = pt.y - int(wa[1]) - tilePixelHeight/2;
@@ -83,16 +74,17 @@ package com.heptafish.mapeditor.layers
 		}
 		
 		//移除建筑
-		public function removeBuild(bld:Building):void{
+		public function removeBuild(bld:Building):void
+		{
 			//获取单元格的宽，高
 			var tilePixelWidth:int  = this.parentApplication._cellWidth;
 			var tilePixelHeight:int = this.parentApplication._cellHeight;
 			//获取当前建筑物网格的行列坐标
-			var offsetCt:Point = MapEditorUtils.getCellPoint(tilePixelWidth, tilePixelHeight, bld.configXml.@xoffset, bld.configXml.@yoffset);
+			var offsetCt:Point = MapEditorUtils.getCellPoint(tilePixelWidth, tilePixelHeight, bld.info.xoffset, bld.info.yoffset);
 			//获取当前建筑物网格的象素坐标
 			var offsetPt:Point = MapEditorUtils.getPixelPoint(tilePixelWidth, tilePixelHeight, offsetCt.x, offsetCt.y);
 			//获得建筑物障碍点信息的字符串
-			var walkableStr:String = bld.configXml.walkable;
+			var walkableStr:String = bld.info.walkable;
 			//把XML里的障碍点信息转化为数组
 			var wa:Array = walkableStr.split(",");
 			//获取建筑物的原点
@@ -101,23 +93,27 @@ package com.heptafish.mapeditor.layers
 			//移除建筑的障碍点
 			_roadLayer.drawWalkableBuilding(bld, originPX, originPY, true);
 			//移除建筑物
-			delete buildingArray[bld.id];
+			delete buildingArray[buildingArray.indexOf(buildingArray)];
 			removeChild(bld);
 		}
 		
 		//读取XML配置 放置建筑
-		public function drawByXml(mapXml:XML, reset:Boolean = false):void{
-			for each(var item:XML in mapXml.items.item){
-				var bl:Building     = new Building();
-				var cellPoint:Point = new Point(item.@ix,item.@iy);
-				bl.configXml        = item;
-				bl.x                = item.@px;
-				bl.y                = item.@py;
+		public function drawBuilding(model:MapModel, reset:Boolean = false):void
+		{
+			for each(var info:BuildingInfo in model.items){
+				var building:Building = new Building();
+				var cellPoint:Point = new Point(info.ix, info.iy);
+				building.info = info;
+				building.x = info.px;
+				building.y = info.py;
 				
-				placeAndClone(bl, cellPoint);
-				
+				placeAndClone(building, cellPoint);
 			}
 		}
-
+		
+		public function update():void
+		{
+			
+		}
 	}
 }

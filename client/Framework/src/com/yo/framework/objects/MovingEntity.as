@@ -1,7 +1,11 @@
 package com.yo.framework.objects
 {
+	import com.yo.framework.core.FP;
 	import com.yo.framework.objects.movement.AngleMovement;
 	import com.yo.framework.objects.movement.Movement;
+	import com.yo.framework.objects.movement.MovementEvent;
+	import com.yo.framework.objects.movement.PathMovement;
+	import com.yo.framework.objects.movement.PointMovement;
 	import com.yo.framework.objects.movement.TargetMovement;
 	import com.yo.framework.utils.Vector2D;
 	import com.yo.framework.utils.Vector3DUtil;
@@ -15,30 +19,41 @@ package com.yo.framework.objects
 	 */    
 	public class MovingEntity extends BaseEntity
 	{
-		public var deadReckoning:DeadReckoning;
-		
-		//当前移动方式
-		protected var _movement:Movement;
-		
-		//是否正在移动
-		protected var _moving:Boolean = false;
-		
-		//基本的物理量
+		/**
+		 * 基本的物理量 
+		 */		
 		public var velocity:Vector3D;
 		
+		/**
+		 * 速度加速度 
+		 */		
 		public var acceleration:Vector3D;
 		
-		//速度值
-		protected var _speed:int = 200;
+		/**
+		 * 速度 
+		 */		
+		public var speed:int = 200;
 		
-		//是否可以移动
+		/**
+		 * 当前移动方式 
+		 */		
+		protected var _movement:Movement;
+		
+		/**
+		 * 是否正在移动 
+		 */		
+		protected var _moving:Boolean = false;
+		
+		/**
+		 * 是否可以移动 
+		 */		
 		protected var _movable:Boolean = true;
 		
-		private var _onArrivedCallback:Function;
+		protected var _onArrivedCallback:Function;
 		
 		protected var _angle:Number;
 		
-		private var _onArrivedCallBackParams:Array;
+		protected var _onArrivedCallBackParams:Array;
 		
 		protected var _knockbacking:Boolean = false;
 		
@@ -51,9 +66,9 @@ package com.yo.framework.objects
 		
 		protected var _jumpTarget:Point;
 		
-		private var _accelerationDelta:Vector3D;
-		private var _velocityDelta:Vector3D;
+		protected var _accelerationDelta:Vector3D;
 		
+		protected var _velocityDelta:Vector3D;
 		
 		public function MovingEntity()
 		{
@@ -65,41 +80,12 @@ package com.yo.framework.objects
 			acceleration = new Vector3D(0, 0, 0);	
 		}
 		
-		public function set knockbacking(value:Boolean):void
-		{
-			_knockbacking = value;
-		}
-		
-		public function get knockbacking():Boolean
-		{
-			return _knockbacking;
-		}
-		
-		public function get jumping():Boolean
-		{
-			return _jumping;
-		}
-		
 		/**
 		 * 更新 
 		 */        
 		override public function update():void{
 			
 			super.update();
-		}
-		
-		public function canMove():Boolean{
-			return true;
-		}
-		
-		public function set movement(value:Movement):void
-		{
-			_movement = value;
-		}
-		
-		public function get movement():Movement
-		{
-			return _movement;
 		}
 		
 		public function moveTarget(target:MovingEntity, delta:Point):void{
@@ -118,17 +104,17 @@ package com.yo.framework.objects
 		 * 击退 
 		 */        
 		public function knockback(target:Point, time:uint):void{
-			if(time == 0){
-				position.x = target.x;
-				position.y = target.y;
-				return;
-			}
-			_knockbacking = true;
-			var len:Number = Vector3DUtil.dist(position, new Vector3D(target.x, target.y, 0));
-			var kspeed:int = 1000 * len / time;
-			clearMovement();
-			_movement = new KnockbackMovement(this, target, kspeed);
-			_movement.addEventListener(MovementEvent.ARRIVED, onArrived);
+//			if(time == 0){
+//				position.x = target.x;
+//				position.y = target.y;
+//				return;
+//			}
+//			_knockbacking = true;
+//			var len:Number = Vector3DUtil.dist(position, new Vector3D(target.x, target.y, 0));
+//			var kspeed:int = 1000 * len / time;
+//			clearMovement();
+//			_movement = new KnockbackMovement(this, target, kspeed);
+//			_movement.addEventListener(MovementEvent.ARRIVED, onArrived);
 		}
 		
 		/**
@@ -151,10 +137,14 @@ package com.yo.framework.objects
 		 * 跟随路径 
 		 */        
 		public function followPath(p:Vector.<Vector2D>, onArrivedCallback:Function = null, onArrivedCallBackParams:Array = null):void{
-			if(!p || p.length <= 0) return;
+			if(!p || p.length <= 0)
+			{
+				return;
+			}
 			_onArrivedCallback = onArrivedCallback;
 			_onArrivedCallBackParams = onArrivedCallBackParams;
-			if(_movement is PathMovement){
+			if(_movement is PathMovement)
+			{
 				PathMovement(_movement).setPath(p);
 				return;
 			}
@@ -183,7 +173,8 @@ package com.yo.framework.objects
 		 */        
 		public function move(angle:Number, isForce:Boolean=false):void{
 			//某些动画运行过程中，是无法移动的
-			if(Math.abs(Math.cos(angle)) > 0.0001){
+			if(Math.abs(Math.cos(angle)) > 0.0001)
+			{
 				direction = toDirection(angle);
 			}
 			_angle = angle;
@@ -199,10 +190,11 @@ package com.yo.framework.objects
 		
 		public function updatePosition():void{
 			//逝去秒数
-			var elapsedSecond:Number = Global.elapsed / 1000;
+			var elapsedSecond:Number = FP.elapsed / 1000;
 			var nextPos:Vector3D;
 			
-			if (! _accelerationDelta) {
+			if(!_accelerationDelta)
+			{
 				_accelerationDelta = new Vector3D();
 			}
 			_accelerationDelta.x = acceleration.x;
@@ -211,7 +203,8 @@ package com.yo.framework.objects
 			_accelerationDelta.w = acceleration.w;
 			_accelerationDelta.scaleBy(elapsedSecond);
 			
-			if (! _velocityDelta) {
+			if(!_velocityDelta)
+			{
 				_velocityDelta = new Vector3D();
 			}
 			_velocityDelta.x = velocity.x;
@@ -225,9 +218,12 @@ package com.yo.framework.objects
 			nextPos = position.add(_velocityDelta);
 			var isBlock:Boolean = checkCollide(nextPos);
 			
-			if(!isBlock){
+			if(!isBlock)
+			{
 				position = nextPos;
-			}else{
+			}
+			else
+			{
 				adjustPosition(nextPos);
 			}
 		}
@@ -246,14 +242,10 @@ package com.yo.framework.objects
 			_moving = false;
 			_knockbacking = false;
 			_jumping = false;
-			if(isClearMovement){
+			if(isClearMovement)
+			{
 				clearMovement();
 			}
-		}
-		
-		
-		public function set speed(v:int):void{
-			_speed = v;
 		}
 		
 		public function toDirection(angle:Number):int{
@@ -281,12 +273,6 @@ package com.yo.framework.objects
 			return Math.atan2(distY, distX);
 		}
 		
-		
-		public function get speed():int
-		{
-			return _speed;
-		}
-		
 		public function get moving():Boolean
 		{
 			return _moving;
@@ -310,6 +296,35 @@ package com.yo.framework.objects
 		override public function dispose():void{
 			clearMovement();
 			super.dispose();
+		}
+		
+		public function set knockbacking(value:Boolean):void
+		{
+			_knockbacking = value;
+		}
+		
+		public function get knockbacking():Boolean
+		{
+			return _knockbacking;
+		}
+		
+		public function get jumping():Boolean
+		{
+			return _jumping;
+		}
+		
+		public function canMove():Boolean{
+			return true;
+		}
+		
+		public function set movement(value:Movement):void
+		{
+			_movement = value;
+		}
+		
+		public function get movement():Movement
+		{
+			return _movement;
 		}
 	}
 }

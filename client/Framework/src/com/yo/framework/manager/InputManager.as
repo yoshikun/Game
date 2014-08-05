@@ -157,7 +157,7 @@ package com.yo.framework.manager
 			return _mouseY;
 		}
 		
-		public function keyDown(key:int):int
+		public function keyDown(key:int):Boolean
 		{
 			return keyStatus[key];
 		}

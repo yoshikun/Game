@@ -18,10 +18,18 @@ package com.heptafish.mapeditor.layers
 		public static var MARK_DIAMOND:int = 1;
 		//绘制带十字线菱形路点标记常量标识
 		public static var MARK_LINE_DIAMOND:int = 2;
+		//默认颜色
+		public var DEFAULT_COLOR:uint = 0xCCCCCC;
 		//路点颜色
-		public static var ROAD_COLOR:uint   = 0x33FF33;
+		public var ROAD_COLOR:uint = 0x33FF33;
 		//障碍点颜色
-		public static var HINDER_COLOR:uint = 0xFF0033;
+		public var HINDER_COLOR:uint = 0xFF0033;
+		//建筑路点颜色
+		public var ROAD_BUILDING_COLOR:uint = 0x0066CC;
+		//建筑点
+		public var CELL_TYPE_BUILDING:uint = 0xFF0000;
+		//颜色
+		private var _colorArr:Array = [DEFAULT_COLOR, ROAD_COLOR, HINDER_COLOR, ROAD_BUILDING_COLOR, CELL_TYPE_BUILDING];
 		//设置单元格宽
 		private var _tilePixelWidth:Number;
 		//设置单元格高
@@ -33,7 +41,7 @@ package com.heptafish.mapeditor.layers
 		//网格层
 		private var _gridLayer:GridLayer;
 		//用来区分当前路点层使用的图形标记是圆形还是菱形
-		private var _cellMark:int = RoadPointLayer.MARK_CIRCLE;
+		private var _cellMark:int = RoadPointLayer.MARK_DIAMOND;
 		//绘制路点图形标记的代理函数
 		private var _cellCreater:Function;
 		
@@ -47,28 +55,17 @@ package com.heptafish.mapeditor.layers
 		}
 		
 		//根据类型画出单元格
-		public function drawCell(xIndex:int,yIndex:int,cellType:int):void{
-			
-			var type:int = 0;
-			//如果是路点
-			if(cellType == MapEditorConstant.CELL_TYPE_ROAD){
-				type = MapEditorConstant.CELL_TYPE_ROAD;
-			//如果是障碍
-			}else if(cellType == MapEditorConstant.CELL_TYPE_HINDER){
-				type = MapEditorConstant.CELL_TYPE_HINDER;
-			}else{
-				throw new Error("未知单元格类型！");
-			}
+		public function drawCell(xIndex:int,yIndex:int, cellType:int):void{
 			var p:Point = MapEditorUtils.getPixelPoint(_tilePixelWidth,_tilePixelHeight,xIndex,yIndex);
 			
 			var mapKey:String = xIndex + "," + yIndex;
-			addRoadPoint(type, mapKey, p);
+			addRoadPoint(cellType, mapKey, p);
 		}
 		
 		//将指定单元格设置为初始状态
 		public function resetCell(xIndex:int,yIndex:int):void{
 			var mapKey:String = xIndex + "," + yIndex;
-			var oldCell:*     = _childMap.getValue(mapKey);
+			var oldCell:* = _childMap.getValue(mapKey);
 			if(oldCell!=null) {
 				removeChild(oldCell.shape);
 				_childMap.remove(mapKey);
@@ -83,38 +80,44 @@ package com.heptafish.mapeditor.layers
 		 */
 		public function drawWalkableBuilding(building:Building, originPX:int, originPY:int, wb:Boolean):void
 		{
-			var walkableStr:String = building.configXml.walkable;
-			var wa:Array           = walkableStr.split(",");
+			var walkableStr:String = building.info.walkable;
+			var wa:Array      = walkableStr.split(",");
 			
 			if (wa == null || wa.length < 2) return;
 			
 			var cellWidth:Number  = this.parentApplication._cellWidth;
 			var cellHeight:Number = this.parentApplication._cellHeight;
-			var row:int           = this.parentApplication._row;
-			var col:int           = this.parentApplication._col;
+			var row:int      = this.parentApplication._row;
+			var col:int      = this.parentApplication._col;
 			var xtmp:int, ytmp:int;
 		
 			for (var i:int=0; i<wa.length; i+=2)
 			{
 				xtmp = originPX + int(wa[i]);
 				ytmp = originPY + int(wa[i+1]);
-				var pt:Point      = MapEditorUtils.getCellPoint(cellWidth, cellHeight, xtmp, ytmp);
-                var mapKey:String = pt.x + "," + pt.y;
+				var pt:Point = MapEditorUtils.getCellPoint(cellWidth, cellHeight, xtmp, ytmp);
+				var mapKey:String = pt.x + "," + pt.y;
 					
 				if (wb == false)//增加阻挡
 				{
-					if(pt.x >= 0 && xtmp > 0){
-					
+					if(pt.x >= 0 && xtmp > 0)
+					{
 						//将建筑物中的障碍点记录在 _buildingPointMap 中
-						if(!_buildingPointMap.containsKey(mapKey)) _buildingPointMap.put(mapKey, new Point(pt.x, pt.y));
+						if(!_buildingPointMap.containsKey(mapKey)) 
+						{
+							_buildingPointMap.put(mapKey, new Point(pt.x, pt.y));
+						}
 						
-						drawCell(pt.x,pt.y,MapEditorConstant.CELL_TYPE_HINDER);
+						drawCell(pt.x, pt.y, MapEditorConstant.CELL_TYPE_HINDER);
 						this.parentApplication._mapArr[pt.y][pt.x] = MapEditorConstant.CELL_TYPE_HINDER;
 					}
 				}
 				else//删除阻挡
 				{
-					if(pt.x >= 0 && xtmp > 0) removeRoadPoint(mapKey, pt);
+					if(pt.x >= 0 && xtmp > 0) 
+					{
+						removeRoadPoint(mapKey, pt);
+					}
 				}
 			}
 
@@ -126,21 +129,31 @@ package com.heptafish.mapeditor.layers
 		}
 		
 		public function drawRoadPoint(arr:Array, roadType:int):void{
-			for(var iy:int=0;iy < arr.length;iy++){
-				for(var ix:int=0;ix < arr[0].length;ix++){
+			for(var iy:int = 0; iy < arr.length; iy++){
+				for(var ix:int = 0; ix < arr[0].length; ix++){
 					var cell:int = arr[iy][ix];
 					var mapKey:String = ix + "," + iy;
 					if(roadType == MapEditorConstant.TYPE_SAVE_MAP_HINDER){
 						if(cell == 1){
-							drawCell(ix,iy,MapEditorConstant.CELL_TYPE_ROAD);
-						}else if(cell == 2){
-							if(!_buildingPointMap.containsKey(mapKey)) drawCell(ix,iy,MapEditorConstant.CELL_TYPE_HINDER);
+							drawCell(ix, iy, MapEditorConstant.CELL_TYPE_ROAD);
+						}
+						else if(cell == 2)
+						{
+							if(!_buildingPointMap.containsKey(mapKey))
+							{
+								drawCell(ix, iy, MapEditorConstant.CELL_TYPE_HINDER);
+							}
 						}
 					}else if(roadType == MapEditorConstant.TYPE_SAVE_MAP_ROAD){
 						if(cell == 1){
-							drawCell(ix,iy,MapEditorConstant.CELL_TYPE_ROAD);
-						}else if(cell == 2){
-							if(!_buildingPointMap.containsKey(mapKey)) drawCell(ix,iy,MapEditorConstant.CELL_TYPE_HINDER);
+							drawCell(ix, iy, MapEditorConstant.CELL_TYPE_ROAD);
+						}
+						else if(cell == 2)
+						{
+							if(!_buildingPointMap.containsKey(mapKey))
+							{
+								drawCell(ix, iy, MapEditorConstant.CELL_TYPE_HINDER);
+							}
 						}
 					}
 				}
@@ -153,7 +166,10 @@ package com.heptafish.mapeditor.layers
 			if(_childMap.containsKey(mapKey)){
 				obj = _childMap.getValue(mapKey);
 				if(obj.type != flag){
-					if(obj.shape.parent == this)removeChild(obj.shape);
+					if(obj.shape.parent == this)
+					{
+						removeChild(obj.shape);
+					}
 					
 					cell = _cellCreater(flag, pt);
 					addChild(cell);
@@ -166,7 +182,10 @@ package com.heptafish.mapeditor.layers
 						obj.count += 1;
 						_childMap.put(mapKey, obj);
 					}else if(flag == 1){
-						if(obj.shape.parent == this) removeChild(obj.shape);
+						if(obj.shape.parent == this)
+						{
+							removeChild(obj.shape);
+						}
 						addChild(obj.shape);
 					}
 				}
@@ -207,8 +226,7 @@ package com.heptafish.mapeditor.layers
 		//绘制圆形的路点标记
 		protected function drawCircleShape(type:int, pt:Point):Shape{
 			var cell:Shape = new Shape();
-			var cellColor:uint = (type == 1)? RoadPointLayer.ROAD_COLOR:RoadPointLayer.HINDER_COLOR;
-			cell.graphics.beginFill(cellColor, 0.5);
+			cell.graphics.beginFill(_colorArr[type], 0.5);
 			cell.graphics.drawCircle(0, 0, _tilePixelHeight/4);
 			cell.graphics.endFill();
 			cell.x = pt.x;
@@ -219,24 +237,21 @@ package com.heptafish.mapeditor.layers
 		//绘制菱形的路点标记
 		protected function drawDiamondShape(type:int, pt:Point):Shape{
 			var cell:Shape = new Shape();
-			var cellColor:uint = (type == 1)? RoadPointLayer.ROAD_COLOR:RoadPointLayer.HINDER_COLOR;
-			cell.graphics.beginFill(cellColor, 0.3);
+			cell.graphics.beginFill(_colorArr[type], 0.3);
 			cell.graphics.moveTo(0, _tilePixelHeight/2);
 			cell.graphics.lineTo(_tilePixelWidth/2, 0);
 			cell.graphics.lineTo(_tilePixelWidth, _tilePixelHeight/2);
 			cell.graphics.lineTo(_tilePixelWidth/2, _tilePixelHeight);
 			cell.graphics.lineTo(0, _tilePixelHeight/2);
 			cell.graphics.endFill();
-			cell.x      = pt.x - _tilePixelWidth/2;
-			cell.y      = pt.y - _tilePixelHeight/2;
+			cell.x = pt.x - _tilePixelWidth/2;
+			cell.y = pt.y - _tilePixelHeight/2;
 			return cell;
 		}
 		
 		//得到建筑编辑器中的障碍
 		public function drawLineDiamondShape(type:int, pt:Point):Shape{
 			var cell:Shape = new Shape();
-			var cellColor:uint = (type == 1)? RoadPointLayer.ROAD_COLOR:RoadPointLayer.HINDER_COLOR;
-			
 			//外框
 			cell.graphics.lineStyle(1, 0xff0000, 0.6);
 			cell.graphics.moveTo(0, _tilePixelHeight/2);
@@ -258,14 +273,14 @@ package com.heptafish.mapeditor.layers
 			cell.graphics.moveTo(_tilePixelWidth/2, 0);
 			cell.graphics.lineTo(_tilePixelWidth/2, _tilePixelHeight);
 			
-			cell.x      = pt.x - _tilePixelWidth/2;
-			cell.y      = pt.y - _tilePixelHeight/2;
+			cell.x = pt.x - _tilePixelWidth/2;
+			cell.y = pt.y - _tilePixelHeight/2;
 			
 			return cell;
 		}
 		
-		protected function setCellCreater(__cellMark:int):void{
-			switch(__cellMark){
+		protected function setCellCreater(cellMark:int):void{
+			switch(cellMark){
 				//圆形路点图形标记模式
 				case RoadPointLayer.MARK_CIRCLE:
 					_cellCreater = drawCircleShape;
@@ -280,7 +295,7 @@ package com.heptafish.mapeditor.layers
 					break;
 			}
 		}
-		//========getter and setter
+
 		public function set cellWidth(cellWidth:Number):void{
 			this._tilePixelWidth = cellWidth;
 		}

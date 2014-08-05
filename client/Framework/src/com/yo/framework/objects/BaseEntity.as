@@ -1,11 +1,8 @@
 package com.yo.framework.objects
 {
+	import com.yo.framework.interfaces.IComponent;
 	import com.yo.framework.interfaces.IEntity;
-	import com.yo.framework.interfaces.IEntityComponent;
-	import com.yo.framework.interfaces.IRenderable;
 	import com.yo.framework.interfaces.IRenderer;
-	import com.yo.framework.manager.state.StateManager;
-	import com.yo.framework.scene.GameScene;
 	import com.yo.framework.utils.Transfer;
 	
 	import flash.events.EventDispatcher;
@@ -35,6 +32,8 @@ package com.yo.framework.objects
 		
 		public var registrationY:int;
 		
+		public var renderer:IRenderer;
+		
 		protected var _visible:Boolean = true;
 		
 		/**
@@ -45,11 +44,9 @@ package com.yo.framework.objects
 		/**
 		 * 所有组件 
 		 */		
-		protected var _components:Vector.<IEntityComponent>;
+		protected var _components:Vector.<IComponent>;
 		
 		protected var _animator:Animator;
-		
-		protected var _renderer:IRenderer;
 		
 		protected var _renderState:RenderState;
 		
@@ -63,7 +60,7 @@ package com.yo.framework.objects
 		protected function init():void {
 			position = new Vector3D(0, 0, 0);
 			_renderState = new RenderState();
-			_components = new Vector.<IEntityComponent>();
+			_components = new Vector.<IComponent>();
 		}
 		
         public function get visible():Boolean
@@ -75,21 +72,21 @@ package com.yo.framework.objects
         {
             _visible = value;
             //更新所有组件
-            for each(var c:IEntityComponent in _components) {
+            for each(var c:IComponent in _components) {
                 c.visible = value;
             }
         }
 
 		public function update():void {
             //更新所有组件
-            for each(var c:IEntityComponent in _components) {
+            for each(var c:IComponent in _components) {
             	c.update();
             }
 		}
         
         public function render():void {
             //渲染所有组件
-            for each(var c:IEntityComponent in _components) {
+            for each(var c:IComponent in _components) {
                 c.render();
             }
         }
@@ -102,7 +99,7 @@ package com.yo.framework.objects
         /**
          * 增加组件 
          */        
-        public function addComponent(component:IEntityComponent):void {
+        public function addComponent(component:IComponent):void {
 			if(component){
 				if(_components){
 					_components.push(component);
@@ -113,7 +110,7 @@ package com.yo.framework.objects
         /**
          * 移除组件 
          */        
-        public function removeComponent(c:IEntityComponent):void {
+        public function removeComponent(c:IComponent):void {
 			if(_components){
 				var i:int = _components.indexOf(c);
 				if (-1 != i) {
@@ -166,23 +163,12 @@ package com.yo.framework.objects
 			_animator = null;
 			
 			if(_components){
-				for each(var component:IEntityComponent in _components) {
+				for each(var component:IComponent in _components) {
 					component.dispose();
 				}
 				_components = null;
 			}
-			_renderer = null;
+			renderer = null;
 		}	
-
-		public function get renderer():IRenderer
-		{
-			return _renderer;
-		}
-
-		public function set renderer(value:IRenderer):void
-		{
-			_renderer = value;
-		}
-
 	}
 }

@@ -24,19 +24,22 @@ package com.yo.framework.objects.movement
 		}
 		
 		override public function update():void {
-			var distX:Number = _target.position.x - owner.position.x;
-			var distY:Number = _target.position.y - owner.position.y;
+			var distX:Number = _target.position.x - _owner.position.x;
+			var distY:Number = _target.position.y - _owner.position.y;
 			_dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
 			var angle:Number = Math.atan2(distY, distX);
 			
-			// 更新
-			if (_isCloseToTarget()) {
-				owner.stop(false);
+			//更新
+			if(_isCloseToTarget())
+			{
+				_owner.stop(false);
 				_lastStopTime = getTimer();
-			} else {
-				// 让他呆一会
+			}
+			else
+			{
+				//让他呆一会
 				if (getTimer() - _lastStopTime > 200) {
-					owner.move(angle);
+					_owner.move(angle);
 				}
 			}
 		}

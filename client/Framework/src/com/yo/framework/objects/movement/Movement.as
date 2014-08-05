@@ -8,10 +8,6 @@ package com.yo.framework.objects.movement
 	{
 		protected var _owner:MovingEntity;
 		
-		protected var _visible:Boolean;
-		
-		protected var _name:String;
-		
 		public function Movement(owner:MovingEntity)
 		{
 			_owner = owner;

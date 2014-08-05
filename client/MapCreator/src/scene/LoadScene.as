@@ -30,7 +30,7 @@ package scene
 		
 		private function __loadComplete(e:Event):void
 		{
-			SceneManager.instance.changeState(State.WORK_SCENE);
+			GameSceneManager.instance.changeScene(State.WORK_SCENE);
 		}
 		
 		override public function update():void{

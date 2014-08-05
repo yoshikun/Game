@@ -1,9 +1,16 @@
 package com.yo.framework.scene
 {
+	import com.yo.framework.ai.graph.SparseGraph;
+	import com.yo.framework.ai.pathfinder.AStar;
+	import com.yo.framework.ai.pathfinder.RectGrid;
+	import com.yo.framework.geom.Polygon;
+	import com.yo.framework.scene.movemode.KeyboardMoveMode;
+	import com.yo.framework.scene.movemode.MouseMoveMode;
+	
 	import flash.display.Bitmap;
 	import flash.geom.Rectangle;
 	
-	public class PathFinderScene extends CameraGameScene
+	public class PathFindingScene extends CameraGameScene
 	{
 		/**
 		 * 移动方式 
@@ -37,7 +44,7 @@ package com.yo.framework.scene
 		
 		protected var _totalBound:Rectangle;
 		
-		public function PathFinderScene()
+		public function PathFindingScene()
 		{
 			super();
 		}

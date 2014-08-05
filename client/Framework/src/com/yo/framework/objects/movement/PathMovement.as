@@ -13,10 +13,10 @@ package com.yo.framework.objects.movement
 		private var nextPoint:Vector2D;
 		private var _currentPos:Vector2D;
 		
-		public function PathMovement(owner:MovingEntity, path:Vector.<Vector2D>)
+		public function PathMovement(_owner:MovingEntity, path:Vector.<Vector2D>)
 		{
 			_currentPos = new Vector2D();
-			super(owner);
+			super(_owner);
 			setPath(path);
 		}
 		
@@ -25,27 +25,27 @@ package com.yo.framework.objects.movement
 			var elapsedSecond:Number = FP.elapsed / 1000;
 			
 			while (elapsedSecond > 0) {
-				var distX:Number = nextPoint.x - owner.position.x;
-				var distY:Number = nextPoint.y - owner.position.y;
+				var distX:Number = nextPoint.x - _owner.position.x;
+				var distY:Number = nextPoint.y - _owner.position.y;
 				angle = Math.atan2(distY, distX);
 				
-				_currentPos.set(owner.position.x, owner.position.y);
+				_currentPos.set(_owner.position.x, _owner.position.y);
 				// 到目标点的偏移量
 				var offset:Vector2D = nextPoint.subtract(_currentPos);
 				// 本次时间能走的量
-				var deltaPos:Number = owner.speed * elapsedSecond;
+				var deltaPos:Number = _owner.speed * elapsedSecond;
 				
 				if (offset.length <= deltaPos) {
-					owner.position.x = nextPoint.x;
-					owner.position.y = nextPoint.y;
-	                if (!calcNextPoint(owner.position)) {
+					_owner.position.x = nextPoint.x;
+					_owner.position.y = nextPoint.y;
+	                if (!calcNextPoint(_owner.position)) {
 	                    dispatchEvent(new MovementEvent(MovementEvent.ARRIVED));
 						return;
 	                }
 					// 获取剩余的逝去时间
-					elapsedSecond -= offset.length / owner.speed;
+					elapsedSecond -= offset.length / _owner.speed;
 				} else {
-					owner.move(angle);
+					_owner.move(angle);
 					break;
 				}
 			}
@@ -53,7 +53,7 @@ package com.yo.framework.objects.movement
 		
 		public function setPath(path:Vector.<Vector2D>):void {
 			this.path = path;
-			calcNextPoint(owner.position);
+			calcNextPoint(_owner.position);
 		}
         
         private function calcNextPoint(current:Vector3D):Boolean

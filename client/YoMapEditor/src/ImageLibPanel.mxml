@@ -2,20 +2,20 @@
 <InfoPanel xmlns="*" xmlns:mx="http://www.adobe.com/2006/mxml" width="320" height="420" creationComplete="initPanel(event)" titleStyleName="panelTitle" title="地图元件库">
 	<mx:Script>
 		<![CDATA[
+			import com.heptafish.mapeditor.events.MapEditorEvent;
+			import com.heptafish.mapeditor.items.Building;
 			import com.heptafish.mapeditor.utils.ImageLoader;
 			import com.heptafish.mapeditor.utils.MapEditorConstant;
-			import com.heptafish.mapeditor.items.Building;
+			
+			import mx.controls.Alert;
 			import mx.core.WindowedApplication;
 			import mx.events.CloseEvent;
-			import mx.controls.Alert;
-			import com.heptafish.mapeditor.events.MapEditorEvent;
 			import mx.managers.PopUpManager;
-			import com.heptafish.mapeditor.utils.MapEditorConstant;
 
 			private var _currentLibType:String;//库的模式 file:文件模式 res:swf资源模式
 			private var _configXml:XML;//配置XML文件
 			private var _configFile:File;//配置XML文件
-			private var _itemXml:XML;
+			private var _buildingInfo:BuildingInfo;
 			private var _libHome:File;
 			private var _itemId:int = 0;
 			
@@ -43,18 +43,17 @@
 			private function newLib(evet:Event):void{
 				_newImageLibPanel = NewImageLibPanel(PopUpManager.createPopUp(this,NewImageLibPanel,true));
 				PopUpManager.centerPopUp(_newImageLibPanel);
-				_newImageLibPanel.addEventListener(MapEditorEvent.NEW_IMAGELIB_SUBMIT,createNewLib); 
+				_newImageLibPanel.addEventListener(MapEditorEvent.NEW_IMAGELIB_SUBMIT, __createNewLib); 
 			}
 			
 			//新建目录
-			private function createNewLib(evet:MapEditorEvent):void{
-				_newImageLibPanel.removeEventListener(MapEditorEvent.NEW_IMAGELIB_SUBMIT,createNewLib);
-				var newLibName:String = evet.newName;
-				var newD:File = _libHome.resolvePath(newLibName);
-				newD.createDirectory();
+			private function __createNewLib(evet:MapEditorEvent):void{
+				_newImageLibPanel.removeEventListener(MapEditorEvent.NEW_IMAGELIB_SUBMIT, __createNewLib);
+				var newLibName:String = evet.data.toString();
+				var file:File = _libHome.resolvePath(newLibName);
+				file.createDirectory();
 				PopUpManager.removePopUp(_newImageLibPanel);
 				libTree.refresh();
-				
 			}
 			//删除提示
 			private function delLib(evet:Event):void{
@@ -97,33 +96,34 @@
 			private function fileTreeChange(event:Event):void
 			{
 				var selectFile:File = File(libTree.selectedItem);
-				if (selectFile.isDirectory)
+				if(selectFile.isDirectory)
 				{
 					
-				} else {
+				}
+				else
+				{
 					//预览图片
 					imgPrvImg.source = selectFile.nativePath;	
 					var rp:String = _libHome.getRelativePath(selectFile);//选择图片的相对路径
-					_itemXml = _configXml.item.(@file==MapEditorConstant.IMAGE_PATH + rp)[0];
+					_buildingInfo = _configXml.item.(@file==MapEditorConstant.IMAGE_PATH + rp)[0];
 					//设置画笔
 					var loader:ImageLoader = new ImageLoader();
 					loader.load(selectFile.url);
-					loader.addEventListener(Event.COMPLETE, setBrushBitmapData);
+					loader.addEventListener(Event.COMPLETE, __setBrushBitmapData);
 					
 				}
 			}
 			//设置主界面画笔图像
-			private function setBrushBitmapData(evet:Event):void{
-				var buildBrush:Building = this.parentApplication._buildBrush;
+			private function __setBrushBitmapData(e:Event):void{
+				var buildBrush:Building = this.parentApplication.buildBrush;
 				if (buildBrush == null)
 				{
 					buildBrush = new Building();
 				}
-//				buildBrush.setBitMap(evet.target._data);
-				buildBrush.reset(evet.target.data,_itemXml);
-				//Alert.show(_itemXml.@type);
-				this.parentApplication._buildBrush      = buildBrush;
-				this.parentApplication._buildBrush.init = true;
+				buildBrush.setBitMap(e.target.data);
+				buildBrush.info = _buildingInfo;
+				this.parentApplication.buildBrush = buildBrush;
+				this.parentApplication.buildBrush.init = true;
 			}
 			
 			//导入图片
@@ -203,11 +203,8 @@
 			
 			//编辑建筑保存
 			private function editBuildFinish(e:MapEditorEvent):void{
-				_configXml = e.buildXml.copy();
-				var buildBrush:Building = this.parentApplication._buildBrush;
-				buildBrush.configXml = e.nowBuildXML;
+				var buildBrush:Building = this.parentApplication.buildBrush;
 				writeConfig();
-//				HeptaFishGC.gc();
 			}
 			
 		]]>

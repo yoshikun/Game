@@ -1,22 +1,23 @@
 package com.yo.game.scene
 {
-	import com.yo.framework.manager.state.IState;
-	import com.yo.framework.manager.state.StateCreator;
+	import com.yo.framework.manager.scene.IScene;
+	import com.yo.framework.manager.scene.SceneCreator;
+	import com.yo.framework.scene.GameScene;
 	import com.yo.game.enum.Scene;
 	
-	public class SceneStateCreator extends StateCreator
+	public class GameSceneCreator extends SceneCreator
 	{
-		public function SceneStateCreator()
+		public function GameSceneCreator()
 		{
 			
 		}
 		
-		override protected function initialize():void{
+		override protected function init():void{
 			
 		}
 		
-		override public function getState(name:String):IState{
-			var state:IState = null;
+		override public function getScene(name:String):IScene{
+			var state:GameScene;
 			switch(name)
 			{
 				case Scene.LOAD_SCENE:

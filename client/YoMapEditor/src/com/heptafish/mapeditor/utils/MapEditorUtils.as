@@ -13,41 +13,44 @@ package com.heptafish.mapeditor.utils
 		}
 		
 		//根据提交的新地图信息 获得地图XML信息
-		public static function getNewMapXml(evet:MapEditorEvent):XML{
-			var row:int =  Math.floor(evet.mapHeight / evet.cellHeight) * 2;
-			var col:int =  Math.round(evet.mapWidth / evet.cellWidth);
-			var mapArr:String="";
-			var totalLen:int = row*col;
+		public static function getMapXml(model:MapModel):XML{
+			var row:int =  Math.floor(model.mapHeight / model.cellHeight) * 2;
+			var col:int =  Math.round(model.mapWidth / model.cellWidth);
 			
-			for(var i:int = 0; i<totalLen; i++){
-				if(i>0) mapArr += ",";
+			var mapArr:String = "";
+			
+			var len:int = row * col;
+			for(var i:int = 0; i < len; i++)
+			{
+				if(i > 0)
+				{
+					mapArr += ",";
+				}
 				mapArr += "0";
 			}
 
 			var resultXml:XML = new XML();
 			resultXml = <map/>;
-			resultXml.@filename         = evet.mapImageFilePath;
-			resultXml.@name             = evet.mapName;
-			resultXml.@mapwidth         = evet.mapWidth;
-			resultXml.@mapheight        = evet.mapHeight;
-			resultXml.@loadType         = evet.loadType;
-			resultXml.floor             = mapArr;
-			resultXml.floor.@tileWidth  = evet.cellWidth;
-			resultXml.floor.@tileHeight = evet.cellHeight;
-			resultXml.floor.@row        = row;
-			resultXml.floor.@col        = col;
-			resultXml.@sliceWidth       = evet.sliceWidth;
-			resultXml.@sliceHeight      = evet.sliceHeight;
-			resultXml.@preloadX         = evet.preloadX;
-			resultXml.@preloadY         = evet.preloadY;
-			resultXml.@roadType         = 0;
+			resultXml.@mapName = model.mapName;
+			resultXml.@mapWidth = model.mapWidth;
+			resultXml.@mapHeight = model.mapHeight;
+			resultXml.@loadType = model.loadType;
+			resultXml.floor = mapArr;
+			resultXml.floor.@tileWidth = model.cellWidth;
+			resultXml.floor.@tileHeight = model.cellHeight;
+			resultXml.floor.@row = row;
+			resultXml.floor.@col = col;
+			resultXml.@sliceWidth = model.sliceWidth;
+			resultXml.@sliceHeight = model.sliceHeight;
+			resultXml.@preloadX = model.preloadX;
+			resultXml.@preloadY = model.preloadY;
+			resultXml.@roadType = 0;
 			resultXml.appendChild(<items/>);
 			return resultXml;
 		}
 		
-		
 		//根据数组得到字符串
-		public static function getStrByArr(arr:Array,type:int = 0):String{
+		public static function getStrByArr(arr:Array, type:int = 0):String{
 				var result:String = "";
 				for(var i:uint = 0; i < arr.length;i++){
 					for(var j:uint = 0; j < arr[0].length;j++){
@@ -55,17 +58,20 @@ package com.heptafish.mapeditor.utils
 						var temp:String;
 						switch(cell){
 							case MapEditorConstant.CELL_TYPE_ROAD:
-								temp = "0";
+								temp = "1";
 								break;
 							case MapEditorConstant.CELL_TYPE_HINDER:
-								temp = "1";
+								temp = "0";
 								break;
 							case MapEditorConstant.CELL_TYPE_SPACE:
 								if(type == MapEditorConstant.TYPE_SAVE_MAP_ROAD){
-									temp = "0";
-								}else if(type == MapEditorConstant.TYPE_SAVE_MAP_HINDER){
 									temp = "1";
+								}else if(type == MapEditorConstant.TYPE_SAVE_MAP_HINDER){
+									temp = "0";
 								}
+								break;
+							case MapEditorConstant.CELL_TYPE_BUILDING_ROAD:
+								temp = "2";
 								break;
 							default:
 								throw new Error("地图信息数组中有未知因素！");
@@ -105,19 +111,21 @@ package com.heptafish.mapeditor.utils
 		}
 		
 		//根据字符串得到新数组，用于创建新地图数据
-		public static function getNewArrByStr(arrayStr:String,col:int,row:int):Array{
-			var _mapArray:Array = new Array();
-			var arr:Array  = arrayStr.split(",");
+		public static function getNewArrByStr(str:String, col:int, row:int):Array{
+			var mapArray:Array = [];
+			var arr:Array  = str.split(",");
 			var index:uint = 0;
-			for(var i:uint = 0 ; i < row;i++){
-				var tempArr:Array = new Array();
-				for(var j:uint = 0 ; j < col; j++){
+			for(var i:uint = 0 ; i < row;i++)
+			{
+				var tempArr:Array = [];
+				for(var j:uint = 0 ; j < col; j++)
+				{
 					tempArr.push(arr[index]);
 					index++;
 				}
-				_mapArray.push(tempArr);
+				mapArray.push(tempArr);
 			}
-			return _mapArray;
+			return mapArray;
 		}
 		
 		 //根据屏幕象素坐标取得网格的坐标

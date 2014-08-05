@@ -20,9 +20,11 @@ package com.yo.framework.scene.movemode
         }
         
         public function update():void{
-            if(!Misc.isTextFieldFocus()){
+            if(!Misc.isTextFieldFocus())
+			{
 				//如果在攻击中，则返回
-				if(!_target.canMove()){
+				if(!_target.canMove())
+				{
 					return;
 				}
 				
@@ -34,7 +36,6 @@ package com.yo.framework.scene.movemode
                         _target.stop();
                         _target.movement = null;
                     }
-					(_target as Player).clearTarget();
                 }
 				
 				if(isKeyDownArray([Keyboard.A, Keyboard.W], [Keyboard.LEFT, Keyboard.UP]))
@@ -71,25 +72,14 @@ package com.yo.framework.scene.movemode
 				}
 				else if(!_target.movement)
 				{
-					if(_target is Player){
-						if(!(_target as Player).attackTarget)
-						{
-							_target.stop();
-						}
-					}
+
 				}
             }
 			else
 			{
 				if(!_target.movement)
 				{
-					if(_target is Player)
-					{
-						if(!(_target as Player).attackTarget)
-						{
-							_target.stop();
-						}
-					}
+					
 				}
 			}
         }
@@ -105,18 +95,32 @@ package com.yo.framework.scene.movemode
             return true;
         }
 		
-		private function isKeyDown(key:uint, key2:int = -1):int{
-			if(key2 != -1){
-				return InputManager.instance.keyDown(key) || InputManager.instance.keyDown(key2);
+		private function isKeyDown(...args):Boolean{
+			var isDown:Boolean = false;
+			var len:int = args.length;
+			for (var i:int = 0; i < len; i++) 
+			{
+				isDown = InputManager.instance.keyDown(args[i]);
+				if(isDown)
+				{
+					break;
+				}
 			}
-			return InputManager.instance.keyDown(key);
+			return isDown;
 		}
 		
-		private function isKeyDownArray(keyArray:Array, keyArray2:Array = null):Boolean{
-			if(keyArray2 != null){
-				return InputManager.instance.keyDownArray(keyArray) || InputManager.instance.keyDownArray(keyArray2);
+		private function isKeyDownArray(...args):Boolean{
+			var isDown:Boolean = false;
+			var len:int = args.length;
+			for (var i:int = 0; i < len; i++) 
+			{
+				isDown = InputManager.instance.keyDownArray(args[i]);
+				if(isDown)
+				{
+					break;
+				}
 			}
-			return InputManager.instance.keyDownArray(keyArray);
+			return isDown;
 		}
 		
 	}

@@ -430,8 +430,6 @@
 				this.imgLibXML.item.(@id == this.imgId)[0] = xmlItem.copy();
 
 				var e:MapEditorEvent = new MapEditorEvent(MapEditorEvent.EDIT_BUILD_SUBMIT);
-				e.buildXml = imgLibXML.copy();
-				e.nowBuildXML = xmlItem.copy();
 				dispatchEvent(e);
 				
 				this.cursorManager.removeAllCursors();

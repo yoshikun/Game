@@ -9,6 +9,7 @@ package com.yo.framework.scene
 	import com.yo.framework.utils.Misc;
 	
 	import flash.display.DisplayObject;
+	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
 	import flash.utils.getTimer;
@@ -22,6 +23,10 @@ package com.yo.framework.scene
 		 * 摄像机 
 		 */		
 		protected var _camera:Camera;
+		
+		protected var _scaleMatrix:Matrix;
+		
+		protected var _scrollRect:Rectangle;
 		
 		/**
 		 * 深度排序相关 
@@ -53,6 +58,9 @@ package com.yo.framework.scene
 		override public function enter():void{
 			super.enter();
 			_camera = new Camera(FP.stage.stageWidth, FP.stage.stageHeight);
+			
+			_scaleMatrix = new Matrix();
+			_scrollRect = new Rectangle(); 
 		}
 		
 		override public function update():void{
@@ -85,18 +93,20 @@ package com.yo.framework.scene
 					var ty:int = -(_camera.top) * speedY;
 					
 					//场景平移,限制渲染区域
-					layer.scrollRect.x = -tx;
-					layer.scrollRect.y = -ty;
-					layer.scrollRect.width = FP.stage.stageWidth / _camera.zoom;
-					layer.scrollRect.height = FP.stage.stageHeight / _camera.zoom;
+					_scrollRect.x = -tx;
+					_scrollRect.y = -ty;
+					_scrollRect.width = FP.stage.stageWidth / _camera.zoom;
+					_scrollRect.height = FP.stage.stageHeight / _camera.zoom;
+					layer.scrollRect = _scrollRect;
 					
 					//如果有缩放
 					if(_camera.zoom != 1)
 					{
 						//归一化
-						layer.transform.matrix.identity();
+						_scaleMatrix.identity();
 						//按摄像机中心做缩放
-						layer.transform.matrix.scale(_camera.zoom, _camera.zoom);
+						_scaleMatrix.scale(_camera.zoom, _camera.zoom);
+						layer.transform.matrix = _scaleMatrix;
 					}
 				}
 			}
@@ -147,19 +157,21 @@ package com.yo.framework.scene
 				var container:GameLayer= LayerManager.instance.getLayer(GameLayer.OBJECT);
 
 				var index:int = 0;
-				for(var i:uint = 0, l:uint = _entityVector.length; i < l; i++){
-					var entity:BaseEntity = _entityVector[i];
+				for(var i:uint = 0, l:uint = _entityVector.length; i < l; i++)
+				{
+					var entity:BaseEntity = _entityVector[i] as BaseEntity;
 					var render:DisplayObject = entity.renderer as DisplayObject;
-					if(!render){
+					if(!render)
+					{
 						continue;
 					}
-					if(render.parent != container){
+					if(render.parent != container)
+					{
 						continue;
 					}
 					entity.index = index;
 					container.setChildIndex(render, index++);
 				}
-				
 				_lastSortTime = getTimer();
 			}
 		}
@@ -167,7 +179,7 @@ package com.yo.framework.scene
 		/**
 		 * 深度排序内部函数 
 		 */		
-		protected function sortYIndex(a:IEntity, b:IEntity):int{
+		protected function sortYIndex(a:BaseEntity, b:BaseEntity):int{
 			var ay:Number = a.position.y;
 			var by:Number = b.position.y;
 			

@@ -5,6 +5,8 @@ package com.yo.framework.objects
 
 	public class Animator implements IAnimator
 	{
+		protected var _visible:Boolean;
+		
 		public function Animator()
 		{
 		}
@@ -28,6 +30,11 @@ package com.yo.framework.objects
 			return 0;
 		}
 		
+		public function render():void
+		{
+			
+		}
+		
 		public function update():void
 		{
 		}
@@ -35,5 +42,16 @@ package com.yo.framework.objects
 		public function dispose():void
 		{
 		}
+
+		public function get visible():Boolean
+		{
+			return _visible;
+		}
+
+		public function set visible(value:Boolean):void
+		{
+			_visible = value;
+		}
+
 	}
 }

@@ -1,17 +1,17 @@
 package com.yo.framework.objects
 {
 	import com.yo.framework.interfaces.IEntity;
-	import com.yo.framework.interfaces.IEntityComponent;
+	import com.yo.framework.interfaces.IComponent;
 	
 	import flash.events.EventDispatcher;
 
-	public class EntityComponent extends EventDispatcher implements IEntityComponent
+	public class EntityComponent extends EventDispatcher implements IComponent
 	{
-		private var _name:String;
+		protected var _name:String;
 		
-		private var _entity:IEntity;
+		protected var _entity:IEntity;
 		
-		private var _visible:Boolean;
+		protected var _visible:Boolean;
 		
 		public function EntityComponent()
 		{

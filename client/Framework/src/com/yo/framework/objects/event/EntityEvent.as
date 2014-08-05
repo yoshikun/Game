@@ -4,6 +4,11 @@ package com.yo.framework.objects.event
 	
 	public class EntityEvent extends Event
 	{
+		/**
+		 * 发送移动请求 
+		 */		
+		public static const ENTITY_MOVE_REQUEST:String = "entity_move_request";
+		
 		public static const HIT:String = "hit";
 		
 		public static const REMOVED:String = "remove";
