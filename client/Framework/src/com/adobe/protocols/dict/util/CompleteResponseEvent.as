@@ -48,12 +48,12 @@ package com.adobe.protocols.dict.util
 
 		public function set response(response:String):void
 		{
-			this._response = response;
+			_response = response;
 		}
 		
 		public function get response():String
 		{
-			return this._response;
+			return _response;
 		}
 		
 		public override function clone():Event

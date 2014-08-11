@@ -5,6 +5,7 @@ package
 	import com.yo.framework.manager.InputManager;
 	import com.yo.framework.manager.resource.ResourceManager;
 	
+	import fl.containers.BaseScrollPane;
 	import fl.containers.ScrollPane;
 	import fl.controls.Button;
 	import fl.controls.ScrollBar;
@@ -36,8 +37,15 @@ package
 		{
 			InputManager.instance.addEventListener(MouseEvent.CLICK, __clickHandler);
 			
-//			var panel:ScrollPane = new ScrollPane();
-//			this.addChild(panel);
+			var panel:BaseScrollPane = new BaseScrollPane();
+			panel.verticalScrollPolicy = "on";
+			this.addChild(panel);
+			
+			var sprite:Sprite = new Sprite();
+			sprite.graphics.beginFill(0xFF0000, 0.5);
+			sprite.graphics.drawRect(0, 0, 1000, 1000);
+			sprite.graphics.endFill();
+//			panel.addChild(sprite);
 //			
 //			var bar:ScrollBar = new ScrollBar();
 //			this.addChild(bar);
@@ -45,26 +53,26 @@ package
 		
 		private function __clickHandler(e:MouseEvent):void
 		{
-			var len:int = 100;
-			for (var i:int = 0; i < len; i++) 
-			{
-				var btn:Button = new Button();
+//			var len:int = 100;
+//			for (var i:int = 0; i < len; i++) 
+//			{
+//				var btn:Button = new Button();
 //				var btn:Sprite = new Sprite();
-				this.addChild(btn);
-			}
+//				this.addChild(btn);
+//			}
 		}
 		
 		override protected function update():void{
 			super.update();
 			
-			var len:int = this.numChildren;
-			for (var j:int = 0; j < len; j++) 
-			{
-				var btn:Sprite = this.getChildAt(j) as Sprite;
-				btn.x = Math.random() * 1000;
-				btn.y = Math.random() * 600;
-			}
-			trace(len);
+//			var len:int = this.numChildren;
+//			for (var j:int = 0; j < len; j++) 
+//			{
+//				var btn:Sprite = this.getChildAt(j) as Sprite;
+//				btn.x = Math.random() * 1000;
+//				btn.y = Math.random() * 600;
+//			}
+//			trace(len);
 		}
 		
 	}

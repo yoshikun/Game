@@ -6,18 +6,19 @@
 	<mx:Script>
 		<![CDATA[
 			import com.heptafish.mapeditor.events.MapEditorEvent;
+			import com.heptafish.mapeditor.events.MapEditorEventDispather;
 			import com.heptafish.mapeditor.items.Building;
 			import com.heptafish.mapeditor.layers.BuildingLayer;
 			import com.heptafish.mapeditor.layers.GridLayer;
 			import com.heptafish.mapeditor.layers.MapLayer;
 			import com.heptafish.mapeditor.layers.RoadPointLayer;
+			import com.heptafish.mapeditor.manager.InputManager;
 			import com.heptafish.mapeditor.utils.Global;
 			import com.heptafish.mapeditor.utils.HeptaFishXmlWriter;
 			import com.heptafish.mapeditor.utils.MapEditorConstant;
 			import com.heptafish.mapeditor.utils.MapEditorUtils;
 			
 			import mx.controls.Alert;
-			import mx.events.CloseEvent;
 			import mx.managers.PopUpManager;
 			import mx.managers.ToolTipManager;
 			
@@ -44,7 +45,7 @@
 			/**
 			 * 地图信息
 			 */
-			private var _mapModel:MapModel;
+			private var _model:MapModel;
 			
 			/**
 			 * 路点
@@ -57,14 +58,9 @@
 			private var _menuShow:Boolean = true;
 			
 			/**
-			 * 鼠标是否按下
-			 */
-			private var _mouseDowned:Boolean = false;
-			
-			/**
 			 * 当前选择的鼠标点击模式
 			 */
-			private var _currentMode:int = 0;
+			private var _currentMode:int = -1;
 			
 			/**
 			 * 地图元件库panel
@@ -84,7 +80,12 @@
 			/**
 			 * 建筑笔刷
 			 */
-			public var  buildBrush:Building;
+			private var _buildBrush:Building;
+			
+			/**
+			 * 编辑建筑
+			 */
+			private var _editBuild:EditBuild;
 			
 			/**
 			 * 地图文件过滤
@@ -93,10 +94,20 @@
 			
 			private var _mapDataSelectFile:File;
 			
+			/**
+			 * 实现鼠标拖动
+			 */
+			protected var _xOffset:Number;
+			
+			protected var _yOffset:Number;
+
+			protected var _scrollDragHPos:Number;
+
+			protected var _scrollDragVPos:Number;
+			
 			[Bindable]
 			private var _versionNumber:String = "MapEditor " + Global.version;
 			
-			//初始化应用
 			private function initApp(evet:Event):void{
 				//最大化
 				WindowedApplication(this).maximize();
@@ -105,7 +116,7 @@
 				Alert.cancelLabel = "取消";
 				
 				//检查文件目录是否已经创建
-				var rootDir:File = File.documentsDirectory.resolvePath("HFMapEdit");
+				var rootDir:File = File.documentsDirectory.resolvePath("MapEditor");
 				if (rootDir.exists == false)
 				{
 					rootDir.createDirectory();
@@ -135,17 +146,14 @@
 			 */
 			private function creationComplete(evet:Event):void
 			{
-				inteModel();
-				
-				createEditPanel();
-				createMapLayer();
-				createGridLayer();
-				createRoadPointLayer();
-				createBuildLayer();
-				
-				initEvent();
-				
-				update();
+				if(stage)
+				{
+					__addedToStage();
+				}
+				else
+				{
+					this.addEventListener(Event.ADDED_TO_STAGE, __addedToStage);
+				}
 			}
 			
 			/**
@@ -153,24 +161,28 @@
 			 */
 			private function menuHandler(evet:MouseEvent):void{
 				var btnId:String = evet.target.id;
-				if(buildBrush != null)
-				{
-					buildBrush.visible = false;
-				}
+				
+				_buildBrush.visible = false;
+				
 				if(btnId == "copyrightBtn")
 				{
 					showCopyRight();
 				}
+				else if(btnId == "baseInfoBtn")
+				{
+					_mapInfoPanel.visible = !_mapInfoPanel.visible;
+				}
 				else if(btnId == "newMapBtn")
 				{
-					showNewMapInfo();
+					_mapInfoPanel.visible = !_mapInfoPanel.visible;
 				}
 				else if(btnId == "openMapBtn")
 				{
 					openMap();
 				}
 				
-				if(_mapLayer != null){
+				if(_mapLayer != null)
+				{
 					//地图观察按钮
 					if(btnId == "mapViewBtn")
 					{
@@ -183,6 +195,10 @@
 					else if(btnId == "buildViewBtn")
 					{
 						_buildingLayer.visible = !_buildingLayer.visible;
+					}
+					else if(btnId == "roadPointBtn")
+					{
+						_roadPointLayer.visible = !_roadPointLayer.visible;
 					}
 					else if(btnId == "signleRoadBtn")
 					{
@@ -210,23 +226,15 @@
 					}
 					else if(btnId == "buildBtn")
 					{
-						if(buildBrush.init)
-						{
-							this.cursorManager.removeAllCursors();
-							_currentMode = MapEditorConstant.CELL_TYPE_BUILDING;//放置建筑物
-						}
-						else
-						{
-							Alert.show("请先从地图元件库中选择元件！");
-						}
+						_buildBrush.alpha = 0.5;
+						_buildBrush.visible = true;
+						
+						this.cursorManager.removeAllCursors();
+						_currentMode = MapEditorConstant.CELL_TYPE_BUILDING;//放置建筑物
 					}
 					else if(btnId == "cancelSelect")
 					{
 						
-					}
-					else if(btnId == "baseInfoBtn")
-					{
-						_mapInfoPanel.visible = !_mapInfoPanel.visible;
 					}
 					else if(btnId == "mouseInfoBtn")
 					{
@@ -244,16 +252,10 @@
 			}
 			
 			/**
-			 * 显示隐藏菜单栏
+			 * 
 			 */
 			private function hidenMennu(evet:Event):void{
-				if(_menuShow){
-					menuShow.play();
-					_menuShow = false;
-				}else{
-					menuHide.play();
-					_menuShow = true;
-				}
+
 			}
 			
 			/**
@@ -265,25 +267,10 @@
 			}
 			
 			/**
-			 * 显示新地图信息编辑panel
-			 */
-			private function showNewMapInfo():void{
-				PopUpManager.centerPopUp(_mapInfoPanel);
-			}
-			
-			/**
 			 * 显示元件库
 			 */
 			private function showImageLib():void{
-				if(_imageLib == null)
-				{
-					_imageLib = ImageLibPanel(PopUpManager.createPopUp(this, ImageLibPanel));
-					PopUpManager.centerPopUp(_imageLib);
-				}
-				else
-				{
-					_imageLib.visible = !_imageLib.visible;
-				}
+				_imageLib.visible = !_imageLib.visible;
 			}
 			
 			/**
@@ -293,7 +280,7 @@
 				_currentMode = -1;
 				this.cursorManager.removeAllCursors();
 				_mapArr = [];
-				buildBrush = null;
+				_buildBrush = null;
 				if(_imageLib != null)
 				{
 					PopUpManager.removePopUp(_imageLib);
@@ -310,14 +297,14 @@
 			
 			private function update():void
 			{
-				_mapArr = MapEditorUtils.getNewArrByStr(_mapModel.nodeList, _mapModel.col, _mapModel.row);
-				_mapLayer.load(_mapModel.path);
-				_gridLayer.drawGrid(_mapModel.mapWidth, _mapModel.mapHeight, _mapModel.cellWidth, _mapModel.cellHeight);
+				_mapArr = MapEditorUtils.getNewArrByStr(_model.nodeList, _model.col, _model.row);
+				_mapLayer.load(_model.path);
+				_gridLayer.drawGrid(_model.mapWidth, _model.mapHeight, _model.cellWidth, _model.cellHeight);
 				_buildingLayer.update();
 				
-				_roadPointLayer.cellWidth = _mapModel.cellWidth;
-				_roadPointLayer.cellHeight = _mapModel.cellHeight;
-				_roadPointLayer.drawArr(_mapArr, _mapModel.roadType);
+				_roadPointLayer.cellWidth = _model.cellWidth;
+				_roadPointLayer.cellHeight = _model.cellHeight;
+				_roadPointLayer.drawArr(_mapArr, _model.roadType);
 			}
 			
 			private function openMap():void{
@@ -350,7 +337,7 @@
 			private function createMapLayer():void
 			{
 				_mapLayer = new MapLayer();
-				_mapLayer.model = _mapModel;
+				_mapLayer.model = _model;
 				mapEditCanvas.addChild(_mapLayer);
 			}
 			
@@ -366,29 +353,34 @@
 			 * 创建事件监听
 			 */
 			private function initEvent():void{
-				mapEditCanvas.addEventListener(MouseEvent.MOUSE_DOWN, __mapEditCanvasClick);
-				mapEditCanvas.addEventListener(MouseEvent.MOUSE_MOVE, __mapEditCanvasMove);
-				mapEditCanvas.addEventListener(MouseEvent.MOUSE_UP, __mapEditCanvasUp);
-				mapEditCanvas.addEventListener(KeyboardEvent.KEY_DOWN, __moveEditKey);
-				this.addEventListener(KeyboardEvent.KEY_DOWN, __moveEditKey);
-				this.addEventListener(MouseEvent.RIGHT_CLICK, __rightClick);
+				MapEditorEventDispather.addEventListener(MapEditorEvent.BUILDING_INFO_UPDATE, __buildingInfoUpdate);
+				MapEditorEventDispather.addEventListener(MapEditorEvent.SHOW_EDIT_BUILD, __showEditBuild);
+				
+				mapEditCanvas.addEventListener(MouseEvent.MOUSE_DOWN, __mapEditCanvasMouseDown);
+				mapEditCanvas.addEventListener(MouseEvent.MOUSE_MOVE, __mapEditCanvasMouseMove);
+				
+				stage.addEventListener(MouseEvent.RIGHT_CLICK, __rightClick);
+				stage.addEventListener(MouseEvent.CLICK, __stageClick);
 			}
 			
 			private function createRoadPointLayer():void{
-				_roadPointLayer = new RoadPointLayer(_gridLayer);
+				_roadPointLayer = new RoadPointLayer();
 				mapEditCanvas.addChild(_roadPointLayer);
 			}
 			
 			private function createBuildLayer():void{
 				_buildingLayer = new BuildingLayer(_roadPointLayer);
+				_buildingLayer.drawBuilding(_model);
 				mapEditCanvas.addChild(_buildingLayer);
 				
-				_buildingLayer.drawBuilding(_mapModel);
-				mapEditCanvas.addChild(_buildingLayer);
+				_buildBrush = new Building();
+				_buildBrush.visible = false;
+				_buildingLayer.addChild(_buildBrush);
 				
-				buildBrush = new Building();
-				buildBrush.visible = false;
-				_buildingLayer.addChild(buildBrush);
+				_editBuild = new EditBuild();
+				_editBuild.visible = false;
+				PopUpManager.addPopUp(_editBuild, this);
+				PopUpManager.centerPopUp(_editBuild);
 			}
 			
 			private function clickToUrl(urlStr:String):void{
@@ -408,7 +400,7 @@
 				
 				//定义地图信息panel
 				_mapInfoPanel = new MapInfoPanel();
-				_mapInfoPanel.model = _mapModel;
+				_mapInfoPanel.model = _model;
 				_mapInfoPanel.x = mapEditOutCanvas.width - _mapInfoPanel.width - 20;
 				_mapInfoPanel.y = mapEditOutCanvas.y + 5;
 				_mapInfoPanel.addEventListener(MapEditorEvent.MAP_INFO_CHNAGE, __mapInfoChange);
@@ -418,20 +410,25 @@
 				_imageLib = ImageLibPanel(PopUpManager.createPopUp(this,ImageLibPanel));
 				_imageLib.x = this.width - _imageLib.width - 20;
 				_imageLib.y = _mapInfoPanel.y + _mapInfoPanel.height + 5;
+				_imageLib.model = _model;
 			}
 			
 			/**
 			 * 编辑窗口鼠标点击事件
 			 */
-			private function __mapEditCanvasClick(evet:MouseEvent):void{
-				_mouseDowned = true;
+			private function __mapEditCanvasMouseDown(evet:MouseEvent):void{
+				_xOffset = mouseX;
+				_yOffset = mouseY;
+				_scrollDragHPos = mapEditOutCanvas.horizontalScrollPosition;
+				_scrollDragVPos = mapEditOutCanvas.verticalScrollPosition;
+				
 				var mouseClickX:Number = evet.stageX;
 				var mouseClickY:Number = evet.stageY;
 				var tg:* = evet.target;
 				//得到对应点击位置的地图索引
-				var cellPoint:Point = MapEditorUtils.getCellPoint(_mapModel.cellWidth, _mapModel.cellHeight, _gridLayer.mouseX, _gridLayer.mouseY);		
+				var cellPoint:Point = MapEditorUtils.getCellPoint(_model.cellWidth, _model.cellHeight, _gridLayer.mouseX, _gridLayer.mouseY);		
 				if(isSetRoadPoint()){
-					if((this.mouseX > _mapModel.mapWidth - 10) || (this.mouseY > _mapModel.mapHeight - 10))
+					if((this.mouseX > _model.mapWidth - 10) || (this.mouseY > _model.mapHeight - 10))
 					{
 						return;
 					}
@@ -439,26 +436,27 @@
 				}
 				else if(_currentMode == MapEditorConstant.CELL_TYPE_BUILDING)
 				{
+					_buildBrush.visible = true;
 					//放置建筑
-					if((buildBrush.x > _mapModel.mapWidth - buildBrush.width) || (buildBrush.y > _mapModel.mapHeight - buildBrush.height))
+					if((_buildBrush.x > _model.mapWidth - _buildBrush.width) || (_buildBrush.y > _model.mapHeight - _buildBrush.height))
 					{
 						Alert.show("您放置的元件超出地图边界", "错误提示", 4);
 						Alert.okLabel = "继续";
 						return;
 					}
-					if(buildBrush.info == null)
+					if(_buildBrush.info == null)
 					{
 						return;
 					}
-					if(buildBrush.info.type != "building")
+					if(_buildBrush.info.type != "building")
 					{
 						Alert.show("图片还未编辑保存,请先双击地图元件编辑并保存！");
 						return;
 					}
 					//放建筑的图片
-					_buildingLayer.placeAndClone(buildBrush, cellPoint);
+					_buildingLayer.placeAndClone(_buildBrush, cellPoint);
 					//刷新建筑物的索引
-					_buildingLayer.setChildIndex(buildBrush, _buildingLayer.numChildren - 1);
+					_buildingLayer.setChildIndex(_buildBrush, _buildingLayer.numChildren - 1);
 				}
 			}
 			
@@ -511,11 +509,10 @@
 			/**
 			 * 鼠标在mapEditCanvas区域移动的响应方法
 			 */
-			private function __mapEditCanvasMove(evet:MouseEvent):void{
-				if(_gridLayer == null){
-					return;
-				}else if((_gridLayer.mouseX < _mapModel.mapWidth) && (_gridLayer.mouseY < _mapModel.mapHeight)){
-					var cellPoint:Point = MapEditorUtils.getCellPoint(_mapModel.cellWidth, _mapModel.cellHeight, _gridLayer.mouseX, _gridLayer.mouseY);
+			private function __mapEditCanvasMouseMove(e:MouseEvent):void{
+				if((_gridLayer.mouseX < _model.mapWidth) && (_gridLayer.mouseY < _model.mapHeight))
+				{
+					var cellPoint:Point = MapEditorUtils.getCellPoint(_model.cellWidth, _model.cellHeight, _gridLayer.mouseX, _gridLayer.mouseY);
 					//显示鼠标信息panel
 					var parObj:Object = new Object();
 					parObj.px = _gridLayer.mouseX;
@@ -525,53 +522,50 @@
 					_mapMouseInfoPanel.createContent(parObj);
 					
 					//如果是放置建筑
-					if(_currentMode == 4)
+					if(_currentMode == MapEditorConstant.CELL_TYPE_BUILDING)
 					{
-						this.buildBrush.visible = true;
-						this.buildBrush.alpha   = 0.5;
-						var xpw:int, ypw:int;
-						var walkableStr:String = buildBrush.info.walkable;
-						var xo:int = int(buildBrush.info.xoffset);
-						var yo:int = int(buildBrush.info.yoffset);
-						
-						if (walkableStr == null || walkableStr.length < 3) //没有阻挡设置，取图片左上角的点作为基准
-						{	
-							var ptt:Point = MapEditorUtils.getCellPoint(_mapModel.cellWidth, _mapModel.cellHeight, xo, yo);
-							var ptp:Point = MapEditorUtils.getPixelPoint(_mapModel.cellWidth, _mapModel.cellHeight, ptt.x, ptt.y);
-							//图片左上角与基准点的差
-							xpw = xo - ptp.x;
-							ypw = yo - ptp.y;
-						} 
-						else //有阻挡设置，取阻挡信息的第一个点作为基准
+						if(!_buildBrush.info)
 						{
-							var strArray:Array = walkableStr.split(",");
-							if (strArray == null || strArray.length < 2) return; //xml文件有错误
-							//图片左上角与基准点的差
-							xpw = xo - int(strArray[0]);
-							ypw = yo - int(strArray[1]);
+							return;
+						}
+						var hinderArr:Array = _buildBrush.info.hinder.split(",");
+						var xo:int = -_buildBrush.info.originX;
+						var yo:int = -_buildBrush.info.originY;
+						
+						if(hinderArr.length > 0)
+						{
+							
 						}
 					}
-					var pxt:int   = cellPoint.x * _mapModel.cellWidth + (cellPoint.y & 1) * _mapModel.cellWidth / 2;
-					var pyt:int   = cellPoint.y * _mapModel.cellHeight / 2;
 					
-					if(buildBrush!=null)
+					var pxt:int = cellPoint.x * _model.cellWidth + (cellPoint.y & 1) * _model.cellWidth / 2;
+					var pyt:int = cellPoint.y * _model.cellHeight / 2;
+					
+					if(_buildBrush != null)
 					{					
-						buildBrush.x = pxt + xpw;
-						buildBrush.y = pyt + ypw;
+						_buildBrush.x = _gridLayer.mouseX + xo;
+						_buildBrush.y = _gridLayer.mouseY + yo;
 					}
 					
 				}
 				
 				//如果鼠标按下
-				if(_mouseDowned){
+				if(InputManager.instance.mouseDown())
+				{
 					//如果是设置路点
 					if(isSetRoadPoint())
 					{
-						if((_gridLayer.mouseX >= _mapModel.mapWidth - 10) || (_gridLayer.mouseY >= _mapModel.mapHeight - 10))
+						if((_gridLayer.mouseX >= _model.mapWidth - 10) || (_gridLayer.mouseY >= _model.mapHeight - 10))
 						{
 							return;
 						}
-						drawRoadPoint(cellPoint, evet.target);
+						drawRoadPoint(cellPoint, e.target);
+					}
+					else if(InputManager.instance.keyDown(Keyboard.SPACE))
+					{
+						//按下空格,移动地图
+						mapEditOutCanvas.verticalScrollPosition = _scrollDragVPos - (mouseY - _yOffset);
+						mapEditOutCanvas.horizontalScrollPosition = _scrollDragHPos - (mouseX - _xOffset);
 					}
 				}
 			}
@@ -581,67 +575,31 @@
 				return _currentMode == MapEditorConstant.CELL_TYPE_SPACE || _currentMode == MapEditorConstant.CELL_TYPE_ROAD || _currentMode == MapEditorConstant.CELL_TYPE_HINDER || _currentMode == MapEditorConstant.CELL_TYPE_BUILDING_ROAD;
 			}
 			
-			//鼠标抬起在mapEditCanvas区域的响应方法
-			private function __mapEditCanvasUp(evet:MouseEvent):void{
-				_mouseDowned = false;
-			}
-			
 			/**
 			 * 保存地图
 			 */
 			private function saveMapHandler():void{
-				_mapModel.nodeList = MapEditorUtils.getStrByArr(_mapArr, _mapModel.roadType);
-				_mapModel.items = "";
+				_model.nodeList = MapEditorUtils.getStrByArr(_mapArr, _model.roadType);
+				_model.items = "";
 				var buildArr:Array = _buildingLayer.buildingArray;
 				for each(var building:Building in buildArr){
 //					_mapModel.items.appendChild(building.configXml);
 				}
 				
-				var writer:HeptaFishXmlWriter = new HeptaFishXmlWriter(_mapModel, "/data/maps/" + _mapModel.mapName + ".xml");
+				var writer:HeptaFishXmlWriter = new HeptaFishXmlWriter(_model, "/data/maps/" + _model.mapName + ".xml");
 				
-				_mapArr = MapEditorUtils.getArrByStr(_mapModel.nodeList, _mapModel.col, _mapModel.row);
-				_roadPointLayer.drawArr(_mapArr, _mapModel.roadType);
-			}
-			
-			/**
-			 * 移动编辑区域
-			 */
-			private function __moveEditKey(evet:KeyboardEvent):void{
-				if(_gridLayer != null && _mapLayer != null)
-				{
-					switch (evet.keyCode)
-					{
-						case 37:	//left
-							if(mapEditCanvas.horizontalScrollBar != null)
-							{
-								mapEditCanvas.horizontalScrollPosition -= 30;
-							}
-							break;
-						case 38:	//up
-							if(mapEditCanvas.verticalScrollBar != null)
-							{
-								mapEditCanvas.verticalScrollPosition -= 30;
-							}
-							break;
-						case 39:	//right
-							if(mapEditCanvas.horizontalScrollBar != null)
-							{
-								mapEditCanvas.horizontalScrollPosition += 30;
-							}
-							break;
-						case 40:	//down
-							if(mapEditCanvas.verticalScrollBar != null)
-							{
-								mapEditCanvas.verticalScrollPosition += 30;
-							}
-							break;
-					}
-				}
+				_mapArr = MapEditorUtils.getArrByStr(_model.nodeList, _model.col, _model.row);
+				_roadPointLayer.drawArr(_mapArr, _model.roadType);
 			}
 			
 			private function inteModel():void
 			{
-				_mapModel = new MapModel();
+				_model = new MapModel();
+			}
+			
+			public function get mapModel():MapModel
+			{
+				return _model;
 			}
 			
 			/**
@@ -650,22 +608,47 @@
 			protected function __rightClick(e:MouseEvent):void
 			{
 				this.cursorManager.removeAllCursors();
-				buildBrush.visible = false;
+				_buildBrush.visible = false;
 				_currentMode = -1;
 			}
 			
+			protected function __addedToStage(e:Event = null):void
+			{
+				inteModel();
+				initManager();
+				createEditPanel();
+				createMapLayer();
+				createGridLayer();
+				createRoadPointLayer();
+				createBuildLayer();
+				
+				initEvent();
+				
+				update();
+			}
+			
+			private function __buildingInfoUpdate(e:MapEditorEvent):void
+			{
+				_buildBrush.info = e.data as BuildingInfo;
+			}
+			
+			private function __showEditBuild(e:MapEditorEvent):void
+			{
+				_editBuild.visible = true;
+				_editBuild.info = e.data as BuildingInfo;
+			}
+			
+			private function initManager():void
+			{
+				InputManager.instance.setup(stage);
+			}
+			
+			protected function __stageClick(e:MouseEvent):void
+			{
+				mapEditCanvas.setFocus();
+			}
 		]]>
 	</mx:Script>
-	
-	<!-- 菜单显示隐藏效果 -->
-	<mx:Sequence id="menuShow" >
-		<mx:Move target="{menuPanel}" yFrom="0" yTo="-100" duration="400" />
-		<mx:Move target="{mapEditOutCanvas}" yFrom="138" yTo="38" duration="200" />
-	</mx:Sequence>
-	<mx:Sequence id="menuHide" >
-		<mx:Move target="{mapEditOutCanvas}" yFrom="38" yTo="138" duration="200" />
-		<mx:Move target="{menuPanel}" yFrom="-100" yTo="0" duration="400" />
-	</mx:Sequence>
 	
 	<!-- 界面布局 -->
 	<mx:Canvas id="waitCanvas" width="100%" height="100%" visible="false" />
@@ -700,25 +683,28 @@
 						   icon="@Embed(source='images/icons/broom.png')" toolTip="设置空白区域"/>
 			</mx:HBox>
 			<mx:VRule height="32"/>
-			<mx:HBox width="113" height="32">
+			<mx:HBox width="154" height="32">
 				<mx:Button id="mapViewBtn" x="54" y="6" width="32" height="32"
 						   click="menuHandler(event)"
 						   icon="@Embed(source='images/icons/viewMap.png')" toolTip="显示隐藏地图层"/>
 				<mx:Button id="gridViewBtn" x="6" y="5" width="32" height="32"
 						   click="menuHandler(event)"
 						   icon="@Embed(source='images/icons/viewGrid.png')" toolTip="显示隐藏网格层"/>
+				<mx:Button id="roadPointBtn" x="6" y="5" width="32" height="32"
+						   click="menuHandler(event)"
+						   icon="@Embed(source='images/icons/roadPoint.png')" toolTip="显示隐藏路点层"/>
 				<mx:Button id="buildViewBtn" x="106" y="6" width="32" height="32"
 						   click="menuHandler(event)"
 						   icon="@Embed(source='images/icons/viewBuild.png')" toolTip="显示隐藏建筑层"/>
 			</mx:HBox>
 			<mx:VRule height="32"/>
 			<mx:HBox width="113" height="32">
-				<mx:Button id="imageLibBtn" x="10" y="10" width="32" height="32"
-						   click="menuHandler(event)"
-						   icon="@Embed(source='images/icons/imageLib.png')" toolTip="显示隐藏元件库"/>
 				<mx:Button id="baseInfoBtn" x="58" y="10" width="32" height="32"
 						   click="menuHandler(event)"
 						   icon="@Embed(source='images/icons/baseInfo.png')" toolTip="显示隐藏基本信息"/>	
+				<mx:Button id="imageLibBtn" x="10" y="10" width="32" height="32"
+						   click="menuHandler(event)"
+						   icon="@Embed(source='images/icons/imageLib.png')" toolTip="显示隐藏元件库"/>
 				<mx:Button id="mouseInfoBtn" x="121" y="12" width="32" height="32"
 						   click="menuHandler(event)"
 						   icon="@Embed(source='images/icons/mouseInfo.png')" toolTip="显示隐藏鼠标信息"/>
@@ -731,7 +717,7 @@
 			</mx:HBox>
 		</mx:HBox>
 	</mx:Canvas>
-	<mx:Canvas id="mapEditOutCanvas" y="40"  x="0" width="100%" height="100%" verticalScrollPolicy="off" >
-		<mx:Canvas id="mapEditCanvas" y="0" width="100%" height="100%" verticalScrollPolicy="auto"/>
+	<mx:Canvas id="mapEditOutCanvas" y="40"  x="0" width="100%" height="100%">
+		<mx:Canvas id="mapEditCanvas" y="0" verticalScrollPolicy="off" horizontalScrollPolicy="off"/>
 	</mx:Canvas>
 </mx:WindowedApplication>

@@ -23,9 +23,9 @@ package com.heptafish.mapeditor.utils
 		public static const TYPE_SAVE_MAP_ROAD:int = 0;
 		//保存时将空白区域转换为障碍
 		public static const TYPE_SAVE_MAP_HINDER:int = 1;
+		
 		//地图元件库图片目录
 		public static const COMPONENT_LIB_HOME:File  = File.documentsDirectory.resolvePath(MAIN_PATH + IMAGE_PATH);
-		//public static const COMPONENT_LIB:File  = File.documentsDirectory.resolvePath("HFMapEdit");
 		//主目录
 		public static const LIB_HOME:File = File.documentsDirectory.resolvePath(MAIN_PATH);
 		//库图片路径
@@ -33,6 +33,6 @@ package com.heptafish.mapeditor.utils
 		//地图图片路径
 		public static const MAP_PATH:String = "maps/";
 		//主路径
-		public static const MAIN_PATH:String = "HFMapEdit/";
+		public static const MAIN_PATH:String = "MapEditor/";
 	}
 }

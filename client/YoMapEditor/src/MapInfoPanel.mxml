@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" 
- layout="absolute" width="320" height="326" title="地图基本信息"
-	creationComplete="creationComplete(event)" color="0x000000"
-	 creationCompleteEffect="{showEffect}"
-	>
+<InfoPanel xmlns="*" xmlns:mx="http://www.adobe.com/2006/mxml" width="320" height="326" creationComplete="creationComplete(event)" titleStyleName="panelTitle" title="地图信息">
 	<!-- 创建地图时显示的面板 -->
 	<mx:Script>
 		<![CDATA[
@@ -170,4 +166,4 @@
 	<mx:TextInput id="preloadY" tabIndex="14" width="62" x="68" y="229" restrict="0-9" maxChars="9" text="2" change="update()"/>
 	<mx:Label id="nodeRow" x="68" y="259" width="63.5" text="{Math.floor(Number(this.mapHeight.text) / Number(this.cellHeight.text))*2}"/>
 	<mx:Label id="nodeCol" x="228" y="259" width="63.5" text="{Math.round(Number(this.mapWidth.text) / Number(this.cellWidth.text))}"/>
-</mx:Panel>
+</InfoPanel>

@@ -62,7 +62,6 @@ package com.yo.framework.manager
 		
 		protected function __doubleClickHandler(e:MouseEvent):void
 		{
-			trace("double");
 		}
 		
 		protected function __rightClickHandler(e:MouseEvent):void

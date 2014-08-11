@@ -19,7 +19,7 @@ package com.yo.framework.objects.movement
         }
         
         public function remove():void {
-            this._owner.removeComponent(this);
+            _owner.removeComponent(this);
         }
         
 	}

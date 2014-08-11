@@ -3,7 +3,7 @@
 	<mx:Script>
 		<![CDATA[
 			import com.heptafish.mapeditor.events.MapEditorEvent;
-			import com.heptafish.mapeditor.items.Building;
+			import com.heptafish.mapeditor.events.MapEditorEventDispather;
 			import com.heptafish.mapeditor.utils.ImageLoader;
 			import com.heptafish.mapeditor.utils.MapEditorConstant;
 			
@@ -12,36 +12,51 @@
 			import mx.events.CloseEvent;
 			import mx.managers.PopUpManager;
 
-			private var _currentLibType:String;//库的模式 file:文件模式 res:swf资源模式
-			private var _configXml:XML;//配置XML文件
-			private var _configFile:File;//配置XML文件
 			private var _buildingInfo:BuildingInfo;
+			
+			private var _configXml:XML;//配置XML文件
+			
+			private var _configFile:File;//配置XML文件
+			
 			private var _libHome:File;
+			
 			private var _itemId:int = 0;
+			
+			private var _loader:ImageLoader;
 			
 			private var _imagesFilter:FileFilter = new FileFilter("image", "*.jpg;*.gif;*.png");//文件类型过滤
 			
 			private var _newImageLibPanel:NewImageLibPanel;//新建目录弹出窗口
 			
-			//初始化面板
+			private var _model:MapModel;
+			
 			private function initPanel(evet:Event):void{
+				_buildingInfo = new BuildingInfo();
+				
+				_loader = new ImageLoader();
+				_loader.addEventListener(Event.COMPLETE, __setBrushBitmapData);
+				
 				_libHome = MapEditorConstant.COMPONENT_LIB_HOME;
-				_configFile= _libHome.resolvePath("hfImgLib.xml");
-				if(_configFile.exists == false){
+				_configFile = _libHome.resolvePath("config.xml");
+				if(_configFile.exists == false)
+				{
 					_configXml = <lib><itemId>0</itemId></lib>;
 					writeConfig();
-				}else{
+				}
+				else
+				{
 					var fs:FileStream = new FileStream();
 					fs.open(_configFile, FileMode.READ);
-					_configXml = XML(fs.readUTFBytes(fs.bytesAvailable));
+					_configXml = new XML(fs.readUTFBytes(fs.bytesAvailable));
 				}
 				libTree.directory = _libHome;
-				_currentLibType = "dir";
+				
+				MapEditorEventDispather.addEventListener(MapEditorEvent.EDIT_BUILD_SUBMIT, __editBuildFinish);
 			}
 			
 			//弹出输入新建目录名称panel
 			private function newLib(evet:Event):void{
-				_newImageLibPanel = NewImageLibPanel(PopUpManager.createPopUp(this,NewImageLibPanel,true));
+				_newImageLibPanel = NewImageLibPanel(PopUpManager.createPopUp(this, NewImageLibPanel, true));
 				PopUpManager.centerPopUp(_newImageLibPanel);
 				_newImageLibPanel.addEventListener(MapEditorEvent.NEW_IMAGELIB_SUBMIT, __createNewLib); 
 			}
@@ -92,7 +107,9 @@
 				}
 			}
 			
-			//FileSystemTree 的 change 事件
+			/**
+			 * 预览图片
+			 */
 			private function fileTreeChange(event:Event):void
 			{
 				var selectFile:File = File(libTree.selectedItem);
@@ -102,28 +119,33 @@
 				}
 				else
 				{
-					//预览图片
-					imgPrvImg.source = selectFile.nativePath;	
+					imgPrvImg.source = selectFile.nativePath;
 					var rp:String = _libHome.getRelativePath(selectFile);//选择图片的相对路径
-					_buildingInfo = _configXml.item.(@file==MapEditorConstant.IMAGE_PATH + rp)[0];
+					for each (var item:XML in _configXml.item) 
+					{
+						if(item.@file.toString() == MapEditorConstant.IMAGE_PATH + rp){
+							_buildingInfo.id = item.@id;
+							_buildingInfo.name = selectFile.name;
+							_buildingInfo.type = item.@type;
+							_buildingInfo.path = selectFile.nativePath;
+							_buildingInfo.hinder = item.@walkable;
+							_buildingInfo.originX = item.@originX;
+							_buildingInfo.originY = item.@originY;
+							_buildingInfo.cellWidth = _model.cellWidth;
+							_buildingInfo.cellHeight = _model.cellHeight;
+						}
+					}
 					//设置画笔
-					var loader:ImageLoader = new ImageLoader();
-					loader.load(selectFile.url);
-					loader.addEventListener(Event.COMPLETE, __setBrushBitmapData);
-					
+					_loader.load(selectFile.url);
 				}
 			}
+			
 			//设置主界面画笔图像
-			private function __setBrushBitmapData(e:Event):void{
-				var buildBrush:Building = this.parentApplication.buildBrush;
-				if (buildBrush == null)
-				{
-					buildBrush = new Building();
-				}
-				buildBrush.setBitMap(e.target.data);
-				buildBrush.info = _buildingInfo;
-				this.parentApplication.buildBrush = buildBrush;
-				this.parentApplication.buildBrush.init = true;
+			private function __setBrushBitmapData(e:Event):void
+			{
+				_buildingInfo.bitmapData = e.target.data;
+				
+				MapEditorEventDispather.dispatchEvent(MapEditorEvent.BUILDING_INFO_UPDATE, _buildingInfo);
 			}
 			
 			//导入图片
@@ -132,7 +154,7 @@
 			    {
 			    	Alert.show("请先选择要导入图片的目录!");
 			    }else{
-					var directory:File = File.documentsDirectory;
+					var directory:File = File.applicationDirectory;
 				    directory.browseForOpenMultiple("选择图片文件", [_imagesFilter]);
 				    directory.addEventListener(FileListEvent.SELECT_MULTIPLE, addPic);
 			    }
@@ -143,17 +165,24 @@
 			{
 				var fa:Array = event.files;
 				_itemId = _configXml.itemId[0];
-			    for each(var openFile:File in fa){
+			    for each(var openFile:File in fa)
+				{
 				    var nowFile:File = File(libTree.selectedItem);
 				    var destFile:File;
 				    if(nowFile.isDirectory){
 				    	destFile = nowFile.resolvePath(openFile.name)
-				    }else{
+				    }
+					else
+					{
 				    	destFile = nowFile.parent.resolvePath(openFile.name);
 				    }
-				    if(destFile.exists){
+					
+				    if(destFile.exists)
+					{
 				    	Alert.show("该目录下已有 " + openFile.name + " 文件！此文件未导入！");
-				    }else{
+				    }
+					else
+					{
 					    openFile.copyTo(destFile, false);
 			    		var xmlItem:XML = <item id={_itemId} file={MapEditorConstant.IMAGE_PATH + _libHome.getRelativePath(destFile)} />;
 			    		xmlItem.@type = "";
@@ -182,31 +211,36 @@
 					return;
 				}
 				
-				// 设置当前材质类为包含选择文件的文件夹
-				var rp:String = _libHome.getRelativePath(selectFile);//选择图片的相对路径
-//				var imgId:int = this.imgLibXML.item.(file==rp).id;		//选择图片的id
-				var imgId:int = _configXml.item.(@file==MapEditorConstant.IMAGE_PATH + rp).@id;		//选择图片的id
-				
-				var editLibItem:EditBuild = EditBuild(PopUpManager.createPopUp(WindowedApplication(this.parentApplication), EditBuild, true, null));
-//				editLibItem.x = (this.parentApplication.mainCanvas.width - editLibItem.width)/2 - 5;
-//              editLibItem.y = (this.parentApplication.mainCanvas.height - editLibItem.height);
-				editLibItem.imgId = imgId;
-				editLibItem.selectFile = selectFile;
-				editLibItem.relativePath = rp;
-				editLibItem.imgLibXML = _configXml.copy();
-				editLibItem.addEventListener(MapEditorEvent.EDIT_BUILD_SUBMIT, editBuildFinish);
-				if(this.parentApplication._gridLayer.visible)
-					this.parentApplication._gridLayer.visible = false;
-				if(this.parentApplication._mapLayer.visible)
-					this.parentApplication._mapLayer.visible = false;
+				MapEditorEventDispather.dispatchEvent(MapEditorEvent.SHOW_EDIT_BUILD, _buildingInfo);
 			}
 			
-			//编辑建筑保存
-			private function editBuildFinish(e:MapEditorEvent):void{
-				var buildBrush:Building = this.parentApplication.buildBrush;
+			/**
+			 * 编辑好建筑
+			 */
+			private function __editBuildFinish(e:MapEditorEvent):void
+			{
+				for each (var item:XML in _configXml.item) 
+				{
+					if(item.@id.toString() == _buildingInfo.id){
+						item.@type = _buildingInfo.type;
+						item.@walkable = _buildingInfo.hinder;
+						item.@originX = _buildingInfo.originX;
+						item.@originY = _buildingInfo.originY;
+					}
+				}
 				writeConfig();
 			}
-			
+
+			public function get model():MapModel
+			{
+				return _model;
+			}
+
+			public function set model(value:MapModel):void
+			{
+				_model = value;
+			}
+
 		]]>
 	</mx:Script>
 

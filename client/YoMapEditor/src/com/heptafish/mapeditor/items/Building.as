@@ -1,5 +1,6 @@
 package com.heptafish.mapeditor.items
 {
+	import com.heptafish.mapeditor.layers.RoadPointLayer;
 	import com.heptafish.mapeditor.utils.ImageLoader;
 	import com.heptafish.mapeditor.utils.MapEditorConstant;
 	
@@ -10,13 +11,13 @@ package com.heptafish.mapeditor.items
 	
 	public class Building extends BaseDisplayObject
 	{
-		public var bitmap:Bitmap;
-		
-		public var init:Boolean = false;
+		private var _bitmap:Bitmap;
 		
 		private var _imageLoader:ImageLoader;
 		
 		private var _info:BuildingInfo;
+		
+		private var _roadPointLayer:RoadPointLayer; //路点层
 		
 		public function Building()
 		{
@@ -25,19 +26,30 @@ package com.heptafish.mapeditor.items
 		
 		private function initView():void
 		{
-			bitmap = new Bitmap();
-			addChild(bitmap);
+			_bitmap = new Bitmap();
+			this.addChild(_bitmap);
+			
+			_roadPointLayer = new RoadPointLayer();
+			this.addChild(_roadPointLayer);
 			
 			_imageLoader = new ImageLoader();
 			_imageLoader.addEventListener(Event.COMPLETE, __imageLoaded);
 		}
 		
-		public function setBitMap(bitMapData:BitmapData):void{
-			bitmap.bitmapData = bitMapData;
+		public function update():void
+		{
+			if(_info){
+				_bitmap.bitmapData = _info.bitmapData;
+				_roadPointLayer.drawWalkableBuilding(_info.hinder, _info.originX, _info.originY, true, _info.cellWidth, _info.cellHeight);
+			}
+			else
+			{
+				
+			}
 		}
 		
 		public function __imageLoaded(evet:Event):void{
-			bitmap.bitmapData = _imageLoader.data
+			_bitmap.bitmapData = _imageLoader.data
 		}
 		
 		public function loadImage():void{
@@ -52,6 +64,7 @@ package com.heptafish.mapeditor.items
 		public function set info(value:BuildingInfo):void
 		{
 			_info = value;
+			update();
 		}
 	}
 }

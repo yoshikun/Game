@@ -51,12 +51,12 @@ package com.adobe.protocols.dict.events
 		
 		public function set definition(definition:Definition):void
 		{
-			this._definition = definition;
+			_definition = definition;
 		}
 		
 		public function get definition():Definition
 		{
-			return this._definition;
+			return _definition;
 		}
 		
 		public override function clone():Event

@@ -45,9 +45,10 @@ package com.heptafish.mapeditor.layers
 		//绘制路点图形标记的代理函数
 		private var _cellCreater:Function;
 		
-		public function RoadPointLayer(gridLayer:GridLayer)
+		private var _mapArr:Array;
+		
+		public function RoadPointLayer()
 		{
-			_gridLayer = gridLayer;
 			_childMap  = new HashMap();
 			_buildingPointMap = new HashMap();
 			//判断当前路点层使用的图形标记是圆形还是菱形
@@ -66,35 +67,33 @@ package com.heptafish.mapeditor.layers
 		public function resetCell(xIndex:int,yIndex:int):void{
 			var mapKey:String = xIndex + "," + yIndex;
 			var oldCell:* = _childMap.getValue(mapKey);
-			if(oldCell!=null) {
+			if(oldCell != null)
+			{
 				removeChild(oldCell.shape);
 				_childMap.remove(mapKey);
 			}
 		}
 		
 		/**
-		 * 
 		 * originPX, originPY	建筑物元点在地图坐标系中的像素坐标
 		 * building				建筑物显示对象
 		 * walkable 			是否可行走
 		 */
-		public function drawWalkableBuilding(building:Building, originPX:int, originPY:int, wb:Boolean):void
+		public function drawWalkableBuilding(hinder:String, originPX:int, originPY:int, wb:Boolean, cellWidth:Number, cellHeight:Number):void
 		{
-			var walkableStr:String = building.info.walkable;
-			var wa:Array      = walkableStr.split(",");
-			
-			if (wa == null || wa.length < 2) return;
-			
-			var cellWidth:Number  = this.parentApplication._cellWidth;
-			var cellHeight:Number = this.parentApplication._cellHeight;
-			var row:int      = this.parentApplication._row;
-			var col:int      = this.parentApplication._col;
-			var xtmp:int, ytmp:int;
-		
-			for (var i:int=0; i<wa.length; i+=2)
+			var hinderArr:Array = hinder.split(",");
+			if (hinderArr == null || hinderArr.length < 2)
 			{
-				xtmp = originPX + int(wa[i]);
-				ytmp = originPY + int(wa[i+1]);
+				return;
+			}
+			
+			var xtmp:int;
+			var ytmp:int;
+		
+			for (var i:int=0; i<hinderArr.length; i+=2)
+			{
+				xtmp = originPX + int(hinderArr[i]);
+				ytmp = originPY + int(hinderArr[i+1]);
 				var pt:Point = MapEditorUtils.getCellPoint(cellWidth, cellHeight, xtmp, ytmp);
 				var mapKey:String = pt.x + "," + pt.y;
 					
@@ -109,7 +108,7 @@ package com.heptafish.mapeditor.layers
 						}
 						
 						drawCell(pt.x, pt.y, MapEditorConstant.CELL_TYPE_HINDER);
-						this.parentApplication._mapArr[pt.y][pt.x] = MapEditorConstant.CELL_TYPE_HINDER;
+						_mapArr[pt.y][pt.x] = MapEditorConstant.CELL_TYPE_HINDER;
 					}
 				}
 				else//删除阻挡
@@ -129,6 +128,7 @@ package com.heptafish.mapeditor.layers
 		}
 		
 		public function drawRoadPoint(arr:Array, roadType:int):void{
+			_mapArr = arr;
 			for(var iy:int = 0; iy < arr.length; iy++){
 				for(var ix:int = 0; ix < arr[0].length; ix++){
 					var cell:int = arr[iy][ix];
@@ -206,7 +206,7 @@ package com.heptafish.mapeditor.layers
 				if(obj.type == 1){
 					removeChild(obj.shape);
 					_childMap.remove(mapKey);
-					this.parentApplication._mapArr[pt.y][pt.x] = MapEditorConstant.CELL_TYPE_SPACE;
+					_mapArr[pt.y][pt.x] = MapEditorConstant.CELL_TYPE_SPACE;
 					
 				}else if(obj.type == 2){
 					obj.count--;
@@ -214,7 +214,7 @@ package com.heptafish.mapeditor.layers
 						removeChild(obj.shape);
 						_childMap.remove(mapKey);
 						if(_buildingPointMap.containsKey(mapKey)) _buildingPointMap.remove(mapKey);
-						this.parentApplication._mapArr[pt.y][pt.x] = MapEditorConstant.CELL_TYPE_SPACE;
+						_mapArr[pt.y][pt.x] = MapEditorConstant.CELL_TYPE_SPACE;
 						
 					}else{
 						_childMap.put(mapKey, obj);
@@ -297,7 +297,7 @@ package com.heptafish.mapeditor.layers
 		}
 
 		public function set cellWidth(cellWidth:Number):void{
-			this._tilePixelWidth = cellWidth;
+			_tilePixelWidth = cellWidth;
 		}
 		
 		public function get cellMark():int {
@@ -309,15 +309,22 @@ package com.heptafish.mapeditor.layers
 		}
 		
 		public function get cellWidth():Number{
-			return this._tilePixelWidth;
+			return _tilePixelWidth;
 		}
 
 		public function set cellHeight(cellHeight:Number):void{
-			this._tilePixelHeight = cellHeight;
+			_tilePixelHeight = cellHeight;
 		}
 		
 		public function get cellHeight():Number{
-			return this._tilePixelHeight;
+			return _tilePixelHeight;
+		}
+		
+		public function clear():void
+		{
+			this.removeChildren();
+			_childMap.clear();
+			_buildingPointMap.clear();
 		}
 	}
 }

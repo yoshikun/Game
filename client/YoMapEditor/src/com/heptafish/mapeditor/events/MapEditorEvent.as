@@ -10,6 +10,10 @@ package com.heptafish.mapeditor.events
 		
 		public static const EDIT_BUILD_SUBMIT:String = "edit_build_submit";
 		
+		public static const BUILDING_INFO_UPDATE:String = "building_info_update";
+		
+		public static const SHOW_EDIT_BUILD:String = "show_edit_build";
+		
 		public var data:Object;
 		
 		public function MapEditorEvent(type:String, data:Object = null)

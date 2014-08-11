@@ -26,19 +26,24 @@ package com.heptafish.mapeditor.layers
 		public function load(path:String):void{
 			if(path)
 			{
-				_imageLoader = new ImageLoader();
-				_imageLoader.load(path);
+				if(!_imageLoader){
+					_imageLoader = new ImageLoader();
+				}
 				_imageLoader.addEventListener(Event.COMPLETE, __loadSuccess);
+				_imageLoader.load(path);
 			}
 		}
 		
 		//读取成功
 		public function __loadSuccess(evet:Event):void{
 			_imageLoader.removeEventListener(Event.COMPLETE, __loadSuccess);
-			_image = new Bitmap(_imageLoader.data);
+			if(!_image){
+				_image = new Bitmap();
+				this.addChild(_image);
+			}
+			_image.bitmapData = _imageLoader.data;
 			this.width = _image.width;
 			this.height = _image.height;
-			this.addChild(_image);
 			
 			_model.bitmapData = _imageLoader.data;
 		}

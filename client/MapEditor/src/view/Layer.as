@@ -21,7 +21,7 @@ package view
 		public function Layer(mapWidth:uint,mapHeight:uint,sortDepth:Boolean=false,cacheAsBitmap:Boolean=false)
 		{
 			super();
-			this._sortDepth=sortDepth;
+			_sortDepth=sortDepth;
 			this.cacheAsBitmap=cacheAsBitmap;
 		}
 		/**深度排序**/

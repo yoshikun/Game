@@ -189,12 +189,12 @@ package com.yo.framework.scene
         
         public function shake(duration:Number = 2, intensity:Number = 10):void
         {
-            this._shakeDuration = duration;
-            this._shakeStartX = scrollX;
-            this._shakeStartY = scrollY;
-			this._shakeIntensity = intensity <= 0 ? 10 : intensity;
-			this._shakeTotalDuration = duration;
-			this._shakeTotalAngle = Math.PI * MathUtil.randf(20, 30);
+            _shakeDuration = duration;
+            _shakeStartX = scrollX;
+            _shakeStartY = scrollY;
+			_shakeIntensity = intensity <= 0 ? 10 : intensity;
+			_shakeTotalDuration = duration;
+			_shakeTotalAngle = Math.PI * MathUtil.randf(20, 30);
         }
         
         public function focus(pos:Point):void

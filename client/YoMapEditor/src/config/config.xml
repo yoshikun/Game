@@ -5,6 +5,6 @@
 	<param name="imageLibType" value="file" />
 	
 	<resources dec="resources">
-		<!--<classParam name="eleStore" url="data/eleStore.swf"/>-->
+	<!--<classParam name="eleStore" url="data/eleStore.swf"/>-->
 	</resources>
 </config>

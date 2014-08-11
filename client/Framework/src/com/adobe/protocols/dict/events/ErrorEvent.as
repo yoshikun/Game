@@ -49,22 +49,22 @@ package com.adobe.protocols.dict.events
 
 		public function set code(code:uint):void
 		{
-			this._code = code;
+			_code = code;
 		}
 
 		public function set message(message:String):void
 		{
-			this._message = message;
+			_message = message;
 		}
 
 		public function get code():uint
 		{
-			return this._code;
+			return _code;
 		}
 
 		public function get message():String
 		{
-			return this._message;
+			return _message;
 		}
 		
 		public override function clone():Event

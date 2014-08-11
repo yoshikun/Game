@@ -48,12 +48,12 @@ package com.adobe.protocols.dict.events
 		
 		public function set definitionCount(definitionCount:uint):void
 		{
-			this._definitionCount = definitionCount;
+			_definitionCount = definitionCount;
 		}
 		
 		public function get definitionCount():uint
 		{
-			return this._definitionCount;
+			return _definitionCount;
 		}
 		
 		public override function clone():Event

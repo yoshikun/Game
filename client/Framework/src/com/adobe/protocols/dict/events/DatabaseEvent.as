@@ -48,12 +48,12 @@ package com.adobe.protocols.dict.events
 		
 		public function set databases(databases:Array):void
 		{
-			this._databases = databases;
+			_databases = databases;
 		}
 		
 		public function get databases():Array
 		{
-			return this._databases;
+			return _databases;
 		}
 		
 		public override function clone():Event

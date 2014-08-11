@@ -242,13 +242,13 @@ package br.com.stimuli.loading.loadingtypes {
         public var errorEvent : ErrorEvent;
 
         public function LoadingItem(url : URLRequest, type : String, _uid : String){
-            this._type = type;
+            _type = type;
             this.url = url;
             _parsedURL = new SmartURL(url.url);
             if(!specificAvailableProps){
                 specificAvailableProps = [];
             }
-            this._uid = _uid;
+            _uid = _uid;
         }
 
         /**

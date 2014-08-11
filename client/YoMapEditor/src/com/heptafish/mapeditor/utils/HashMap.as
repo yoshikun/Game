@@ -19,7 +19,7 @@ package com.heptafish.mapeditor.utils
 		//清空数据
 		public function clear():void {
 			this.props=new Dictionary  ;
-			this._keys=new Array  ;
+			_keys=new Array  ;
 		}
 		
 		//是否包含指定的键名 key 
@@ -33,7 +33,7 @@ package com.heptafish.mapeditor.utils
 			var len:uint=this.size();
 			if (len>0) {
 				for (var i:uint=0; i<len; i++) {
-					if (this.props[this._keys[i]]==value) {
+					if (this.props[_keys[i]]==value) {
 						result =  true;
 						break;
 					}
@@ -55,7 +55,7 @@ package com.heptafish.mapeditor.utils
 				this.props[key]=value;
 			} else {
 				this.props[key]=value;
-				this._keys.push(key);
+				_keys.push(key);
 			}
 			return result;
 		}
@@ -65,9 +65,9 @@ package com.heptafish.mapeditor.utils
 			var result:Object=null;
 			if (this.containsKey(key)) {
 				delete this.props[key];
-				var index:int=this._keys.indexOf(key);
+				var index:int=_keys.indexOf(key);
 				if (index>-1) {
-					this._keys.splice(index,1);
+					_keys.splice(index,1);
 				}
 			}
 			return result;
@@ -87,7 +87,7 @@ package com.heptafish.mapeditor.utils
 
 		//返回 HashMap 长度
 		public function size():uint {
-			return this._keys.length;
+			return _keys.length;
 		}
 		
 		//HashMap 是否为空 
@@ -101,7 +101,7 @@ package com.heptafish.mapeditor.utils
 			var len:uint=this.size();
 			if (len>0) {
 				for (var i:uint=0; i<len; i++) {
-					result.push(this.props[this._keys[i]]);
+					result.push(this.props[_keys[i]]);
 				}
 			}
 			return result;
@@ -109,7 +109,7 @@ package com.heptafish.mapeditor.utils
 		
 		//取出所有键
 		public function keys():Array {
-			return this._keys;
+			return _keys;
 		}
 
 	}

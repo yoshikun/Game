@@ -14,8 +14,11 @@ package com.heptafish.mapeditor.layers
 		private var _mapWidth:Number;		//地图像素宽度
 		private var _mapHeight:Number;		//地图像素高度
 		
-		private var _tilePixelWidth:int;	//一个网格的象素宽
-		private var _tilePixelHeight:int;	//一个网格的象素高
+		private var _cellWidth:int;	//一个网格的象素宽
+		private var _cellHeight:int;	//一个网格的象素高
+
+		private var _row:int;
+		private var _col:int;
 		
 		private var _gridLineColor:uint = 0xbbbbbb;//线条颜色
 		
@@ -36,18 +39,18 @@ package com.heptafish.mapeditor.layers
 		}
 		
 		//画制网格
-		public function drawGrid(mapWidth:Number, mapHeight:Number, tilePixelWidth:int, tilePixelHeight:int):void
+		public function drawGrid(mapWidth:Number, mapHeight:Number, cellWidth:int, cellHeight:int):void
 		{
 			_mapWidth = mapWidth;
 			_mapHeight = mapHeight;
-			_tilePixelWidth = tilePixelWidth;
-			_tilePixelHeight = tilePixelHeight;
+			_cellWidth = cellWidth;
+			_cellHeight = cellHeight;
 			
-			var col:int =  (_mapWidth / _tilePixelWidth);
-			var row:int =  (_mapHeight / _tilePixelHeight);
-            
-			_wHalfTile = int(_tilePixelWidth/2);
-			_hHalfTile = int(_tilePixelHeight/2); 
+			_col = (_mapWidth / _cellWidth);
+			_row = (_mapHeight / _cellHeight);
+			
+			_wHalfTile = int(_cellWidth/2);
+			_hHalfTile = int(_cellHeight/2); 
 			
 			_layer.graphics.clear();
 			_layer.graphics.lineStyle(1, _gridLineColor, 1);
@@ -65,7 +68,7 @@ package com.heptafish.mapeditor.layers
 				{
 					_layer.graphics.lineTo((dblMapHeight+i) * _wHalfTile, dblMapHeight * _hHalfTile);
 				}
-			
+				
 				_layer.graphics.moveTo(i * _wHalfTile, 0);
 				if (i <= dblMapHeight)
 				{
@@ -79,7 +82,7 @@ package com.heptafish.mapeditor.layers
 			
 			for (var j:int = 1; j < dblMapHeight; j = j + 2)
 			{
-		
+				
 				_layer.graphics.moveTo(0, j * _hHalfTile);
 				if (dblMapHeight-j >= dblMapWidth)
 				{
@@ -104,10 +107,52 @@ package com.heptafish.mapeditor.layers
 				}
 			}
 			//重设宽高，滚动条用
-			//this.width = col * this._tilePixelWidth;;
+			//this.width = col * _tilePixelWidth;;
 			//trace("this.width"+this.width)
-			//this.height = (row + 1) * this._tilePixelHeight / 2;
+			//this.height = (row + 1) * _tilePixelHeight / 2;
 			//trace("this.height"+this.height);	
 		}
+
+		public function get cellWidth():int
+		{
+			return _cellWidth;
+		}
+
+		public function set cellWidth(value:int):void
+		{
+			_cellWidth = value;
+		}
+
+		public function get cellHeight():int
+		{
+			return _cellHeight;
+		}
+
+		public function set cellHeight(value:int):void
+		{
+			_cellHeight = value;
+		}
+
+		public function get row():int
+		{
+			return _row;
+		}
+
+		public function set row(value:int):void
+		{
+			_row = value;
+		}
+
+		public function get col():int
+		{
+			return _col;
+		}
+
+		public function set col(value:int):void
+		{
+			_col = value;
+		}
+
+
 	}
 }
