@@ -33,25 +33,29 @@ package com.yo.framework.scene
 		{
 		}
 		
-		public function addChild(child:DisplayObject, layerName:int):void{
+		public function addChild(child:DisplayObject, layerName:int):void
+		{
 			if(child)
 			{
 				LayerManager.instance.getLayer(layerName).addChild(child)
 			}
 		}
 		
-		public function removeChild(child:DisplayObject):void{
+		public function removeChild(child:DisplayObject):void
+		{
 			Macro.saveRemove(child);
 		}
 		
-		public function addEntity(entity:IEntity):void {
+		public function addEntity(entity:IEntity):void 
+		{
 			if(_entityVector)
 			{
 				_entityVector.push(entity);
 			}
 		}
 		
-		public function removeEntity(entity:IEntity):void {
+		public function removeEntity(entity:IEntity):void 
+		{
 			if(_entityVector)
 			{
 				var index:int = _entityVector.indexOf(entity);
@@ -93,7 +97,8 @@ package com.yo.framework.scene
 			{
 				var entity:IEntity;
 				
-				for each (entity in _entityVector) {
+				for each (entity in _entityVector) 
+				{
 					entity.update();
 				}
 				for each (entity in _entityVector) 
@@ -148,7 +153,8 @@ package com.yo.framework.scene
 		/**
 		 * 清理实体
 		 */		
-		protected function clearEntityVector():void {
+		protected function clearEntityVector():void 
+		{
 			if(_entityVector && _entityVector.length > 0)
 			{
 				while(_entityVector[0])

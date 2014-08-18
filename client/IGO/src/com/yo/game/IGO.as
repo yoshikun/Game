@@ -5,9 +5,9 @@ package com.yo.game
 	import com.yo.framework.manager.layer.LayerManager;
 	import com.yo.framework.manager.resource.ResourceManager;
 	import com.yo.framework.manager.ui.UIManager;
-	import com.yo.game.core.Config;
+	import com.yo.game.core.Global;
 	import com.yo.game.core.URLCreator;
-	import com.yo.game.enum.Scene;
+	import com.yo.game.enum.SceneName;
 	import com.yo.game.scene.GameSceneCreator;
 	import com.yo.game.scene.GameSceneManager;
 	
@@ -23,26 +23,26 @@ package com.yo.game
 		
 		override protected function init():void{
 			super.init();
-			GameSceneManager.instance.changeScene(Scene.LOGIN_SCENE);
+			GameSceneManager.instance.changeScene(SceneName.LOGIN_SCENE);
 		}
 		
 		override protected function initModel():void{
 			super.initModel();
 			
-			Config.host = _config.host;
-			Config.port = _config.port;
-			Config.lang = _config.lang;
-			Config.resourcePath = _config.resource;
-			Config.encryptResourcePath = _config.encryptResource;
-			Config.encrypt = Boolean(int(_config.encrypt));
+			Global.host = _config.host;
+			Global.port = _config.port;
+			Global.lang = _config.lang;
+			Global.resourcePath = _config.resource;
+			Global.encryptResourcePath = _config.encryptResource;
+			Global.encrypt = Boolean(int(_config.encrypt));
 			
-			Config.stage = stage;
+			Global.stage = stage;
 			
 			var params:Object = loaderInfo.parameters;
 			for(var param:String in params){
-				Config[param] = params[param];
+				Global[param] = params[param];
 			}
-			Log.getLog(this).debug(Config["debug"] ? "进入调试模式" : "");
+			Log.getLog(this).debug(Global["debug"] ? "进入调试模式" : "");
 		}
 		
 		override protected function initManager():void{

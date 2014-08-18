@@ -1,8 +1,8 @@
 package com.yo.framework.objects.movement
 {
     import com.yo.framework.core.FP;
-    import com.yo.framework.objects.BaseEntity;
-    import com.yo.framework.objects.MovingEntity;
+    import com.yo.framework.objects.entity.BaseEntity;
+    import com.yo.framework.objects.entity.MovingEntity;
     
     import flash.events.Event;
     import flash.geom.Point;

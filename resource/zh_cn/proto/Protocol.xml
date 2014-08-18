@@ -78,4 +78,63 @@
 			<attrib value="accid" type="uint32_t" info="用户ID"/>
 		</param>
 	</command>
+	<command value="Data">
+		<param value="MAIN_USER_DATA" path="C > S" num="1" info="占位" >
+		</param>
+		<param value="MAIN_USER_DATA" path="S > C" num="2" info="人物主数据" >
+			<attrib value="data" type="@MainUserData" info="人物主数据结构体"/>
+		</param>
+		<param value="SET_HP_AND_MP_DATA" path="C > S" num="3" info="占位" >
+		</param>
+		<param value="SET_HP_AND_MP_DATA" path="S > C" num="4" info="设置人物的红和蓝" >
+			<attrib value="hp" type="uint32_t" info="红"/>
+			<attrib value="mp" type="uint32_t" info="蓝"/>
+		</param>
+		<param value="TIME_SYNC" path="C > S" num="5" info="占位" >
+		</param>
+		<param value="TIME_SYNC" path="S > C" num="6" info="时间同步" >
+			<attrib value="time" type="uint32_t" info="同步时间"/>
+		</param>
+		<param value="MAP_SCREEN_SIZE_DATA" path="C > S" num="7" info="占位" >
+		</param>
+		<param value="MAP_SCREEN_SIZE_DATA" path="S > C" num="8" info="人物地图信息" >
+			<attrib value="width" type="uint32_t" info="场景宽带"/>
+			<attrib value="height" type="uint32_t" info="场景高度"/>
+			<attrib value="mainRoleX" type="uint32_t" info="人物X坐标"/>
+			<attrib value="mainRoleY" type="uint32_t" info="人物Y坐标"/>
+			<attrib value="strMapName" type="char[32]" info="地图名称"/>
+			<attrib value="strFileName" type="char[32]" info="地图文件名称"/>
+		</param>
+		<param value="LOAD_MAP_OK" path="C > S" num="9" info="客户端加载地图完成" >
+		</param>
+	</command>
+	<command value="MapScene">
+		<param value="ADD_USER_AND_POS_MAP_SCREEN_STATE" path="C > S" num="1" info="占位" >
+		</param>
+		<param value="ADD_USER_AND_POS_MAP_SCREEN_STATE" path="S > C" num="2" info="地图上增加一个人物" >
+			<attrib value="data" type="@MapUserDataPosState" info="人物基本数据及坐标和状态列表"/>
+		</param>
+		<param value="REMOVE_USER_MAP_SCREEN" path="C > S" num="3" info="占位" >
+		</param>
+		<param value="REMOVE_USER_MAP_SCREEN" path="S > C" num="4" info="地图上删除一个人物" >
+			<attrib value="charid" type="uint32_t" info="角色id"/>
+		</param>
+		<param value="USER_MOVE" path="C > S" num="5" info="用户移动" >
+			<attrib value="dir" type="uint8_t" info="方向"/>
+			<attrib value="speed" type="uint16_t" info="移动速度"/>
+			<attrib value="x" type="uint32_t" info="X"/>
+			<attrib value="y" type="uint32_t" info="Y"/>
+		</param>
+		<param value="USER_MOVE" path="S > C" num="6" info="占位" >
+		</param>
+	</command>
+	<command value="Magic">
+		<param value="ADD_USER_SKILL" path="C > S" num="1" info="添加技能及升级技能的协议" >
+			<attrib value="skillid" type="uint32_t" info="技能id"/>
+		</param>
+		<param value="ADD_USER_SKILL" path="S > C" num="2" info="添加技能及升级技能的返回" >
+			<attrib value="skillId" type="uint32_t" info="技能id"/>
+			<attrib value="skillLv" type="uint32_t" info="技能等级"/>
+		</param>
+	</command>
 </root>

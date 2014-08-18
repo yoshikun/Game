@@ -7,14 +7,19 @@ package com.yo.framework.objects.animation
 	{
 		public var currentFrameIndex:int = 0;
 		
+		protected var _name:String;
+		
 		protected var _info:AnimationInfo;
 		
 		protected var _costTime:Number = 0.0;
 		
 		protected var _totalTime:Number = 0.0;
 		
+		protected var _frame:Vector.<AnimationFrameInfo>;
+		
 		public function Animation()
 		{
+			_frame = new Vector.<AnimationFrameInfo>();
 		}
 		
 		public function update():void {
@@ -73,5 +78,27 @@ package com.yo.framework.objects.animation
 		{
 			_info = value;
 		}
+
+		public function get name():String
+		{
+			return _name;
+		}
+
+		public function set name(value:String):void
+		{
+			_name = value;
+		}
+
+		public function get frame():Vector.<AnimationFrameInfo>
+		{
+			return _frame;
+		}
+
+		public function set frame(value:Vector.<AnimationFrameInfo>):void
+		{
+			_frame = value;
+		}
+
+
 	}
 }

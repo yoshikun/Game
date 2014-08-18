@@ -3,16 +3,17 @@ package com.yo.framework.utils
 	/**
 	 * 插值工具，计算动画中间值
 	 * wiki:http://en.wikipedia.org/wiki/Interpolation
+	 * @author Dalton
 	 */
 	public class Interpolation
 	{
+		
 		public function Interpolation() 
 		{
 			
 		}
 		
-		public static function tendTowardAngle(a0:Number, a1:Number, speed:Number):Number
-		{
+		public static function tendTowardAngle(a0:Number, a1:Number, speed:Number):Number {
 			var da:Number = a1 - a0;
 			while (Math.abs(a1 - a0) > 180) {
 				a1 = a1 - sgn(a1 - a0) * 360;

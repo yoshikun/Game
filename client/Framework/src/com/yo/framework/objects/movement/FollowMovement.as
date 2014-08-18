@@ -1,7 +1,7 @@
 package com.yo.framework.objects.movement
 {
-	import com.yo.framework.objects.BaseEntity;
-	import com.yo.framework.objects.MovingEntity;
+	import com.yo.framework.objects.entity.BaseEntity;
+	import com.yo.framework.objects.entity.MovingEntity;
 	
 	import flash.utils.getTimer;
 	

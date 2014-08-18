@@ -44,12 +44,14 @@ package com.yo.framework.manager.ui
 			layer.addChild(_container);
 		}
 		
-		public function addChild(displayObject:DisplayObject, index:int = 0):void{
+		public function addChild(displayObject:DisplayObject, index:int = 0):void
+		{
 			var layer:GameLayer = _layers[index];
 			layer.addChild(displayObject);
 		}
 		
-		public function clear():void{
+		public function clear():void
+		{
 			for(var i:int = 0; i < COUNT; i++) 
 			{
 				var layer:GameLayer = _layers[i] as GameLayer;
@@ -59,7 +61,8 @@ package com.yo.framework.manager.ui
 
 		public static function get instance():UIManager
 		{
-			if(!_instance){
+			if(!_instance)
+			{
 				_instance = new UIManager();
 			}
 			return _instance;

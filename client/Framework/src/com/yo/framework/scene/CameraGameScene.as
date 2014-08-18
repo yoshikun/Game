@@ -1,11 +1,10 @@
 package com.yo.framework.scene
 {
 	import com.yo.framework.core.FP;
-	import com.yo.framework.interfaces.IEntity;
 	import com.yo.framework.manager.InputManager;
 	import com.yo.framework.manager.layer.GameLayer;
 	import com.yo.framework.manager.layer.LayerManager;
-	import com.yo.framework.objects.BaseEntity;
+	import com.yo.framework.objects.entity.BaseEntity;
 	import com.yo.framework.utils.Misc;
 	
 	import flash.display.DisplayObject;
@@ -66,8 +65,9 @@ package com.yo.framework.scene
 		override public function update():void{
 			super.update();
 			//更新深度
-			if(isSort){
-				isSort && updateSort();
+			if(isSort)
+			{
+				updateSort();
 			}
 			
 			//更新摄像机信息

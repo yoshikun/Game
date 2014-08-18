@@ -1,9 +1,8 @@
 package com.yo.framework.scene.movemode
 {
     import com.yo.framework.core.FP;
-    import com.yo.framework.interfaces.IEntity;
     import com.yo.framework.manager.SoundManager;
-    import com.yo.framework.objects.MovingEntity;
+    import com.yo.framework.objects.entity.MovingEntity;
     
     import flash.display.Sprite;
     import flash.events.MouseEvent;

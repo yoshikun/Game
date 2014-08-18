@@ -35,9 +35,14 @@ package com.yo.game.net.vo
         public var level:uint;
 
         /**
-         * 头像
+         * 性别
          */
-        public var face:uint;
+        public var sex:uint;
+
+        /**
+         * 职业
+         */
+        public var career:uint;
 
         /**
          * 角色掩码

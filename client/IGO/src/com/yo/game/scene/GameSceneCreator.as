@@ -3,7 +3,7 @@ package com.yo.game.scene
 	import com.yo.framework.manager.scene.IScene;
 	import com.yo.framework.manager.scene.SceneCreator;
 	import com.yo.framework.scene.GameScene;
-	import com.yo.game.enum.Scene;
+	import com.yo.game.enum.SceneName;
 	
 	public class GameSceneCreator extends SceneCreator
 	{
@@ -20,16 +20,16 @@ package com.yo.game.scene
 			var state:GameScene;
 			switch(name)
 			{
-				case Scene.LOAD_SCENE:
+				case SceneName.LOAD_SCENE:
 					state = new LoadScene();
 					break;
-				case Scene.LOGIN_SCENE:
+				case SceneName.LOGIN_SCENE:
 					state = new LoginScene();
 					break;
-				case Scene.CITY_SCENE:
+				case SceneName.CITY_SCENE:
 					state = new CityScene();
 					break;
-				case Scene.CREATE_ROLE:
+				case SceneName.CREATE_ROLE:
 					state = new CreateRoleScene();
 					break;
 				default:

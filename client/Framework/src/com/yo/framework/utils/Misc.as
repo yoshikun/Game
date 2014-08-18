@@ -1,7 +1,6 @@
 package com.yo.framework.utils
 {
 	import com.yo.framework.core.FP;
-	import com.yo.framework.mvc.interfaces.IDisposable;
 	
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
@@ -15,8 +14,17 @@ package com.yo.framework.utils
 	import flash.utils.Dictionary;
 	import flash.utils.Endian;
 	
+	/**
+	 * @author Dalton
+	 */
 	public class Misc
 	{
+		
+		public function Misc() 
+		{
+			
+		}
+		
 		public static function addFilter(d:DisplayObject, f:BitmapFilter):int {
 			var t:Array = d.filters;
 			t.push(f);
@@ -160,8 +168,8 @@ package com.yo.framework.utils
 		
 		private static function clear(child:DisplayObject, isCallDispose:Boolean = true):void{
 			if (isCallDispose) {
-				if(child is IDisposable){
-					IDisposable(child).dispose();
+				if (child is IClearable) {
+					IClearable(child).dispose();
 				}
 				else if(child){
 					if (child.hasOwnProperty('dispose') && child['dispose'] is Function) {

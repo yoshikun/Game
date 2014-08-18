@@ -24,7 +24,6 @@ package com.yo.framework.objects.render
 		
 		public function render():void
 		{
-			
 		}
 
 		public function get entity():IEntity

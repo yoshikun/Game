@@ -2,7 +2,7 @@ package com.yo.framework.ai.pathfinder
 {
 	import com.yo.framework.core.FP;
 	import com.yo.framework.interfaces.IComponent;
-	import com.yo.framework.objects.MovingEntity;
+	import com.yo.framework.objects.entity.MovingEntity;
 	import com.yo.framework.objects.event.EntityEvent;
 	import com.yo.framework.utils.Transfer;
 	import com.yo.framework.utils.Vector3DUtil;

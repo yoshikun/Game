@@ -1,6 +1,5 @@
 package com.yo.framework.objects.animation
 {
-	import com.yo.framework.objects.Animator;
 	import com.yo.framework.objects.SpriteSheet;
 
 	public class BitmapAnimation extends Animation
@@ -19,7 +18,8 @@ package com.yo.framework.objects.animation
 		
 		override public function dispose():void {
 			super.dispose();
-			if(_spriteSheet){
+			if(_spriteSheet)
+			{
 				_spriteSheet.dispose();
 			}
 		}

@@ -56,7 +56,8 @@ package com.yo.framework.manager.layer
 			for (var i:int = 0; i < len; i++) 
 			{
 				var layer:GameLayer = layers[i];
-				if(i != GameLayer.UI){
+				if(i != GameLayer.UI)
+				{
 					layer.removeChildren();
 				}
 			}

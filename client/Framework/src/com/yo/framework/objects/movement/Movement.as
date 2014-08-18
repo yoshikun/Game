@@ -1,9 +1,8 @@
 package com.yo.framework.objects.movement
 {
-	import com.yo.framework.interfaces.IEntity;
-	import com.yo.framework.objects.EntityComponent;
-	import com.yo.framework.objects.MovingEntity;
-
+	import com.yo.framework.objects.entity.EntityComponent;
+	import com.yo.framework.objects.entity.MovingEntity;
+	
 	public class Movement extends EntityComponent
 	{
 		protected var _owner:MovingEntity;
@@ -14,11 +13,13 @@ package com.yo.framework.objects.movement
             _owner.addComponent(this);
 		}
 		
-        public function add():void {
+        public function add():void
+		{
             
         }
         
-        public function remove():void {
+        public function remove():void 
+		{
             _owner.removeComponent(this);
         }
         

@@ -1,6 +1,8 @@
 package com.yo.framework.objects
 {
-	public class RenderState
+	import com.yo.framework.mvc.interfaces.IDisposable;
+
+	public class RenderState implements IDisposable
 	{
 		public var x:int;
 		
@@ -18,7 +20,7 @@ package com.yo.framework.objects
 		{
 		}
 		
-		public function dispose()
+		public function dispose():void
 		{
 			
 		}

@@ -1,7 +1,7 @@
 package com.yo.framework.scene.movemode
 {
     import com.yo.framework.manager.InputManager;
-    import com.yo.framework.objects.MovingEntity;
+    import com.yo.framework.objects.entity.MovingEntity;
     import com.yo.framework.utils.Misc;
     import com.yo.framework.utils.Transfer;
     
@@ -19,7 +19,8 @@ package com.yo.framework.scene.movemode
             _target = target;
         }
         
-        public function update():void{
+        public function update():void
+		{
             if(!Misc.isTextFieldFocus())
 			{
 				//如果在攻击中，则返回
@@ -72,30 +73,31 @@ package com.yo.framework.scene.movemode
 				}
 				else if(!_target.movement)
 				{
-
+					if(!_target.attackTarget)
+					{
+						_target.stop();
+					}
 				}
             }
 			else
 			{
 				if(!_target.movement)
 				{
-					
+					if(!_target.attackTarget)
+					{
+						_target.stop();
+					}
 				}
 			}
         }
         
-        public function isKeyboardMoving():Boolean{
-            if((!isKeyDown(Keyboard.A, Keyboard.LEFT) && 
-				!isKeyDown(Keyboard.D, Keyboard.RIGHT) && 
-				!isKeyDown(Keyboard.W, Keyboard.UP) && 
-				!isKeyDown(Keyboard.S, Keyboard.DOWN)))
-			{
-                return false;
-            }
-            return true;
+        public function isKeyboardMoving():Boolean
+		{
+            return isKeyDownArray([Keyboard.A, Keyboard.LEFT], [Keyboard.D, Keyboard.RIGHT], [Keyboard.W, Keyboard.UP], [Keyboard.S, Keyboard.DOWN]);
         }
 		
-		private function isKeyDown(...args):Boolean{
+		private function isKeyDown(...args):Boolean
+		{
 			var isDown:Boolean = false;
 			var len:int = args.length;
 			for (var i:int = 0; i < len; i++) 

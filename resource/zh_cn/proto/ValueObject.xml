@@ -18,8 +18,40 @@
 		<attrib value="nickName" type="char[32]" info="昵称"/>
 		<attrib value="country" type="uint16_t" info="国家"/>
 		<attrib value="level" type="uint16_t" info="等级"/>
-		<attrib value="face" type="uint8_t" info="头像"/>
+		<attrib value="sex" type="uint8_t" info="性别"/>
+		<attrib value="career" type="uint8_t" info="职业"/>
 		<attrib value="bitmask" type="uint32_t" info="角色掩码"/>
+	</obj>
+	<obj value="MainUserData" info="人物主数据">
+		<attrib value="charid" type="uint32_t" info="角色ID"/>
+		<attrib value="country" type="uint16_t" info="国家"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="hp" type="uint32_t" info="红"/>
+		<attrib value="maxhp" type="uint32_t" info="最大红"/>
+		<attrib value="mp" type="uint32_t" info="蓝"/>
+		<attrib value="maxmp" type="uint32_t" info="最大蓝"/>
+		<attrib value="exp" type="uint32_t" info="当前经验"/>
+		<attrib value="nextexp" type="uint32_t" info="升级经验"/>
+		<attrib value="bitmask" type="uint32_t" info="角色掩码"/>
+	</obj>
+	<obj value="UserData" info="用户基本数据">
+		<attrib value="charid" type="uint32_t" info="角色ID"/>
+		<attrib value="name" type="char[32]" info="名字"/>
+		<attrib value="sex" type="uint8_t" info="性别"/>
+		<attrib value="career" type="uint8_t" info="职业"/>
+		<attrib value="country" type="uint16_t" info="国家"/>
+		<attrib value="level" type="uint16_t" info="等级"/>
+		<attrib value="unionID" type="uint32_t" info="帮会ID"/>
+		<attrib value="attackspeed" type="uint16_t" info="攻击速度"/>
+		<attrib value="movespeed" type="uint16_t" info="移动速度"/>
+	</obj>
+	<obj value="MapUserDataPosState" info="用户基本数据加状态加坐标">
+		<attrib value="data" type="@UserData" info="用户基本数据"/>
+		<attrib value="x" type="uint32_t" info="X坐标"/>
+		<attrib value="y" type="uint32_t" info="Y坐标"/>
+		<attrib value="dir" type="uint8_t" info="方向"/>
+		<attrib value="num" type="uint16_t" info="状态个数"/>
+		<attrib value="state[num]" type="uint16_t" info="状态列表"/>
 	</obj>
 	<obj value="ServerInfo" info="服务器信息">
 		<attrib value="serverID" type="uint16_t" info="服务器id"/>

@@ -1,7 +1,7 @@
 package com.yo.framework.objects.movement
 {
 	import com.yo.framework.core.FP;
-	import com.yo.framework.objects.MovingEntity;
+	import com.yo.framework.objects.entity.MovingEntity;
 	import com.yo.framework.utils.Vector2D;
 	
 	import flash.geom.Vector3D;

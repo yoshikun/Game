@@ -3,7 +3,6 @@ package com.yo.framework.mvc.core
 	import com.yo.framework.mvc.interfaces.IModel;
 	import com.yo.framework.mvc.interfaces.IView;
 	
-	
 	/**
 	 * 视图管理器, 相当于Mediator
 	 */	
@@ -17,6 +16,9 @@ package com.yo.framework.mvc.core
 			super();
 		}
 		
+		/**
+		 * 初始化
+		 */		
 		override protected function init():void
 		{
 			super.init();
@@ -31,12 +33,32 @@ package com.yo.framework.mvc.core
 			
 		}
 		
-		public function show():void{
+		/**
+		 * 显示
+		 */		
+		public function show():void
+		{
 			update();
 		}
 		
-		public function hide():void{
-			
+		/**
+		 * 隐藏
+		 */		
+		public function hide():void
+		{
+			if(this.parent)
+			{
+				this.parent.removeChild(this);
+			}
+		}
+		
+		/**
+		 * 释放
+		 */		
+		override public function dispose():void
+		{
+			super.dispose();
+			hide();
 		}
 	}
 }
