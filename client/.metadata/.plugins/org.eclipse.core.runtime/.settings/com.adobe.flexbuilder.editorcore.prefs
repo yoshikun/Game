@@ -1,6 +1,0 @@
-#Sun Aug 03 13:33:24 CST 2014
-eclipse.preferences.version=1
-prefGetterSetterInsertLocationIndex=1
-activeViewIDs3=org.eclipse.ui.console.ConsoleView,com.adobe.flexbuilder.mxml.editor.inspector.view.PropertiesView
-activeViewIDs2=org.eclipse.ui.console.ConsoleView,org.eclipse.jdt.ui.PackageExplorer
-autoViewIDs=com.adobe.flexbuilder.mxml.editor.states.StatesViewer\=design-mxml\=0\=true,com.adobe.flexbuilder.mxml.editor.components.ComponentsView\=design-mxml\=0\=true,com.adobe.flexbuilder.mxml.editor.inspector.view.PropertiesView\=design-mxml;design-css\=0\=true,com.adobe.flexbuilder.as.editor.asdocviewer\=unmanaged\=0\=false,com.adobe.flexbuilder.mxml.editor.AppearanceView\=design-mxml\=1\=false

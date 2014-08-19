@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">&#x0A;<refactoring comment="删除资源“Stock”" deleteContents="true" description="删除资源“Stock”" element1="/Stock" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1407039839520"/>&#x0A;<refactoring comment="删除资源“fussball3d-away3d-master”" deleteContents="false" description="删除资源“fussball3d-away3d-master”" element1="/fussball3d-away3d-master" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1407421097663"/>
-</session>
