@@ -1,0 +1,14 @@
+﻿package assets
+{
+    import flash.display.*;
+
+    dynamic public class BtnMcDrawTool extends MovieClip
+    {
+
+        public function BtnMcDrawTool()
+        {
+            return;
+        }// end function
+
+    }
+}

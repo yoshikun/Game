@@ -1,0 +1,23 @@
+﻿package com.evts
+{
+    import flash.events.*;
+
+    public class DeleteCompareEvent extends Event
+    {
+        private var _symbol:String;
+        public static const DELETE:String = "delete";
+
+        public function DeleteCompareEvent(param1:String)
+        {
+            this._symbol = param1;
+            super(DELETE, true);
+            return;
+        }// end function
+
+        public function get symbol() : String
+        {
+            return this._symbol;
+        }// end function
+
+    }
+}

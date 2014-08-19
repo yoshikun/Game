@@ -1,0 +1,394 @@
+﻿package com.sina.finance.ui
+{
+    import com.sina.finance.data.*;
+    import com.ui.*;
+    import flash.display.*;
+    import flash.text.*;
+
+    public class LinesK extends LinesPad
+    {
+        private var _kdataObj:KDataObj;
+        private var _kwId:int;
+        private const _TIME_MARK_MIN_W:uint = 57;
+        private var _toY:Number;
+        private var _candleRect:LineCandleRect;
+        private var _markContainer:Sprite;
+        private var _lastMarkX:Number;
+        private var _kdId:int;
+        private var _volumeRect:LineRect;
+        private var _timeTf:TextFormat;
+        private var _dataTool:DataTool;
+        private var _k5Id:int;
+        private var _hasHighest:Boolean = false;
+        private var _gridBg:Shape;
+        private var _k15Id:int;
+        private var _k30Id:int;
+        private const _TRADING_DAY_PER_MONTH:uint = 22;
+        private var _k60Id:int;
+        private var _hasLowest:Boolean = false;
+        private var _maPLArr:Array;
+        private var _kmId:int;
+        private var _maVLArr:Array;
+
+        public function LinesK(param1:KDataObj)
+        {
+            this._dataTool = DataTool.getInstance();
+            this._maPLArr = [];
+            this._maVLArr = [];
+            this._kdId = UrlHashDecoder.DAY_K_ID;
+            this._kwId = UrlHashDecoder.WEEK_K_ID;
+            this._kmId = UrlHashDecoder.MONTH_K_ID;
+            this._k5Id = UrlHashDecoder.MIN_K_5_ID;
+            this._k15Id = UrlHashDecoder.MIN_K_15_ID;
+            this._k30Id = UrlHashDecoder.MIN_K_30_ID;
+            this._k60Id = UrlHashDecoder.MIN_K_60_ID;
+            this._timeTf = new TextFormat("arial", 10, _cfg.LB_COLOR);
+            this._kdataObj = param1;
+            this._candleRect = new LineCandleRect(1, 0, 1, true);
+            addChild(this._candleRect);
+            this._volumeRect = new LineRect(1, 0, 1, true);
+            addChild(this._volumeRect);
+            this.initMaLines();
+            this._gridBg = new Shape();
+            addChildAt(this._gridBg, 0);
+            this._markContainer = new Sprite();
+            addChild(this._markContainer);
+            return;
+        }// end function
+
+        private function _drawMark(param1:Number, param2:String) : void
+        {
+            var _loc_3:* = this._TIME_MARK_MIN_W * 0.5;
+            if (param1 < _loc_3 || this._lastMarkX > 0 && param1 <= this._lastMarkX + this._TIME_MARK_MIN_W || param1 > _cfg.KW - _loc_3)
+            {
+                return;
+            }
+            this._lastMarkX = param1;
+            var _loc_4:* = this._gridBg.graphics;
+            this._gridBg.graphics.lineStyle(0, _cfg.clineBackground, 1, true, "none");
+            this._toY = 0;
+            while (this._toY < _cfg.hRTV)
+            {
+                
+                if (this._toY >= _cfg.hReal && this._toY < _cfg.hReal + _cfg.hTimeLb)
+                {
+                    this._toY = this._toY + _cfg.hTimeLb;
+                    continue;
+                }
+                _loc_4.moveTo(param1, this._toY);
+                this._toY = this._toY + 2;
+                _loc_4.lineTo(param1, this._toY);
+                this._toY = this._toY + 2;
+            }
+            var _loc_5:* = new TextField();
+            new TextField().selectable = false;
+            _loc_5.defaultTextFormat = this._timeTf;
+            _loc_5.autoSize = "left";
+            _loc_5.text = param2;
+            _loc_5.x = param1 - _loc_5.width / 2;
+            _loc_5.y = _cfg.hReal;
+            this._markContainer.addChildAt(_loc_5, 0);
+            return;
+        }// end function
+
+        public function newColorComes() : void
+        {
+            this.initMaLines();
+            var _loc_1:* = _cfg.getWorkingMAArr()[1];
+            var _loc_2:uint = 0;
+            var _loc_3:* = _loc_1.length;
+            while (_loc_2 < _loc_3)
+            {
+                
+                LineCurve(this._maPLArr[_loc_2]).lineStyle(0, _loc_1[_loc_2], 1);
+                LineCurve(this._maVLArr[_loc_2]).lineStyle(0, _loc_1[_loc_2], 1);
+                _loc_2 = _loc_2 + 1;
+            }
+            return;
+        }// end function
+
+        override public function interactiveEnd() : void
+        {
+            this._candleRect.interactiveEnd();
+            this._volumeRect.interactiveEnd();
+            return;
+        }// end function
+
+        private function initMaLines() : void
+        {
+            var _loc_3:LineCurve = null;
+            var _loc_1:* = _cfg.getWorkingMAArr()[1];
+            var _loc_2:* = _loc_1.length;
+            while (this._maPLArr.length < _loc_2)
+            {
+                
+                this._maPLArr[this._maPLArr.length] = this.getMaLine(_loc_1[this._maPLArr.length]);
+                this._maVLArr[this._maVLArr.length] = this.getMaLine(_loc_1[this._maVLArr.length]);
+            }
+            while (this._maPLArr.length > _loc_2)
+            {
+                
+                _loc_3 = this._maPLArr.pop();
+                _loc_3.clear();
+                _loc_3.parent.removeChild(_loc_3);
+                _loc_3 = this._maVLArr.pop();
+                _loc_3.clear();
+                _loc_3.parent.removeChild(_loc_3);
+            }
+            return;
+        }// end function
+
+        private function getMaLine(param1:uint) : LineCurve
+        {
+            var _loc_2:* = new LineCurve(0, param1, 1, false);
+            addChild(_loc_2);
+            return _loc_2;
+        }// end function
+
+        private function drawExtMark(param1:int, param2:Date, param3:Number, param4:Number, param5:Number, param6:Boolean = true) : void
+        {
+            var _loc_7:* = new ExtMark(param1, param2, param3, param4, param5, param6);
+            if (param6)
+            {
+                _cfg.hExtMark = _loc_7;
+            }
+            else
+            {
+                _cfg.lExtMark = _loc_7;
+            }
+            this._markContainer.addChild(_loc_7);
+            return;
+        }// end function
+
+        override public function resize() : void
+        {
+            var _loc_1:* = _cfg.hReal + _cfg.hTimeLb;
+            this._volumeRect.y = _loc_1;
+            var _loc_2:* = this._maVLArr.length;
+            var _loc_3:uint = 0;
+            while (_loc_3 < _loc_2)
+            {
+                
+                LineCurve(this._maVLArr[_loc_3]).y = _loc_1;
+                _loc_3 = _loc_3 + 1;
+            }
+            return;
+        }// end function
+
+        private function monthDayAddZero(param1:uint) : String
+        {
+            var _loc_2:* = param1.toString();
+            if (param1 <= 9)
+            {
+                _loc_2 = "0" + _loc_2;
+            }
+            return _loc_2;
+        }// end function
+
+        override public function draw(param1:uint = 24) : void
+        {
+            var _loc_7:String = null;
+            var _loc_13:Number = NaN;
+            var _loc_14:Number = NaN;
+            var _loc_17:Object = null;
+            var _loc_18:Object = null;
+            var _loc_23:uint = 0;
+            var _loc_24:uint = 0;
+            var _loc_25:uint = 0;
+            var _loc_26:uint = 0;
+            var _loc_27:Number = NaN;
+            var _loc_28:String = null;
+            var _loc_31:uint = 0;
+            var _loc_32:uint = 0;
+            var _loc_33:uint = 0;
+            this.resize();
+            this._hasHighest = false;
+            this._hasLowest = false;
+            var _loc_2:* = this._kdataObj.datas;
+            var _loc_3:* = this._kdataObj.poses;
+            var _loc_4:* = _loc_3.length;
+            var _loc_5:* = _cfg.KW / _loc_4;
+            if (_loc_4 < _cfg.NK)
+            {
+                _loc_5 = _cfg.KW / _cfg.NK;
+            }
+            var _loc_6:* = _loc_5 / 2;
+            this._lastMarkX = -1;
+            if (param1 == this._kmId || param1 == 365 || _loc_4 > 828)
+            {
+                _loc_7 = "y";
+            }
+            else if (param1 == this._k5Id || param1 == this._k15Id)
+            {
+                _loc_7 = "d";
+            }
+            else if (param1 == this._k30Id || param1 == this._k60Id)
+            {
+                _loc_7 = "w";
+            }
+            else
+            {
+                _loc_7 = "m";
+            }
+            var _loc_8:* = _cfg.KW / this._TIME_MARK_MIN_W;
+            var _loc_9:* = _cfg.KW / (_loc_5 * this._TRADING_DAY_PER_MONTH);
+            var _loc_10:* = Math.ceil(_loc_9 / _loc_8);
+            var _loc_11:* = this._maPLArr.length;
+            var _loc_12:uint = 0;
+            while (_loc_12 < _loc_11)
+            {
+                
+                LineCurve(this._maPLArr[_loc_12]).clear(true);
+                LineCurve(this._maVLArr[_loc_12]).clear(true);
+                _loc_12 = _loc_12 + 1;
+            }
+            this._candleRect.clear(true);
+            this._volumeRect.clear(true);
+            var _loc_15:* = _cfg.cfontBlack;
+            var _loc_16:* = _cfg.cfontRise;
+            var _loc_19:int = 0;
+            var _loc_20:int = -1;
+            var _loc_21:int = -1;
+            var _loc_22:int = 0;
+            this._gridBg.graphics.clear();
+            while (this._markContainer.numChildren)
+            {
+                
+                delete this[this._markContainer.removeChildAt(0)];
+            }
+            var _loc_29:Array = [];
+            var _loc_30:int = 0;
+            while (_loc_30 < _loc_4)
+            {
+                
+                _loc_17 = _loc_3[_loc_30];
+                _loc_18 = _loc_2[_loc_30];
+                _loc_13 = Math.min(_loc_17.open, _loc_17.close);
+                _loc_14 = Math.max(_loc_17.open, _loc_17.close);
+                _loc_15 = _cfg.cfontBlack;
+                if (Number(_loc_18.close) > Number(_loc_18.open))
+                {
+                    _loc_15 = _cfg.cfontRise;
+                }
+                else if (Number(_loc_18.close) < Number(_loc_18.open))
+                {
+                    _loc_15 = _cfg.cfontFall;
+                }
+                this._candleRect.lineStyle(1, _loc_15, 1);
+                this._candleRect.drawCandleRect(_loc_5 * _loc_30, _loc_17.high, _loc_13, _loc_14, _loc_17.low, _loc_5);
+                if (!this._hasHighest && _loc_17.isHighest)
+                {
+                    this._hasHighest = true;
+                    this.drawExtMark(_loc_30, _loc_18.date, _loc_5 * _loc_30 + _loc_5 / 2, _loc_17.high, _loc_18.high, true);
+                }
+                if (!this._hasLowest && _loc_17.isLowest)
+                {
+                    this._hasLowest = true;
+                    this.drawExtMark(_loc_30, _loc_18.date, _loc_5 * _loc_30 + _loc_5 / 2, _loc_17.low, _loc_18.low, false);
+                }
+                _loc_26 = _loc_18.date.day;
+                _loc_23 = _loc_18.date.month;
+                _loc_24 = _loc_18.date.date;
+                _loc_25 = _loc_18.date.fullYear;
+                if (!_cfg.isBond && param1 == this._kdId)
+                {
+                    _loc_32 = 0;
+                    _loc_33 = _cfg.dayKNewsArr.length;
+                    while (_loc_32 < _loc_33)
+                    {
+                        
+                        if (this._dataTool.isSameDay_date(_loc_18.date, _cfg.dayKNewsArr[_loc_32].d))
+                        {
+                            _loc_29[_loc_29.length] = {x:_loc_5 * _loc_30 + _loc_5 * 0.5, d:_loc_18.date, t:_cfg.dayKNewsArr[_loc_32].t};
+                            break;
+                        }
+                        _loc_32 = _loc_32 + 1;
+                    }
+                }
+                _loc_27 = _loc_5 * _loc_30 + _loc_5 / 2;
+                switch(_loc_7)
+                {
+                    case "d":
+                    {
+                        if (_loc_24 != _loc_22)
+                        {
+                            _loc_28 = [String(_loc_25).substring(2), this.monthDayAddZero((_loc_23 + 1)), this.monthDayAddZero(_loc_24)].join("/");
+                            this._drawMark(_loc_27, _loc_28);
+                        }
+                        break;
+                    }
+                    case "w":
+                    {
+                        if (_loc_26 < _loc_19)
+                        {
+                            _loc_28 = String(_loc_25).substring(2) + "/" + this.monthDayAddZero((_loc_23 + 1)) + "/" + this.monthDayAddZero(_loc_24);
+                            this._drawMark(_loc_27, _loc_28);
+                        }
+                        break;
+                    }
+                    case "m":
+                    default:
+                    {
+                        if (_loc_23 != _loc_20 && !(_loc_23 % _loc_10))
+                        {
+                            _loc_28 = String(_loc_25) + "/" + this.monthDayAddZero((_loc_23 + 1));
+                            this._drawMark(_loc_27, _loc_28);
+                        }
+                        break;
+                    }
+                    case :
+                    {
+                        if (_loc_25 != _loc_21)
+                        {
+                            this._drawMark(_loc_27, String(_loc_25));
+                        }
+                        break;
+                        break;
+                    }
+                }
+                _loc_20 = _loc_23;
+                _loc_21 = _loc_25;
+                _loc_19 = _loc_26;
+                _loc_22 = _loc_24;
+                if (_loc_30 == 0)
+                {
+                    _loc_31 = 0;
+                    while (_loc_31 < _loc_11)
+                    {
+                        
+                        LineCurve(this._maPLArr[_loc_31]).moveTo(_loc_6, _loc_17["ma_price" + _loc_31]);
+                        LineCurve(this._maVLArr[_loc_31]).moveTo(_loc_6, _loc_17["ma_volume" + _loc_31]);
+                        _loc_31 = _loc_31 + 1;
+                    }
+                    _loc_16 = _loc_15 != _cfg.cfontBlack ? (_loc_15) : (_loc_2[0].close < _loc_2[0].prevclose ? (_cfg.cfontFall) : (_cfg.cfontRise));
+                }
+                else
+                {
+                    _loc_31 = 0;
+                    while (_loc_31 < _loc_11)
+                    {
+                        
+                        LineCurve(this._maPLArr[_loc_31]).lineTo(_loc_6, _loc_17["ma_price" + _loc_31]);
+                        LineCurve(this._maVLArr[_loc_31]).lineTo(_loc_6, _loc_17["ma_volume" + _loc_31]);
+                        _loc_31 = _loc_31 + 1;
+                    }
+                    _loc_16 = _loc_15 != _cfg.cfontBlack ? (_loc_15) : (_loc_2[_loc_30].close < _loc_2[(_loc_30 - 1)].close ? (_cfg.cfontFall) : (_cfg.cfontRise));
+                }
+                this._volumeRect.lineStyle(0, _loc_16, 1);
+                this._volumeRect.drawRect(_loc_5 * _loc_30, _loc_17.volume, _loc_5, _cfg.hVol - _loc_17.volume - 1);
+                _loc_6 = _loc_6 + _loc_5;
+                _loc_30++;
+            }
+            _cfg.interactLayer.drawNewsMarks(_loc_29);
+            return;
+        }// end function
+
+        override public function interactiveTo(param1:uint) : void
+        {
+            this._candleRect.interactiveTo(param1);
+            this._volumeRect.interactiveTo(param1);
+            return;
+        }// end function
+
+    }
+}

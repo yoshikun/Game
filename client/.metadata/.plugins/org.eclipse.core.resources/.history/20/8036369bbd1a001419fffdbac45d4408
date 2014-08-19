@@ -1,0 +1,207 @@
+﻿package com.sina.finance.data
+{
+
+    public class KDataState extends Object
+    {
+        public var k5l:uint;
+        public var k15r:uint;
+        public var k5r:uint;
+        public var k168r:uint;
+        public var k168l:uint;
+        public var k24br:uint;
+        public var k30:Array;
+        public var k24b:Array;
+        private var _kdata:KData;
+        public var k24f:Array;
+        public var k24l:uint;
+        public var k24r:uint;
+        public var k60l:uint;
+        public var k60r:uint;
+        public var k168fl:uint;
+        public var k720fl:uint;
+        public var k5:Array;
+        public var k168fr:uint;
+        public var k720fr:uint;
+        public var k720b:Array;
+        public var k168bl:uint;
+        public var k720br:uint;
+        public var k720bl:uint;
+        public var k720f:Array;
+        public var k168br:uint;
+        public var k720l:uint;
+        public var k15:Array;
+        public var k720r:uint;
+        public var k30l:uint;
+        public var k60:Array;
+        public var k168:Array;
+        public var k30r:uint;
+        public var k24:Array;
+        public var k720:Array;
+        public var k24fl:uint;
+        private const LEN:uint = 70;
+        public var k24bl:uint;
+        public var k24fr:uint;
+        public var k168b:Array;
+        public var k15l:uint;
+        public var k168f:Array;
+
+        public function KDataState(param1:KData)
+        {
+            var _loc_2:uint = 0;
+            this._kdata = param1;
+            if (param1.datas_day)
+            {
+                this.k24 = param1.datas_day;
+                _loc_2 = this.k24.length;
+                if (_loc_2 > this.LEN)
+                {
+                    this.k24l = _loc_2 - this.LEN;
+                }
+                else
+                {
+                    this.k24l = 0;
+                }
+                this.k24r = _loc_2;
+            }
+            if (param1.datas_week)
+            {
+                this.k168 = param1.datas_week;
+                _loc_2 = this.k168.length;
+                if (_loc_2 > this.LEN)
+                {
+                    this.k168l = _loc_2 - this.LEN;
+                }
+                else
+                {
+                    this.k168l = 0;
+                }
+                this.k168r = _loc_2;
+            }
+            if (param1.datas_month)
+            {
+                this.k720 = param1.datas_month;
+                _loc_2 = this.k720.length;
+                if (_loc_2 > this.LEN)
+                {
+                    this.k720l = _loc_2 - this.LEN;
+                }
+                else
+                {
+                    this.k720l = 0;
+                }
+                this.k720r = _loc_2;
+            }
+            return;
+        }// end function
+
+        public function initKDataStateById(param1:Array, param2:uint) : void
+        {
+            var _loc_3:* = "k" + param2;
+            this[_loc_3] = param1;
+            this._kdata["datas_" + param2 + "min"] = param1;
+            var _loc_4:* = param1.length;
+            if (param1.length > this.LEN)
+            {
+                this[_loc_3 + "l"] = _loc_4 - this.LEN;
+            }
+            else
+            {
+                this[_loc_3 + "l"] = 0;
+            }
+            this[_loc_3 + "r"] = _loc_4;
+            return;
+        }// end function
+
+        public function updateKDataState(param1:KData) : void
+        {
+            var _loc_2:uint = 0;
+            this._kdata = param1;
+            if (param1.dayFArr)
+            {
+                this.k24f = param1.dayFArr;
+                _loc_2 = this.k24f.length;
+                if (_loc_2 > this.LEN)
+                {
+                    this.k24fl = _loc_2 - this.LEN;
+                }
+                else
+                {
+                    this.k24fl = 0;
+                }
+                this.k24fr = _loc_2;
+            }
+            if (param1.dayBArr)
+            {
+                this.k24b = param1.dayBArr;
+                _loc_2 = this.k24b.length;
+                if (_loc_2 > this.LEN)
+                {
+                    this.k24bl = _loc_2 - this.LEN;
+                }
+                else
+                {
+                    this.k24bl = 0;
+                }
+                this.k24br = _loc_2;
+            }
+            if (param1.weekFArr)
+            {
+                this.k168f = param1.weekFArr;
+                _loc_2 = this.k168f.length;
+                if (_loc_2 > this.LEN)
+                {
+                    this.k168fl = _loc_2 - this.LEN;
+                }
+                else
+                {
+                    this.k168fl = 0;
+                }
+                this.k168fr = _loc_2;
+            }
+            if (param1.weekBArr)
+            {
+                this.k168b = param1.weekBArr;
+                _loc_2 = this.k168b.length;
+                if (_loc_2 > this.LEN)
+                {
+                    this.k168bl = _loc_2 - this.LEN;
+                }
+                else
+                {
+                    this.k168bl = 0;
+                }
+                this.k168br = _loc_2;
+            }
+            if (param1.monthFArr)
+            {
+                this.k720f = param1.monthFArr;
+                _loc_2 = this.k720f.length;
+                if (_loc_2 > this.LEN)
+                {
+                    this.k720fl = _loc_2 - this.LEN;
+                }
+                else
+                {
+                    this.k720fl = 0;
+                }
+                this.k720fr = _loc_2;
+            }
+            if (param1.monthBArr)
+            {
+                this.k720b = param1.monthBArr;
+                _loc_2 = this.k720b.length;
+                if (_loc_2 > this.LEN)
+                {
+                    this.k720bl = _loc_2 - this.LEN;
+                }
+                else
+                {
+                    this.k720bl = 0;
+                }
+                this.k720br = _loc_2;
+            }
+            return;
+        }// end function
+
+    }
+}

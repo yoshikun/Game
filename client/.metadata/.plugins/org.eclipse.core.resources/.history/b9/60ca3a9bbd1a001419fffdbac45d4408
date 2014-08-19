@@ -1,0 +1,102 @@
+﻿package com.sina.finance.ui
+{
+    import com.sina.finance.data.*;
+    import flash.display.*;
+
+    public class CompareMgr extends Sprite implements IUis
+    {
+        private var _cdatas:Array;
+        private var _cfg:Config;
+        private var _cbs:Array;
+        private var _mainCB:CompareButton;
+        private var _cColors:Array;
+
+        public function CompareMgr(param1:String, param2:String, param3:Array)
+        {
+            this._cfg = Config.getInstance();
+            this._cbs = [];
+            this._cColors = this._cfg.clineCompares;
+            this._mainCB = new CompareButton(param1, param2, this._cColors[0], false);
+            this._cbs.push(this._mainCB);
+            this._cdatas = param3;
+            return;
+        }// end function
+
+        public function removeOthers() : void
+        {
+            var _loc_1:uint = 0;
+            while (this._cbs.length > 1)
+            {
+                
+                _loc_1 = this._cbs.length - 1;
+                this._cbs[_loc_1].removeAllEventListener();
+                this.removeChildAt(_loc_1);
+                delete this._cbs[_loc_1];
+                this._cbs.pop();
+            }
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            var _loc_2:CompareButton = null;
+            var _loc_3:HQ = null;
+            var _loc_6:uint = 0;
+            if (!this.contains(this._mainCB))
+            {
+                this.addChild(this._mainCB);
+            }
+            var _loc_1:* = this._cdatas.length;
+            while (this._cbs.length < _loc_1)
+            {
+                
+                _loc_2 = new CompareButton("", "", this._cColors[1], true);
+                this.addChild(_loc_2);
+                this._cbs.push(_loc_2);
+            }
+            while (this._cbs.length > _loc_1)
+            {
+                
+                _loc_6 = this._cbs.length - 1;
+                this._cbs[_loc_6].removeAllEventListener();
+                this.removeChildAt(_loc_6);
+                delete this._cbs[_loc_6];
+                this._cbs.pop();
+            }
+            var _loc_4:* = (this._cfg.TW - 90 * _loc_1) * 0.5 + this._cfg.posX;
+            var _loc_5:uint = 0;
+            while (_loc_5 < _loc_1)
+            {
+                
+                _loc_2 = this._cbs[_loc_5] as CompareButton;
+                if (_loc_5 > 0)
+                {
+                    _loc_3 = this._cdatas[_loc_5].hq;
+                    _loc_2.setNameSymbolColor(_loc_3.name, _loc_3.symbol, this._cColors[_loc_5]);
+                }
+                _loc_2.x = _loc_4;
+                _loc_4 = _loc_4 + 90;
+                _loc_5 = _loc_5 + 1;
+            }
+            return;
+        }// end function
+
+        public function resize() : void
+        {
+            var _loc_3:CompareButton = null;
+            var _loc_1:* = this._cdatas.length;
+            var _loc_2:* = (this._cfg.TW - 90 * _loc_1) * 0.5 + this._cfg.posX;
+            var _loc_4:uint = 0;
+            while (_loc_4 < _loc_1)
+            {
+                
+                _loc_3 = this._cbs[_loc_4] as CompareButton;
+                _loc_3.x = _loc_2;
+                _loc_2 = _loc_2 + 90;
+                _loc_4 = _loc_4 + 1;
+            }
+            return;
+        }// end function
+
+    }
+}

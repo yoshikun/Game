@@ -1,0 +1,50 @@
+﻿package com.sina.finance.ui
+{
+    import com.sina.finance.data.*;
+    import flash.display.*;
+
+    public class UIMgr extends Sprite implements IUis
+    {
+        protected var _dataTool:DataTool;
+        protected var _cfg:Config;
+        protected var _isTType:Boolean;
+        protected var _dataMgr:DataMgr;
+        protected var _id:uint;
+
+        public function UIMgr(param1:DataMgr)
+        {
+            this._cfg = Config.getInstance();
+            this._dataTool = DataTool.getInstance();
+            this._dataMgr = param1;
+            return;
+        }// end function
+
+        public function selectRangleReset() : void
+        {
+            return;
+        }// end function
+
+        public function setTypeId(param1:Boolean, param2:uint) : void
+        {
+            this._isTType = param1;
+            this._id = param2;
+            return;
+        }// end function
+
+        public function interactiveEnd() : void
+        {
+            return;
+        }// end function
+
+        public function resize() : void
+        {
+            return;
+        }// end function
+
+        public function interactiveTo(param1:uint) : void
+        {
+            return;
+        }// end function
+
+    }
+}

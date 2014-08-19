@@ -1,0 +1,140 @@
+﻿package com.sina.finance.ui
+{
+    import com.sina.finance.data.*;
+    import flash.display.*;
+
+    public class LinesT extends LinesPad
+    {
+        private var _pLine:LineCurve;
+        private var _centerLine:Shape;
+        private var _avgpLine:LineCurve;
+        private var _vRect:LineRect;
+        private var _tdataObj:TDataObj;
+        public var id:uint = 5;
+
+        public function LinesT(param1:TDataObj)
+        {
+            this._tdataObj = param1;
+            this._pLine = new LineCurve(1, _cfg.clinePrice);
+            this._avgpLine = new LineCurve(1, 0);
+            this._vRect = new LineRect(1, 0);
+            this.resize();
+            addChild(this._avgpLine);
+            addChild(this._pLine);
+            addChild(this._vRect);
+            this._centerLine = new Shape();
+            addChild(this._centerLine);
+            return;
+        }// end function
+
+        override public function draw(param1:uint = 24) : void
+        {
+            var _loc_7:Number = NaN;
+            var _loc_8:Number = NaN;
+            var _loc_9:uint = 0;
+            this.resize();
+            var _loc_2:* = this._tdataObj.datas;
+            var _loc_3:* = this._tdataObj.poses;
+            var _loc_4:* = _loc_2.length;
+            var _loc_5:* = _cfg.TW / _loc_4;
+            var _loc_6:* = _cfg.TW / _loc_4 * 0.5;
+            this._pLine.clear(true);
+            this._avgpLine.clear(true);
+            this._vRect.clear(true);
+            _loc_4 = this._tdataObj.realLen + 1;
+            var _loc_11:* = this.id != 3;
+            this._centerLine.visible = this.id != 3;
+            this._avgpLine.visible = _loc_11;
+            var _loc_10:uint = 0;
+            while (_loc_10 < _loc_4)
+            {
+                
+                if (_loc_10 == 0 || this._tdataObj.days <= 5 && _loc_10 % 242 == 0)
+                {
+                    this._pLine.moveTo(_loc_6, _loc_3[_loc_10].price);
+                    this._avgpLine.moveTo(_loc_6, _loc_3[_loc_10].avg_price);
+                    _loc_7 = _loc_2[_loc_10].prevclose;
+                }
+                else
+                {
+                    this._pLine.lineTo(_loc_6, _loc_3[_loc_10].price);
+                    this._avgpLine.lineTo(_loc_6, _loc_3[_loc_10].avg_price);
+                }
+                _loc_8 = _loc_2[_loc_10].price;
+                _loc_9 = _loc_7 > _loc_8 ? (_cfg.cfontFall) : (_cfg.cfontRise);
+                _loc_7 = _loc_8;
+                this._vRect.lineStyle(0, _loc_9, 1);
+                this._vRect.moveTo(_loc_6, _cfg.hVol);
+                this._vRect.lineTo(_loc_6, _loc_3[_loc_10].volume);
+                _loc_6 = _loc_6 + _loc_5;
+                _loc_10 = _loc_10 + 1;
+            }
+            this._centerLine.graphics.clear();
+            if (this._tdataObj.minPrice >= _loc_2[0].prevclose)
+            {
+                return;
+            }
+            if (this._tdataObj.maxPrice <= _loc_2[0].prevclose)
+            {
+                return;
+            }
+            this._centerLine.graphics.lineStyle(1, 3618615, 1, true, "none");
+            this.drawDashLine(this._centerLine.graphics, -1, _cfg.TW, _cfg.hMain / 2, true);
+            return;
+        }// end function
+
+        override public function interactiveTo(param1:uint) : void
+        {
+            if (param1 > this._tdataObj.realLen)
+            {
+                param1 = this._tdataObj.realLen;
+            }
+            this._pLine.interactiveTo(param1);
+            this._avgpLine.interactiveTo(param1);
+            this._vRect.interactiveTo(param1);
+            return;
+        }// end function
+
+        override public function resize() : void
+        {
+            this._vRect.y = _cfg.hMain + _cfg.hTimeLb;
+            return;
+        }// end function
+
+        override public function interactiveEnd() : void
+        {
+            this._pLine.interactiveEnd();
+            this._avgpLine.interactiveEnd();
+            this._vRect.interactiveEnd();
+            return;
+        }// end function
+
+        private function drawDashLine(param1:Graphics, param2:Number, param3:Number, param4:Number, param5:Boolean) : void
+        {
+            if (param5)
+            {
+                while (param2 < param3)
+                {
+                    
+                    param1.moveTo(param2, param4);
+                    param2 = param2 + 2;
+                    param1.lineTo(param2, param4);
+                    param2 = param2 + 2;
+                }
+            }
+            else
+            {
+                while (param2 < param3)
+                {
+                    
+                    param1.moveTo(param4, param2);
+                    param2 = param2 + 2;
+                    param1.lineTo(param4, param2);
+                    param2 = param2 + 2;
+                }
+            }
+            return;
+        }// end function
+
+    }
+}

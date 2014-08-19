@@ -1,0 +1,54 @@
+﻿package com.sina.finance.ui
+{
+
+    public class LineRect extends LineBase
+    {
+        protected const MIN_W:Number = 20;
+
+        public function LineRect(param1:uint = 1, param2:uint = 0, param3:Number = 1, param4:Boolean = false)
+        {
+            super(param1, param2, param3, param4);
+            return;
+        }// end function
+
+        override public function drawRect(param1:Number, param2:Number, param3:Number, param4:Number) : void
+        {
+            if (param3 <= 3)
+            {
+                _line.graphics.moveTo(param1 + param3 / 2, param2 + param4);
+                _line.graphics.lineTo(param1 + param3 / 2, param2);
+            }
+            else if (param4 <= 1)
+            {
+                _line.graphics.moveTo(param1, param2);
+                _line.graphics.lineTo(param1 + param3, param2);
+            }
+            else
+            {
+                _line.graphics.moveTo(param1, param2);
+                _line.graphics.beginFill(_styleObj.color, _styleObj.alpha);
+                if (param3 < 35)
+                {
+                    _line.graphics.drawRect(param1 + param3 * 0.2, param2, param3 * 0.6, param4);
+                }
+                else
+                {
+                    _line.graphics.drawRect(param1 + (param3 - this.MIN_W) * 0.5, param2, this.MIN_W, param4);
+                }
+                _line.graphics.endFill();
+            }
+            _xs.push(param1 + param3 / 2);
+            _ys.push(param2);
+            return;
+        }// end function
+
+        override public function lineTo(param1:Number, param2:Number) : void
+        {
+            _line.graphics.lineTo(param1, param2);
+            _xs.push(param1);
+            _ys.push(param2);
+            return;
+        }// end function
+
+    }
+}

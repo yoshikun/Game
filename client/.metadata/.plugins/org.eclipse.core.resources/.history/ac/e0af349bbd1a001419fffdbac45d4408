@@ -1,0 +1,50 @@
+﻿package com.sina.finance.data
+{
+
+    public class IHQ extends Object
+    {
+        private var _cfg:Config;
+        public var lastfive:Number;
+        public var capital:Number;
+        public var status:String;
+        private var _iHqStr:String;
+        public var issuePrice:Number;
+
+        public function IHQ(param1:String)
+        {
+            this._cfg = Config.getInstance();
+            this._iHqStr = param1;
+            this.parseIhqStr();
+            return;
+        }// end function
+
+        private function parseIhqStr() : void
+        {
+            if (!this._iHqStr || this._iHqStr.length < 16)
+            {
+                return;
+            }
+            var _loc_1:* = this._iHqStr.split(",");
+            this._cfg.calcLastfive = false;
+            var _loc_2:* = _loc_1[6];
+            if (_loc_2.indexOf("\";") > 0)
+            {
+                _loc_2 = _loc_2.substring(0, _loc_2.indexOf("\";"));
+            }
+            this.lastfive = Number(_loc_2);
+            if (isNaN(this.lastfive) || this.lastfive < 1)
+            {
+                this._cfg.calcLastfive = true;
+            }
+            this.capital = Number(_loc_1[8]);
+            var _loc_3:* = _loc_1[14];
+            if (_loc_3.length >= 3)
+            {
+                this.issuePrice = Number(_loc_3.substr(0, _loc_3.length - 3));
+            }
+            this.status = _loc_1[15];
+            return;
+        }// end function
+
+    }
+}

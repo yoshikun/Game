@@ -1,0 +1,683 @@
+﻿package hsuan
+{
+
+    public class Json extends Object
+    {
+        private static var decoder:JsonDecoder = null;
+        private static var encoder:JsonEncoder = null;
+
+        public function Json()
+        {
+            return;
+        }// end function
+
+        public static function encode(param1) : String
+        {
+            if (encoder == null)
+            {
+                encoder = new JsonEncoder();
+            }
+            return encoder.encode(param1);
+        }// end function
+
+        public static function decode(param1:String)
+        {
+            if (decoder == null)
+            {
+                decoder = new JsonDecoder();
+            }
+            return decoder.decode(param1);
+        }// end function
+
+    }
+}
+
+class JsonDecoder extends Object
+{
+    private var cachedTok:Boolean;
+    private var tok:int;
+    private var lastPos:int;
+    private var nextPos:int;
+    private var src:String;
+    private var cachedChr:Boolean;
+    private var chr:int;
+
+    function JsonDecoder()
+    {
+        return;
+    }// end function
+
+    private function flush(param1:int = 0) : String
+    {
+        var _loc_2:* = this.nextPos - param1;
+        this.lastPos = this.nextPos - param1;
+        return this.src.substring(this.lastPos, _loc_2);
+    }// end function
+
+    private function nextToken() : int
+    {
+        if (this.cachedTok)
+        {
+            this.cachedTok = false;
+            return this.tok;
+        }
+        while (this.nextChar() == 32 || this.chr == 9 || this.isNewline(this.chr))
+        {
+            
+        }
+        if (this.chr == 47)
+        {
+            if (this.nextChar() == 47)
+            {
+                while (!this.isNewline(this.nextChar()))
+                {
+                    
+                    if (this.chr == 0)
+                    {
+                        var _loc_1:int = 255;
+                        this.tok = 255;
+                        return _loc_1;
+                    }
+                }
+            }
+            else if (this.chr == 42)
+            {
+                while (true)
+                {
+                    
+                    if (this.nextChar() == 42)
+                    {
+                        if (this.nextChar() == 47)
+                        {
+                            break;
+                        }
+                        else if (this.chr == 42)
+                        {
+                            this.cachedChr = true;
+                        }
+                    }
+                    if (this.chr == 0)
+                    {
+                        this.error("Find /* but cannot find */");
+                    }
+                }
+            }
+            else
+            {
+                this.error("Unkown token /" + String.fromCharCode(this.chr));
+            }
+            return this.nextToken();
+        }
+        this.lastPos = this.nextPos - 1;
+        if (this.chr == 34 || this.chr == 39)
+        {
+            var _loc_1:int = 252;
+            this.tok = 252;
+            return _loc_1;
+        }
+        if (this.chr == 93)
+        {
+            var _loc_1:int = 251;
+            this.tok = 251;
+            return _loc_1;
+        }
+        if (this.chr == 91)
+        {
+            var _loc_1:int = 250;
+            this.tok = 250;
+            return _loc_1;
+        }
+        if (this.chr == 125)
+        {
+            var _loc_1:int = 249;
+            this.tok = 249;
+            return _loc_1;
+        }
+        if (this.chr == 123)
+        {
+            var _loc_1:int = 248;
+            this.tok = 248;
+            return _loc_1;
+        }
+        if (this.chr == 44)
+        {
+            var _loc_1:int = 246;
+            this.tok = 246;
+            return _loc_1;
+        }
+        if (this.chr == 58)
+        {
+            var _loc_1:int = 247;
+            this.tok = 247;
+            return _loc_1;
+        }
+        if (this.chr == 43)
+        {
+            var _loc_1:int = 244;
+            this.tok = 244;
+            return _loc_1;
+        }
+        if (this.chr == 45)
+        {
+            var _loc_1:int = 245;
+            this.tok = 245;
+            return _loc_1;
+        }
+        if (this.chr == 0)
+        {
+            var _loc_1:int = 255;
+            this.tok = 255;
+            return _loc_1;
+        }
+        if (this.chr == 46)
+        {
+            if (!this.isDigit(this.nextChar()))
+            {
+                this.error("Find . but cannot find Digit");
+            }
+            return this.nextFraction();
+        }
+        if (this.isDigit(this.chr))
+        {
+            if (this.chr == 48)
+            {
+                if (this.nextChar() != 120 && this.chr != 88)
+                {
+                    this.cachedChr = true;
+                }
+                else
+                {
+                    if (!this.isHex(this.nextChar()))
+                    {
+                        this.error("Find 0x or 0X but cannot find HexDigit");
+                    }
+                    while (this.isHex(this.nextChar()))
+                    {
+                        
+                    }
+                    return this.cache(254);
+                }
+            }
+            while (true)
+            {
+                
+                if (this.nextChar() == 46)
+                {
+                    return this.nextFraction();
+                }
+                if (this.chr == 101 || this.chr == 69)
+                {
+                    return this.nextExponent();
+                }
+                if (!this.isDigit(this.chr))
+                {
+                    break;
+                }
+            }
+            return this.cache(254);
+        }
+        if (!this.isIdentifier(this.chr))
+        {
+            this.error("Unkown token " + this.flush());
+        }
+        while (this.isIdentifier(this.nextChar()))
+        {
+            
+        }
+        return this.cache(253);
+    }// end function
+
+    private function cache(param1:int) : int
+    {
+        this.cachedChr = true;
+        var _loc_2:* = param1;
+        this.tok = param1;
+        return _loc_2;
+    }// end function
+
+    private function isNewline(param1:int) : Boolean
+    {
+        return param1 == 10 || param1 == 13;
+    }// end function
+
+    private function error(param1:String) : void
+    {
+        throw new Error(param1);
+    }// end function
+
+    private function nextExponent() : int
+    {
+        if (this.nextChar() != 43 && this.chr != 45)
+        {
+            this.cachedChr = true;
+        }
+        if (!this.isDigit(this.nextChar()))
+        {
+            this.error("Need digit after exponent");
+        }
+        while (this.isDigit(this.nextChar()))
+        {
+            
+        }
+        return this.cache(254);
+    }// end function
+
+    private function nextFraction() : int
+    {
+        while (true)
+        {
+            
+            if (this.nextChar() == 101 || this.chr == 69)
+            {
+                return this.nextExponent();
+            }
+            if (!this.isDigit(this.chr))
+            {
+                break;
+            }
+        }
+        return this.cache(254);
+    }// end function
+
+    private function isHex(param1:int) : Boolean
+    {
+        return this.isDigit(param1) || param1 > 96 && param1 < 103 || param1 > 64 && param1 < 71;
+    }// end function
+
+    private function isDigit(param1:int) : Boolean
+    {
+        return param1 > 47 && param1 < 58;
+    }// end function
+
+    private function nextChar() : int
+    {
+        if (this.cachedChr)
+        {
+            this.cachedChr = false;
+            return this.chr;
+        }
+        var _loc_1:String = this;
+        _loc_1.nextPos = this.nextPos + 1;
+        var _loc_1:* = this.src.charCodeAt(this.nextPos++);
+        this.chr = this.src.charCodeAt(this.nextPos++);
+        return _loc_1;
+    }// end function
+
+    public function decode(param1:String)
+    {
+        var _loc_2:* = undefined;
+        this.src = param1;
+        this.nextPos = 0;
+        this.cachedChr = false;
+        this.cachedTok = false;
+        _loc_2 = this.nextValue();
+        if (this.nextToken() != 255)
+        {
+            this.error("Expected end of input found " + this.flush());
+        }
+        return _loc_2;
+    }// end function
+
+    private function nextString() : String
+    {
+        var _loc_3:int = 0;
+        this.lastPos = this.nextPos;
+        var _loc_1:String = "";
+        var _loc_2:* = this.chr;
+        while (this.nextChar() != _loc_2)
+        {
+            
+            if (this.chr == 0 || this.isNewline(this.chr))
+            {
+                this.error("Unclosed string");
+            }
+            if (this.chr == 92)
+            {
+                _loc_1 = _loc_1 + this.flush(1);
+                this.lastPos = this.lastPos + 2;
+                if (this.nextChar() == 117 || this.chr == 120)
+                {
+                    _loc_3 = this.chr == 117 ? (4) : (2);
+                    while (_loc_3 > 0 && this.isHex(this.nextChar()))
+                    {
+                        
+                        _loc_3 = _loc_3 - 1;
+                    }
+                    if (_loc_3 == 0)
+                    {
+                        _loc_1 = _loc_1 + String.fromCharCode(parseInt(this.flush(), 16));
+                    }
+                    else
+                    {
+                        var _loc_4:String = this;
+                        _loc_4.lastPos = this.lastPos - 1;
+                        this.nextPos = this.lastPos - 1;
+                    }
+                    continue;
+                }
+                if (this.chr == 110)
+                {
+                    _loc_1 = _loc_1 + "\n";
+                    continue;
+                }
+                if (this.chr == 114)
+                {
+                    _loc_1 = _loc_1 + "\r";
+                    continue;
+                }
+                if (this.chr == 98)
+                {
+                    _loc_1 = _loc_1 + "\b";
+                    continue;
+                }
+                if (this.chr == 102)
+                {
+                    _loc_1 = _loc_1 + "\f";
+                    continue;
+                }
+                if (this.chr == 116)
+                {
+                    _loc_1 = _loc_1 + "\t";
+                    continue;
+                }
+                var _loc_4:String = this;
+                var _loc_5:* = this.lastPos - 1;
+                _loc_4.lastPos = _loc_5;
+            }
+        }
+        return _loc_1 + this.flush(1);
+    }// end function
+
+    private function isIdentifier(param1:int) : Boolean
+    {
+        if (this.isDigit(param1))
+        {
+            return true;
+        }
+        if (param1 > 96 && param1 < 123)
+        {
+            return true;
+        }
+        if (param1 > 64 && param1 < 91)
+        {
+            return true;
+        }
+        if (param1 == 95 || param1 == 36)
+        {
+            return true;
+        }
+        if (param1 == 215 || param1 == 247)
+        {
+            return false;
+        }
+        if (param1 < 192 || param1 > 64255)
+        {
+            return false;
+        }
+        if (param1 > 214 && param1 < 216)
+        {
+            return false;
+        }
+        if (param1 > 246 && param1 < 248)
+        {
+            return false;
+        }
+        if (param1 > 8191 && param1 < 12352)
+        {
+            return false;
+        }
+        if (param1 > 12687 && param1 < 13056)
+        {
+            return false;
+        }
+        if (param1 > 13183 && param1 < 13312)
+        {
+            return false;
+        }
+        if (param1 > 15661 && param1 < 19968)
+        {
+            return false;
+        }
+        if (param1 > 40959 && param1 < 63744)
+        {
+            return false;
+        }
+        return true;
+    }// end function
+
+    private function nextValue()
+    {
+        var _loc_1:String = null;
+        var _loc_2:Object = null;
+        var _loc_3:String = null;
+        var _loc_4:Array = null;
+        var _loc_5:Boolean = false;
+        var _loc_6:int = 0;
+        if (this.nextToken() == 253)
+        {
+            _loc_1 = this.flush(1);
+            if (_loc_1 == "NaN")
+            {
+                return NaN;
+            }
+            if (_loc_1 == "null")
+            {
+                return null;
+            }
+            if (_loc_1 == "true")
+            {
+                return true;
+            }
+            if (_loc_1 == "false")
+            {
+                return false;
+            }
+            if (_loc_1 == "Infinity")
+            {
+                return Infinity;
+            }
+            if (_loc_1 == "undefined")
+            {
+                return undefined;
+            }
+            this.error("Unkown identifier " + _loc_1);
+        }
+        if (this.tok == 248)
+        {
+            _loc_2 = {};
+            if (this.nextToken() != 249)
+            {
+                this.cachedTok = true;
+                while (true)
+                {
+                    
+                    if (this.nextToken() == 253)
+                    {
+                        _loc_3 = this.flush(1);
+                    }
+                    else if (this.tok == 252)
+                    {
+                        _loc_3 = this.nextString();
+                    }
+                    else
+                    {
+                        this.error("Unexpected token " + this.flush());
+                    }
+                    if (this.nextToken() == 247)
+                    {
+                        _loc_2[_loc_3] = this.nextValue();
+                    }
+                    else
+                    {
+                        this.error("Expected token : found " + this.flush());
+                    }
+                    if (this.nextToken() == 249)
+                    {
+                        break;
+                    }
+                    if (this.tok != 246)
+                    {
+                        this.error("Expected token } or , found " + this.flush());
+                    }
+                }
+            }
+            return _loc_2;
+        }
+        if (this.tok == 250)
+        {
+            _loc_4 = [];
+            if (this.nextToken() != 251)
+            {
+                _loc_5 = false;
+                _loc_6 = 0;
+                this.cachedTok = true;
+                while (true)
+                {
+                    
+                    if (this.nextToken() == 251)
+                    {
+                        break;
+                    }
+                    if (this.tok == 246)
+                    {
+                        _loc_4.length = _loc_6 + 1;
+                        _loc_5 = false;
+                        continue;
+                    }
+                    if (_loc_5)
+                    {
+                        this.error("Expected token  ] or , found " + this.flush());
+                        continue;
+                    }
+                    _loc_5 = true;
+                    this.cachedTok = true;
+                    _loc_4[++_loc_6] = this.nextValue();
+                }
+            }
+            return _loc_4;
+        }
+        if (this.tok == 245)
+        {
+            return -this.nextValue();
+        }
+        if (this.tok == 252)
+        {
+            return this.nextString();
+        }
+        if (this.tok == 254)
+        {
+            return Number(this.flush(1));
+        }
+        if (this.tok == 255)
+        {
+            this.error("End of input was encountered");
+        }
+        if (this.tok != 244)
+        {
+            this.error("Unexpected token " + this.flush());
+        }
+        return this.nextValue();
+    }// end function
+
+}
+
+
+class JsonEncoder extends Object
+{
+    private var unescapes:Object;
+    private var escapePtn:RegExp;
+    private var controlPtn:RegExp;
+
+    function JsonEncoder()
+    {
+        this.unescapes = {\b:"b", \f:"f", \n:"n", \r:"r", \t:"t"};
+        this.escapePtn = /["\b\f\n\r\t\\]/g;
+        this.controlPtn = /\x00-\x19/g;
+        return;
+    }// end function
+
+    public function encode(param1) : String
+    {
+        var _loc_4:int = 0;
+        var _loc_5:int = 0;
+        var _loc_6:String = null;
+        var _loc_2:String = null;
+        var _loc_3:Boolean = false;
+        if (param1 === null)
+        {
+            return "null";
+        }
+        if (param1 === undefined)
+        {
+            return "undefined";
+        }
+        if (param1 is String)
+        {
+            return this.encodeString(param1);
+        }
+        if (param1 is Array)
+        {
+            _loc_2 = "[";
+            _loc_4 = 0;
+            _loc_5 = param1["length"];
+            while (_loc_4 < _loc_5)
+            {
+                
+                if (_loc_3)
+                {
+                    _loc_2 = _loc_2 + ",";
+                }
+                else
+                {
+                    _loc_3 = true;
+                }
+                _loc_2 = _loc_2 + this.encode(param1[_loc_4]);
+                _loc_4++;
+            }
+            return _loc_2 + "]";
+        }
+        if (param1["constructor"] == Object)
+        {
+            _loc_2 = "{";
+            for (_loc_6 in param1)
+            {
+                
+                if (_loc_3)
+                {
+                    _loc_2 = _loc_2 + ",";
+                }
+                else
+                {
+                    _loc_3 = true;
+                }
+                _loc_2 = _loc_2 + (this.encodeString(_loc_6) + ":" + this.encode(param1[_loc_6]));
+            }
+            return _loc_2 + "}";
+        }
+        return param1;
+    }// end function
+
+    private function escapeRepl(... args) : String
+    {
+        return "\\" + (this.unescapes[args[0]] || args[0]);
+    }// end function
+
+    private function controlRepl(... args) : String
+    {
+        args = String(args[0]).charCodeAt(0).toString(16);
+        if (args.length == 1)
+        {
+            args = "0" + args;
+        }
+        return "\\x" + args;
+    }// end function
+
+    private function encodeString(param1:String) : String
+    {
+        param1 = param1.replace(this.escapePtn, this.escapeRepl);
+        param1 = param1.replace(this.controlPtn, this.controlRepl);
+        return "\"" + param1 + "\"";
+    }// end function
+
+}
+

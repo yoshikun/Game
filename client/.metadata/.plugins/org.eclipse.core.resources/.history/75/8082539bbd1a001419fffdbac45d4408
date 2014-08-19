@@ -1,0 +1,37 @@
+﻿package com.utils
+{
+    import flash.utils.*;
+
+    public class CopyFactory extends Object
+    {
+
+        public function CopyFactory()
+        {
+            return;
+        }// end function
+
+        public static function copyFromToNewType(param1, param2:Class)
+        {
+            return copyFromObjToObj(param1, new param2);
+        }// end function
+
+        public static function copyFromObjToObj(param1, param2)
+        {
+            var _loc_5:String = null;
+            var _loc_3:* = new ByteArray();
+            _loc_3.writeObject(param2);
+            _loc_3.position = 0;
+            var _loc_4:* = _loc_3.readObject();
+            for (_loc_5 in _loc_4)
+            {
+                
+                if (Object(param1).hasOwnProperty(_loc_5))
+                {
+                    param2[_loc_5] = param1[_loc_5];
+                }
+            }
+            return param2;
+        }// end function
+
+    }
+}

@@ -1,0 +1,100 @@
+﻿package stock.com.ui.elements.xpainting.panel
+{
+    import com.image.paintTool.*;
+    import flash.display.*;
+    import stock.com.events.*;
+    import stock.com.ui.elements.xpainting.icon.*;
+
+    public class XPaintingPanel extends PaintToolPanel
+    {
+        public const OriginYPos:Number = 29;
+        private var panel:Sprite = null;
+        private var _parent:Sprite = null;
+        private var selectedIcon:IconBase = null;
+        private var defaultIcon:IconBase = null;
+        private var icons:Array;
+        public const OriginXPos:Number = 9;
+        public const XInternal:Number = 29;
+        public const YInternal:Number = 23;
+        public const ICONSIZE:Number = 20;
+
+        public function XPaintingPanel(param1:Sprite)
+        {
+            this.icons = [IconBase.CURSOR, IconBase.SEGMENTLINE, IconBase.STRAIGHTLINE, IconBase.PARALLELLINES, IconBase.RECTANGLE, IconBase.PERIODLINES, IconBase.FIBONACCILINES, IconBase.UPMARK, IconBase.DOWNMARK, IconBase.GOLDENCUTLINES, IconBase.PERCENTLINES, IconBase.BANDLINES, IconBase.TEXTCOMMENT, IconBase.PICTURESHOT, IconBase.REMOVELINES];
+            this._parent = param1;
+            this.init();
+            return;
+        }// end function
+
+        public function removeFromStage() : void
+        {
+            return;
+        }// end function
+
+        private function init() : void
+        {
+            var _loc_2:int = 0;
+            var _loc_3:String = null;
+            this.panel = new Sprite();
+            super.addChild(this.panel);
+            var _loc_1:int = 0;
+            while (_loc_1 < 5)
+            {
+                
+                _loc_2 = 0;
+                while (_loc_2 < 3)
+                {
+                    
+                    _loc_3 = this.icons[_loc_1 * 3 + _loc_2];
+                    this.push(new IconBase(_loc_3), this.panel, this.OriginXPos + _loc_2 * this.XInternal, this.OriginYPos + _loc_1 * this.YInternal);
+                    _loc_2++;
+                }
+                _loc_1++;
+            }
+            super.addEventListener(XPaintingEvent.ICONSELECTED, this.onSelected);
+            this.defaultIcon = this.panel.getChildAt(0) as IconBase;
+            this.setDefault();
+            return;
+        }// end function
+
+        private function setSelected(param1:IconBase) : void
+        {
+            param1.selected = true;
+            return;
+        }// end function
+
+        public function addToStage() : void
+        {
+            return;
+        }// end function
+
+        private function onSelected(event:XPaintingEvent) : void
+        {
+            if (!event.icon || event.icon == this.selectedIcon)
+            {
+                return;
+            }
+            if (this.selectedIcon)
+            {
+                this.selectedIcon.selected = false;
+            }
+            this.selectedIcon = event.icon;
+            return;
+        }// end function
+
+        private function push(param1:Sprite, param2:Sprite, param3:Number, param4:Number) : void
+        {
+            param1.x = param3;
+            param1.y = param4;
+            param2.addChild(param1);
+            return;
+        }// end function
+
+        public function setDefault() : void
+        {
+            this.setSelected(this.defaultIcon);
+            return;
+        }// end function
+
+    }
+}

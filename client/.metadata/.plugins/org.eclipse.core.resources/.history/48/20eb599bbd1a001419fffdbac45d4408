@@ -1,0 +1,14 @@
+﻿package 
+{
+    import flash.display.*;
+
+    dynamic public class SinaEye extends MovieClip
+    {
+
+        public function SinaEye()
+        {
+            return;
+        }// end function
+
+    }
+}

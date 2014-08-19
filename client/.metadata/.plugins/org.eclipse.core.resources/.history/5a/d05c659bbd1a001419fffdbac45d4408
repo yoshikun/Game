@@ -1,0 +1,212 @@
+﻿package stock.com.ui.elements.xpainting.painter
+{
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
+    import flash.text.*;
+    import stock.com.events.*;
+    import stock.com.ui.elements.xpainting.*;
+    import stock.com.ui.elements.xpainting.painter.square.*;
+
+    public class XPainter extends Sprite
+    {
+        protected var thickness:int = 1;
+        protected var mature:Boolean = false;
+        protected var lineColor:uint = 255;
+        protected const NONSQUARE:int = -1;
+        protected const ENDSQUARE:int = 1;
+        protected var controllableColor:uint = 0;
+        protected const STARTSQUARE:int = 0;
+        protected var rect:Rectangle = null;
+        private var _cfg:Config;
+        protected var movingObject:int = 0;
+        protected var squares:Array = null;
+        protected var sensor:Sprite = null;
+        protected var _stage:Stage = null;
+
+        public function XPainter() : void
+        {
+            this._cfg = Config.getInstance();
+            this.init();
+            return;
+        }// end function
+
+        public function destroy() : void
+        {
+            while (this.numChildren)
+            {
+                
+                this.removeChildAt(0);
+            }
+            if (this.parent)
+            {
+                this.parent.removeChild(this);
+            }
+            this._stage = null;
+            this.sensor = null;
+            return;
+        }// end function
+
+        protected function draw() : void
+        {
+            return;
+        }// end function
+
+        protected function getInputTextField(param1:uint, param2:uint = 1, param3:uint = 10, param4:String = "left", param5:Boolean = false) : TextField
+        {
+            var _loc_6:* = this.getTextField(param1, param2, param3, param4, param5);
+            this.getTextField(param1, param2, param3, param4, param5).selectable = true;
+            _loc_6.mouseEnabled = true;
+            _loc_6.type = TextFieldType.INPUT;
+            return _loc_6;
+        }// end function
+
+        protected function showSmallSquare() : void
+        {
+            var _loc_1:SmallSquare = null;
+            if (this.squares)
+            {
+                for each (_loc_1 in this.squares)
+                {
+                    
+                    if (_loc_1)
+                    {
+                        _loc_1.show();
+                    }
+                }
+            }
+            return;
+        }// end function
+
+        private function onclick(event:MouseEvent) : void
+        {
+            this.showSmallSquare();
+            event.stopPropagation();
+            return;
+        }// end function
+
+        protected function endPaint() : void
+        {
+            if (!this.mature)
+            {
+                this.mature = true;
+                super.dispatchEvent(new XPaintingEvent(XPaintingEvent.ENDPAINTER));
+            }
+            return;
+        }// end function
+
+        protected function beginListening() : void
+        {
+            return;
+        }// end function
+
+        public function begingPaint(param1:Sprite, param2:Stage, param3:Rectangle, param4:Point) : void
+        {
+            this._cfg.barCtrl.removeStageListener();
+            this._stage = param2;
+            this.sensor = param1;
+            this.rect = param3;
+            return;
+        }// end function
+
+        public function hideSmallSquare() : void
+        {
+            var _loc_1:SmallSquare = null;
+            if (this.squares)
+            {
+                for each (_loc_1 in this.squares)
+                {
+                    
+                    if (_loc_1)
+                    {
+                        _loc_1.hide();
+                    }
+                }
+            }
+            return;
+        }// end function
+
+        protected function drawSegmentLine(param1:Point, param2:Point, param3:uint = 255) : void
+        {
+            super.graphics.lineStyle(this.thickness, param3);
+            super.graphics.moveTo(param1.x, param1.y);
+            super.graphics.lineTo(param2.x, param2.y);
+            return;
+        }// end function
+
+        protected function getTextField(param1:uint, param2:uint = 1, param3:uint = 10, param4:String = "left", param5:Boolean = false) : TextField
+        {
+            var _loc_6:* = new TextField();
+            new TextField().selectable = false;
+            _loc_6.autoSize = param4;
+            _loc_6.mouseEnabled = false;
+            if (param2 != 1)
+            {
+                _loc_6.background = true;
+                _loc_6.backgroundColor = param2;
+            }
+            if (param5)
+            {
+                return _loc_6;
+            }
+            var _loc_7:* = new TextFormat("Arial", param3, param1);
+            _loc_6.defaultTextFormat = _loc_7;
+            return _loc_6;
+        }// end function
+
+        protected function endListening() : void
+        {
+            return;
+        }// end function
+
+        protected function clearPaint() : void
+        {
+            super.graphics.clear();
+            return;
+        }// end function
+
+        protected function drawDashStraightLine(param1:Point, param2:Point, param3:Rectangle, param4:uint = 255, param5:Number = 4, param6:Number = 5) : void
+        {
+            var _loc_7:* = Calculator.instance.getEndPoints(param1, param2, param3);
+            this.drawDashSegmentLine(_loc_7[0], _loc_7[1], param4, param5, param6);
+            return;
+        }// end function
+
+        protected function drawDashSegmentLine(param1:Point, param2:Point, param3:uint = 255, param4:Number = 4, param5:Number = 5) : void
+        {
+            var _loc_6:* = Calculator.instance.getVectorByLength(new Point(param2.x - param1.x, param2.y - param1.y));
+            var _loc_7:* = Calculator.instance.calcDistance(param1, param2);
+            if (_loc_6.x == 0 && _loc_6.y == 0)
+            {
+                return;
+            }
+            super.graphics.lineStyle(this.thickness, param3);
+            var _loc_8:* = Math.ceil(_loc_7 / param5);
+            var _loc_9:int = 0;
+            while (_loc_9 < _loc_8)
+            {
+                
+                super.graphics.moveTo(param1.x + _loc_9 * param5 * _loc_6.x, param1.y + _loc_9 * param5 * _loc_6.y);
+                super.graphics.lineTo(param1.x + (_loc_9 * param5 + param4) * _loc_6.x, param1.y + (_loc_9 * param5 + param4) * _loc_6.y);
+                _loc_9++;
+            }
+            return;
+        }// end function
+
+        private function init() : void
+        {
+            super.buttonMode = true;
+            super.useHandCursor = true;
+            super.addEventListener(MouseEvent.CLICK, this.onclick);
+            return;
+        }// end function
+
+        protected function drawStraightLine(param1:Point, param2:Point, param3:Rectangle, param4:uint = 255) : void
+        {
+            var _loc_5:* = Calculator.instance.getEndPoints(param1, param2, param3);
+            this.drawSegmentLine(_loc_5[0], _loc_5[1], param4);
+            return;
+        }// end function
+
+    }
+}

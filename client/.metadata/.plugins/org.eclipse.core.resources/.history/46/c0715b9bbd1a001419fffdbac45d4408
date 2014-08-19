@@ -1,0 +1,17 @@
+﻿package stock.com.ui.elements.config
+{
+
+    public class CNXPaintingConfig extends BaseConfig
+    {
+        public var XpaintingPanelYPos:Number;
+        public var XpaintingPanelXPos:Number;
+        public var XpaintingSwitchButtonYPos:Number;
+        public var XpaintingSwitchButtonXPos:Number;
+
+        public function CNXPaintingConfig()
+        {
+            return;
+        }// end function
+
+    }
+}

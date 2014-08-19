@@ -1,0 +1,14 @@
+﻿package com.image.paintTool
+{
+    import flash.display.*;
+
+    dynamic public class YellowUpMarkIcon extends Sprite
+    {
+
+        public function YellowUpMarkIcon()
+        {
+            return;
+        }// end function
+
+    }
+}

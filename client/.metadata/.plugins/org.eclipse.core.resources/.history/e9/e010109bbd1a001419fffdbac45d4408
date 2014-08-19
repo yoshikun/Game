@@ -1,0 +1,14 @@
+﻿package assets
+{
+    import flash.display.*;
+
+    dynamic public class BtnMcShare extends MovieClip
+    {
+
+        public function BtnMcShare()
+        {
+            return;
+        }// end function
+
+    }
+}

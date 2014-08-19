@@ -1,0 +1,127 @@
+﻿package com.sina.finance.ui
+{
+    import com.greensock.*;
+    import flash.display.*;
+
+    public class LineBase extends Sprite
+    {
+        protected var _styleObj:Object;
+        protected var _cfg:Config;
+        protected var _circle:Shape;
+        protected var _line:Shape;
+        private const CIRCLE_COLOR:uint = 2829099;
+        protected var _ys:Array;
+        protected var _xs:Array;
+
+        public function LineBase(param1:uint = 1, param2:uint = 0, param3:Number = 1, param4:Boolean = false)
+        {
+            this._xs = [];
+            this._ys = [];
+            this._cfg = Config.getInstance();
+            this._styleObj = {thickness:param1, color:param2, alpha:param3};
+            this._line = new Shape();
+            this._line.graphics.lineStyle(param1, param2, param3, true, "none");
+            if (param4)
+            {
+                param2 = this.CIRCLE_COLOR;
+            }
+            this._circle = new Shape();
+            this.initCircle(param2);
+            this.addChild(this._line);
+            this.addChild(this._circle);
+            return;
+        }// end function
+
+        private function initCircle(param1:uint) : void
+        {
+            this._circle.graphics.lineStyle(1, param1, 1, false, "none");
+            this._circle.graphics.beginFill(param1);
+            this._circle.graphics.drawCircle(0, 0, 2);
+            this._circle.graphics.endFill();
+            this._circle.visible = false;
+            return;
+        }// end function
+
+        public function moveTo(param1:Number, param2:Number) : void
+        {
+            this._line.graphics.moveTo(param1, param2);
+            return;
+        }// end function
+
+        public function clear(param1:Boolean = false) : void
+        {
+            this._line.graphics.clear();
+            if (param1)
+            {
+                this._line.graphics.lineStyle(this._styleObj.thickness, this._styleObj.color, this._styleObj.alpha, true, "none");
+            }
+            this._xs.splice(0, this._xs.length);
+            this._ys.splice(0, this._ys.length);
+            return;
+        }// end function
+
+        public function drawCandleRect(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number) : void
+        {
+            return;
+        }// end function
+
+        public function lineTo(param1:Number, param2:Number) : void
+        {
+            this._line.graphics.lineTo(param1, param2);
+            return;
+        }// end function
+
+        public function drawRect(param1:Number, param2:Number, param3:Number, param4:Number) : void
+        {
+            this._line.graphics.beginFill(this._styleObj.color, this._styleObj.alpha);
+            this._line.graphics.drawRect(param1, param2, param3, param4);
+            this._line.graphics.endFill();
+            return;
+        }// end function
+
+        public function interactiveEnd() : void
+        {
+            this._circle.visible = false;
+            if (this._cfg.floater)
+            {
+                this._cfg.floater.visible = false;
+            }
+            return;
+        }// end function
+
+        public function lineStyle(param1:uint, param2:uint, param3:Number) : void
+        {
+            this._line.graphics.lineStyle(param1, param2, param3, true, "none");
+            this._styleObj.thickness = param1;
+            this._styleObj.color = param2;
+            this._styleObj.alpha = param3;
+            return;
+        }// end function
+
+        public function interactiveTo(param1:uint) : void
+        {
+            if (param1 >= this._xs.length)
+            {
+                param1 = this._xs.length - 1;
+            }
+            this._circle.x = this._xs[param1];
+            this._circle.y = this._ys[param1];
+            this._circle.visible = true;
+            if (this._cfg.floater && this._cfg.showFloater)
+            {
+                if (this._circle.x > this._cfg.KW - this._cfg.floater.w - 20)
+                {
+                    TweenNano.to(this._cfg.floater, 0.3, {x:1});
+                }
+                else if (this._circle.x < this._cfg.floater.w + 20)
+                {
+                    TweenNano.to(this._cfg.floater, 0.3, {x:this._cfg.KW - this._cfg.floater.width - 1});
+                }
+                this._cfg.floater.y = (this._cfg.hReal - this._cfg.floater.height) * 0.5;
+                this._cfg.floater.visible = true;
+            }
+            return;
+        }// end function
+
+    }
+}

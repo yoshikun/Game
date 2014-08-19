@@ -1,0 +1,96 @@
+﻿package com.ui
+{
+    import flash.display.*;
+    import flash.events.*;
+    import flash.net.*;
+    import flash.system.*;
+    import flash.text.*;
+    import flash.utils.*;
+
+    public class InfoTip extends Sprite
+    {
+        private var _cfg:Config;
+        private var _tId:uint;
+        private const _H:uint = 127;
+        private var _tipTf:TextField;
+        private var _bgLoader:Loader;
+        private const _W:uint = 307;
+        private const _LEFT_X:uint = 65;
+
+        public function InfoTip()
+        {
+            this._cfg = Config.getInstance();
+            this._tipTf = new TextField();
+            this.visible = false;
+            this.drawBg();
+            this._tipTf.selectable = false;
+            this._tipTf.defaultTextFormat = new TextFormat("微软雅黑", 15, 4681902);
+            this._tipTf.width = 180;
+            this._tipTf.height = 60;
+            this._tipTf.wordWrap = true;
+            addChild(this._tipTf);
+            return;
+        }// end function
+
+        private function bgIoErr(event:IOErrorEvent) : void
+        {
+            event.target.removeEventListener(Event.COMPLETE, this.bgLoaded);
+            event.target.removeEventListener(IOErrorEvent.IO_ERROR, this.bgIoErr);
+            if (contains(this._bgLoader))
+            {
+                removeChild(this._bgLoader);
+            }
+            return;
+        }// end function
+
+        private function loadBg() : void
+        {
+            if (!this._bgLoader)
+            {
+                this._bgLoader = new Loader();
+                this._bgLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, this.bgLoaded);
+                this._bgLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, this.bgIoErr);
+                this._bgLoader.load(new URLRequest("http://www.sinaimg.cn/cj/hsuan/img/popout.png"), new LoaderContext(true));
+                addChildAt(this._bgLoader, 0);
+            }
+            return;
+        }// end function
+
+        public function showTip(param1:String) : void
+        {
+            clearTimeout(this._tId);
+            this.loadBg();
+            this._tipTf.text = param1;
+            this._tipTf.x = this._LEFT_X + 37;
+            this._tipTf.y = (this._H - this._tipTf.textHeight) * 0.5 - 5;
+            this.visible = true;
+            this.x = (this._cfg.viewW - this._W) * 0.5;
+            this.y = (this._cfg.viewH - this._H) * 0.5;
+            this.parent.addChild(this);
+            this._tId = setTimeout(this.hideMe, 2000);
+            return;
+        }// end function
+
+        private function bgLoaded(event:Event) : void
+        {
+            event.target.removeEventListener(Event.COMPLETE, this.bgLoaded);
+            event.target.removeEventListener(IOErrorEvent.IO_ERROR, this.bgIoErr);
+            return;
+        }// end function
+
+        private function drawBg() : void
+        {
+            graphics.beginFill(15397630);
+            graphics.drawRect(0, 0, this._W, this._H);
+            graphics.endFill();
+            return;
+        }// end function
+
+        private function hideMe() : void
+        {
+            this.visible = false;
+            return;
+        }// end function
+
+    }
+}

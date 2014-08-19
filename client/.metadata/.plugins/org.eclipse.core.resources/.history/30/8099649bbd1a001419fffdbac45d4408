@@ -1,0 +1,72 @@
+﻿package stock.com.ui.elements.xpainting.painter
+{
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
+    import flash.text.*;
+
+    public class TextCommentXPainter extends XPainter
+    {
+        private var text:TextField;
+        private var startP:Point;
+
+        public function TextCommentXPainter()
+        {
+            this.init();
+            return;
+        }// end function
+
+        private function init() : void
+        {
+            squares = [];
+            hideSmallSquare();
+            this.text = getInputTextField(0, 1, 12);
+            this.text.multiline = true;
+            super.buttonMode = false;
+            super.useHandCursor = false;
+            this.text.addEventListener(KeyboardEvent.KEY_DOWN, this.onTextKeyDown);
+            return;
+        }// end function
+
+        override public function destroy() : void
+        {
+            super.destroy();
+            return;
+        }// end function
+
+        private function onTextKeyDown(event:KeyboardEvent) : void
+        {
+            event.stopPropagation();
+            return;
+        }// end function
+
+        override public function begingPaint(param1:Sprite, param2:Stage, param3:Rectangle, param4:Point) : void
+        {
+            super.begingPaint(param1, param2, param3, param4);
+            this.startP = param4;
+            this.text.x = this.startP.x;
+            this.text.y = this.startP.y;
+            super.addChild(this.text);
+            param2.focus = this.text;
+            param2.addEventListener(Event.FULLSCREEN, this.onFs);
+            endPaint();
+            return;
+        }// end function
+
+        private function onFs(event:Event) : void
+        {
+            if (stage.displayState == "fullScreen")
+            {
+                this.text.selectable = false;
+                this.text.mouseEnabled = false;
+            }
+            else
+            {
+                this.text.selectable = true;
+                this.text.mouseEnabled = true;
+            }
+            return;
+        }// end function
+
+    }
+}

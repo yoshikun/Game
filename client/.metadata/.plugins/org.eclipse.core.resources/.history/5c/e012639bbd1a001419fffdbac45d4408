@@ -1,0 +1,140 @@
+﻿package stock.com.ui.elements.xpainting.painter
+{
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
+    import stock.com.ui.elements.xpainting.painter.square.*;
+
+    public class RectangleXPainter extends XPainter
+    {
+        private var startP:Point;
+        private var endP:Point;
+        private var endSquare:SmallSquare;
+        private var startSquare:SmallSquare;
+
+        public function RectangleXPainter()
+        {
+            this.init();
+            return;
+        }// end function
+
+        override public function begingPaint(param1:Sprite, param2:Stage, param3:Rectangle, param4:Point) : void
+        {
+            super.begingPaint(param1, param2, param3, param4);
+            this.startP = param4;
+            movingObject = ENDSQUARE;
+            this.beginListening();
+            return;
+        }// end function
+
+        private function onUp(event:MouseEvent) : void
+        {
+            this.endListening();
+            endPaint();
+            event.stopPropagation();
+            return;
+        }// end function
+
+        private function onStartSquareDown(event:MouseEvent) : void
+        {
+            movingObject = STARTSQUARE;
+            this.onSquareDown();
+            return;
+        }// end function
+
+        private function onSquareDown() : void
+        {
+            hideSmallSquare();
+            this.beginListening();
+            return;
+        }// end function
+
+        private function onLeave(event:Event) : void
+        {
+            this.endListening();
+            endPaint();
+            return;
+        }// end function
+
+        private function drawRect(param1:Point, param2:Point) : void
+        {
+            this.startSquare.x = param1.x;
+            this.startSquare.y = param1.y;
+            this.endSquare.x = param2.x;
+            this.endSquare.y = param2.y;
+            clearPaint();
+            super.graphics.lineStyle(thickness, lineColor);
+            super.graphics.drawRect(param1.x, param1.y, param2.x - param1.x, param2.y - param1.y);
+            return;
+        }// end function
+
+        private function updatePoints(param1:int, param2:Point) : void
+        {
+            if (param1 == STARTSQUARE)
+            {
+                this.startP = super.globalToLocal(param2);
+            }
+            else
+            {
+                this.endP = super.globalToLocal(param2);
+            }
+            return;
+        }// end function
+
+        override protected function endListening() : void
+        {
+            sensor.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMove);
+            sensor.removeEventListener(MouseEvent.MOUSE_UP, this.onUp);
+            _stage.removeEventListener(Event.MOUSE_LEAVE, this.onLeave);
+            return;
+        }// end function
+
+        override protected function beginListening() : void
+        {
+            sensor.addEventListener(MouseEvent.MOUSE_MOVE, this.onMove);
+            sensor.addEventListener(MouseEvent.MOUSE_UP, this.onUp);
+            _stage.addEventListener(Event.MOUSE_LEAVE, this.onLeave);
+            return;
+        }// end function
+
+        private function init() : void
+        {
+            this.startSquare = new SmallSquare();
+            this.endSquare = new SmallSquare(6, controllableColor);
+            super.addChild(this.startSquare);
+            super.addChild(this.endSquare);
+            squares = [this.startSquare, this.endSquare];
+            hideSmallSquare();
+            this.startSquare.addEventListener(MouseEvent.MOUSE_DOWN, this.onStartSquareDown, false, 0, true);
+            this.endSquare.addEventListener(MouseEvent.MOUSE_DOWN, this.onEndSquareDown, false, 0, true);
+            return;
+        }// end function
+
+        override public function destroy() : void
+        {
+            this.startSquare.removeEventListener(MouseEvent.MOUSE_DOWN, this.onStartSquareDown);
+            this.endSquare.removeEventListener(MouseEvent.MOUSE_DOWN, this.onEndSquareDown);
+            this.endListening();
+            this.startSquare = null;
+            this.endSquare = null;
+            super.destroy();
+            return;
+        }// end function
+
+        private function onEndSquareDown(event:MouseEvent) : void
+        {
+            movingObject = ENDSQUARE;
+            this.onSquareDown();
+            return;
+        }// end function
+
+        private function onMove(event:MouseEvent) : void
+        {
+            this.updatePoints(movingObject, new Point(event.stageX, event.stageY));
+            this.drawRect(this.startP, this.endP);
+            event.stopPropagation();
+            return;
+        }// end function
+
+    }
+}

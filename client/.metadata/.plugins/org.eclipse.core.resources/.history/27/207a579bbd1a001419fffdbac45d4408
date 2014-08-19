@@ -1,0 +1,29 @@
+﻿package hsuan
+{
+    import flash.net.*;
+
+    public class URLLoaderWithReq extends URLLoader
+    {
+        private var _urlRequest:URLRequest;
+
+        public function URLLoaderWithReq(param1:URLRequest = null)
+        {
+            super(param1);
+            this._urlRequest = param1;
+            return;
+        }// end function
+
+        public function get urlRequest() : URLRequest
+        {
+            return this._urlRequest;
+        }// end function
+
+        override public function load(param1:URLRequest) : void
+        {
+            this._urlRequest = param1;
+            super.load(param1);
+            return;
+        }// end function
+
+    }
+}

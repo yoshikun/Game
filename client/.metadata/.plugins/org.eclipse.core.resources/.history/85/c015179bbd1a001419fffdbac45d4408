@@ -1,0 +1,14 @@
+﻿package com.image.paintTool
+{
+    import flash.display.*;
+
+    dynamic public class FibonacciLinesIcon extends Sprite
+    {
+
+        public function FibonacciLinesIcon()
+        {
+            return;
+        }// end function
+
+    }
+}

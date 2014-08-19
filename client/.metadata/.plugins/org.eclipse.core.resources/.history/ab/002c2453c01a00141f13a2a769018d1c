@@ -1,0 +1,59 @@
+package
+{
+	import flash.display.Sprite;
+	import flash.external.ExternalInterface;
+	import flash.net.SharedObject;
+	import flash.system.Security;
+	
+	[Frame(factoryClass="PreLoader")]
+	public class Stock extends Sprite
+	{
+		private var getInterface:String = "getSupperCookie";
+		private var setInterface:String = "setSupperCookie";
+		private var LSO:SharedObject;
+		
+		public function Stock() : void
+		{
+			if (stage)
+			{
+				this.init();
+			}
+			else
+			{
+				addEventListener(Event.ADDED_TO_STAGE, this.init);
+			}
+			return;
+		}// end function
+		
+		private function init(event:Event = null) : void
+		{
+			Security.allowDomain("*");
+			Security.allowInsecureDomain("*");
+			removeEventListener(Event.ADDED_TO_STAGE, this.init);
+			ExternalInterface.addCallback(this.getInterface, this.onGet);
+			ExternalInterface.addCallback(this.setInterface, this.onSet);
+			this.initLSO();
+			return;
+		}// end function
+		
+		private function initLSO() : void
+		{
+			this.LSO = SharedObject.getLocal("stonecc_suppercookie", "/");
+			return;
+		}// end function
+		
+		private function onGet(key:String) : String
+		{
+			if (!this.LSO.data[key])
+			{
+			}
+			return "";
+		}// end function
+		
+		private function onSet(key:String, value:String) : void
+		{
+			this.LSO.data[key] = value;
+			return;
+		}// end function
+	}
+}

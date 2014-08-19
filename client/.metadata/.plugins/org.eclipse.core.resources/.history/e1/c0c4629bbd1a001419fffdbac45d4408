@@ -1,0 +1,53 @@
+﻿package stock.com.ui.elements.xpainting.painter
+{
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
+    import stock.com.ui.elements.xpainting.*;
+
+    public class PictureShotXPainter extends XPainter
+    {
+        private var screenShot:ScreenShot = null;
+
+        public function PictureShotXPainter()
+        {
+            this.init();
+            return;
+        }// end function
+
+        private function init() : void
+        {
+            squares = [];
+            hideSmallSquare();
+            return;
+        }// end function
+
+        override public function begingPaint(param1:Sprite, param2:Stage, param3:Rectangle, param4:Point) : void
+        {
+            super.begingPaint(param1, param2, param3, param4);
+            this.screenShot = new ScreenShot(param2);
+            this.screenShot.addEventListener(Event.COMPLETE, this.onScreenShotComplete);
+            param2.addChild(this.screenShot);
+            return;
+        }// end function
+
+        override public function destroy() : void
+        {
+            super.destroy();
+            return;
+        }// end function
+
+        private function onScreenShotComplete(event:Event) : void
+        {
+            if (this.screenShot)
+            {
+                this.screenShot.destroy();
+                this.screenShot = null;
+            }
+            endPaint();
+            this.destroy();
+            return;
+        }// end function
+
+    }
+}

@@ -1,0 +1,1389 @@
+﻿package com.sina.finance.ui
+{
+    import com.greensock.*;
+    import com.sina.finance.data.*;
+    import com.ui.datebar.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
+    import flash.text.*;
+    import flash.utils.*;
+
+    public class BarController extends UIMgr
+    {
+        private var _toRate:Number;
+        private var _useable:Boolean;
+        private var _isGlobalDrag:Boolean = false;
+        private var _to:Number;
+        private var _nextBtn:Sprite;
+        private var _isTimeMachine:Boolean = false;
+        private var _timeContainer:Sprite;
+        private var _curRangeLen:int;
+        private var _kUpdateCount:uint = 0;
+        private var _dataNeedChange:Boolean;
+        private const MAX_LB:uint = 7;
+        private var _grayLine:Shape;
+        private var _bar1:Bar;
+        private var _bar2:Bar;
+        public var is5T:Boolean = false;
+        private var _motionTimer:Timer;
+        private var _hidingTmRelated:Boolean = false;
+        private var _colorLine:Shape;
+        private var _isMoving:Boolean = false;
+        private var _bgLineRealLen:uint;
+        private var _lastX:Number;
+        private var _colorLineMask:Shape;
+        private var _mIndex:Number;
+        private var _leftIndex:int;
+        private var _dateSel:DateSelector;
+        private var _block:Sprite;
+        private var _leftThumb:Bar;
+        private const OFFSET:uint = 10;
+        private var _timeTexts:Array;
+        private var _magicMove:Sprite;
+        private var _topLine:Shape;
+        private var _globalMaxIndex:uint;
+        private var _target:Sprite;
+        private var _rightThumb:Bar;
+        private var _mousePressX:int;
+        private var _rightIndex:int;
+        private var _navBtnLayer:Sprite;
+        private var _sendId:uint;
+        private var _timeArrI:uint;
+        private const _K_REFRESH_LIMIT:uint = 333;
+        private var _prevBtn:Sprite;
+
+        public function BarController(param1:DataMgr)
+        {
+            this._timeContainer = this.getSprite(0, 2);
+            this._timeTexts = [];
+            super(param1);
+            this._bar1 = this.getBar(0, 0);
+            this._bar2 = this.getBar(_cfg.TW, 0);
+            this._leftThumb = this._bar1;
+            this._rightThumb = this._bar2;
+            this._block = new Sprite();
+            this._grayLine = new Shape();
+            this._colorLine = new Shape();
+            this._colorLineMask = new Shape();
+            this._colorLine.mask = this._colorLineMask;
+            addChild(this._grayLine);
+            addChild(this._colorLine);
+            addChild(this._colorLineMask);
+            this._magicMove = new Sprite();
+            this._magicMove.addEventListener(MouseEvent.CLICK, this.onClickTo);
+            this.drawHotArea();
+            addChild(this._magicMove);
+            addChild(this._timeContainer);
+            addChild(this._block);
+            addChild(this._bar1);
+            addChild(this._bar2);
+            this._block.alpha = 0.4;
+            this._block.buttonMode = true;
+            this._block.addEventListener(MouseEvent.MOUSE_DOWN, this.onMsDownOfBlock);
+            this._topLine = new Shape();
+            addChild(this._topLine);
+            this._dateSel = new DateSelector(this.byDateRange);
+            this._dateSel.exitTimeMachine = this.exitTmMode;
+            this._dateSel.y = _cfg.hbar + 10;
+            addChild(this._dateSel);
+            this._navBtnLayer = new Sprite();
+            addChildAt(this._navBtnLayer, 0);
+            this._prevBtn = this.newTriangleBtn(true);
+            this._nextBtn = this.newTriangleBtn();
+            this._prevBtn.x = -9;
+            this._nextBtn.x = _cfg.TW + 9;
+            this._navBtnLayer.addChild(this._prevBtn);
+            this._navBtnLayer.addChild(this._nextBtn);
+            return;
+        }// end function
+
+        public function hideTmBtn(param1:Boolean, param2:Boolean = false) : void
+        {
+            this._hidingTmRelated = param1;
+            this._navBtnLayer.visible = !param1;
+            this._dateSel.cancelTm(param1);
+            this._isTimeMachine = param2;
+            return;
+        }// end function
+
+        private function tNav(param1:Boolean) : void
+        {
+            var _loc_9:Number = NaN;
+            var _loc_10:Number = NaN;
+            if (this._isMoving || !this._useable)
+            {
+                return;
+            }
+            if (!this.is5T && this._rightIndex - this._leftIndex > 1)
+            {
+                _loc_9 = _cfg.TW / _id;
+                this._leftThumb.x = _loc_9 * this._leftIndex;
+                this._rightThumb.x = _loc_9 * this._rightIndex;
+            }
+            var _loc_2:Boolean = false;
+            if (param1)
+            {
+                if (this._leftIndex > 0)
+                {
+                    _loc_2 = true;
+                    var _loc_11:String = this;
+                    var _loc_12:* = this._leftIndex - 1;
+                    _loc_11._leftIndex = _loc_12;
+                    var _loc_11:String = this;
+                    var _loc_12:* = this._rightIndex - 1;
+                    _loc_11._rightIndex = _loc_12;
+                }
+            }
+            else if (!this.is5T && this._leftIndex < 4 && this._rightIndex < 5)
+            {
+                _loc_2 = true;
+                var _loc_11:String = this;
+                var _loc_12:* = this._leftIndex + 1;
+                _loc_11._leftIndex = _loc_12;
+                var _loc_11:String = this;
+                var _loc_12:* = this._rightIndex + 1;
+                _loc_11._rightIndex = _loc_12;
+            }
+            if (_loc_2)
+            {
+                this._dataNeedChange = true;
+                _loc_10 = this._leftIndex * _cfg.TW / _id;
+                this.motionTo(this._block, _loc_10);
+                this.sendOutSelection();
+                return;
+            }
+            if (!_dataMgr.kdata || !_dataMgr.kdata.datas_day)
+            {
+                return;
+            }
+            var _loc_3:* = param1 ? (this._leftIndex) : (this.is5T ? (4) : (this._leftIndex));
+            var _loc_4:* = _dataTool.cloneDate(_dataMgr.tdata.datas_5[_loc_3][0].date);
+            var _loc_5:* = _dataMgr.kdata.datas_day;
+            var _loc_6:* = _dataMgr.kdata.datas_day.length;
+            var _loc_7:* = _dataMgr.kdata.datas_day.length - 1;
+            while (_loc_7 >= 0)
+            {
+                
+                if (_dataTool.isSameDay_date(_loc_5[_loc_7].date, _loc_4))
+                {
+                    break;
+                }
+                _loc_7 = _loc_7 - 1;
+            }
+            if (_loc_7 < 0 || _loc_7 >= (_loc_6 - 1))
+            {
+                return;
+            }
+            _loc_3 = param1 ? ((_loc_7 - 1) < 0 ? (0) : ((_loc_7 - 1))) : ((_loc_7 + 1));
+            var _loc_8:* = _dataTool.cloneDate(_loc_5[_loc_3].date);
+            this._isTimeMachine = true;
+            DisplayMgr(this.parent).showEveryT(_loc_8, false);
+            return;
+        }// end function
+
+        private function checkRange(param1:Boolean = false) : void
+        {
+            var _loc_2:int = 0;
+            var _loc_3:int = 0;
+            var _loc_4:Boolean = false;
+            var _loc_5:uint = 0;
+            var _loc_6:uint = 0;
+            var _loc_7:uint = 0;
+            if (_isTType)
+            {
+                _loc_4 = Boolean(_id == 3);
+                _loc_2 = this.getNearIndexByXpos(this._leftThumb.x);
+                _loc_3 = this.getNearIndexByXpos(this._rightThumb.x);
+                if (_loc_2 == _loc_3)
+                {
+                    if (this._leftThumb.isDown)
+                    {
+                        _loc_2 = _loc_2 - 1;
+                    }
+                    else if (this._rightThumb.isDown)
+                    {
+                        _loc_3 = _loc_3 + 1;
+                    }
+                }
+                if (_loc_2 < 0)
+                {
+                    _loc_2 = 0;
+                    _loc_3 = 1;
+                }
+                else if (_loc_4 && _loc_3 > 3 || _loc_3 > 5)
+                {
+                    _loc_3 = _loc_3 - 1;
+                    _loc_2 = _loc_2 - 1;
+                }
+                if (param1)
+                {
+                    _loc_5 = _loc_4 ? (3) : (5);
+                    this._toRate = _cfg.TW / _loc_5;
+                    TweenNano.to(this._leftThumb, 0.3, {x:this._toRate * _loc_2});
+                    TweenNano.to(this._rightThumb, 0.31, {x:this._toRate * _loc_3, onUpdate:this.blockRedraw});
+                }
+            }
+            else
+            {
+                _loc_6 = _dataMgr.kdata.kdataState["k" + _id].length;
+                this._toRate = _cfg.KW / _loc_6;
+                _loc_2 = this._leftThumb.x <= 0 ? (0) : (Math.ceil(this._leftThumb.x / this._toRate));
+                _loc_3 = Math.ceil((this._rightThumb.x >= _cfg.KW ? (_cfg.KW) : (this._rightThumb.x)) / this._toRate);
+                if (_loc_3 > _loc_6)
+                {
+                    _loc_3 = _loc_6;
+                }
+                if (_loc_3 - _loc_2 < _cfg.NK)
+                {
+                    _loc_7 = _cfg.NK + _loc_2 - _loc_3;
+                    if (this._leftThumb.isDown)
+                    {
+                        if (_loc_2 >= _loc_7)
+                        {
+                            _loc_2 = _loc_2 - _loc_7;
+                        }
+                        else
+                        {
+                            _loc_2 = 0;
+                            _loc_3 = _cfg.NK;
+                        }
+                    }
+                    else if (this._rightThumb.isDown)
+                    {
+                        if (_loc_3 + _loc_7 < _loc_6)
+                        {
+                            _loc_3 = _loc_3 + _loc_7;
+                        }
+                        else
+                        {
+                            _loc_3 = _loc_6;
+                            _loc_2 = _loc_6 - _cfg.NK;
+                        }
+                    }
+                    if (param1)
+                    {
+                        TweenNano.to(this._leftThumb, 0.3, {x:_loc_2 * this._toRate});
+                        TweenNano.to(this._rightThumb, 0.31, {x:_loc_3 * this._toRate, onUpdate:this.blockRedraw});
+                    }
+                }
+            }
+            if (param1)
+            {
+                var _loc_8:Boolean = false;
+                this._bar2.isDown = false;
+                this._bar1.isDown = _loc_8;
+            }
+            this._leftIndex = _loc_2;
+            this._rightIndex = _loc_3;
+            clearTimeout(this._sendId);
+            if (_loc_3 - _loc_2 > 828)
+            {
+                this._sendId = setTimeout(this.sendOutSelection, 50);
+            }
+            else
+            {
+                this.sendOutSelection();
+            }
+            return;
+        }// end function
+
+        public function showTmMode() : void
+        {
+            this._dateSel.showTm();
+            this._isTimeMachine = true;
+            return;
+        }// end function
+
+        private function getTextField(param1:uint = 0, param2:uint = 0, param3:uint = 10, param4:String = "left") : TextField
+        {
+            var _loc_5:* = new TextField();
+            new TextField().selectable = false;
+            _loc_5.autoSize = param4;
+            if (param2 > 0)
+            {
+                _loc_5.background = true;
+                _loc_5.backgroundColor = param2;
+            }
+            else
+            {
+                _loc_5.background = false;
+            }
+            var _loc_6:* = new TextFormat("Arial", param3, param1);
+            _loc_5.defaultTextFormat = _loc_6;
+            return _loc_5;
+        }// end function
+
+        private function drawYearLb(param1:Number, param2:String, param3:Boolean = false) : void
+        {
+            if (param3)
+            {
+                this._lastX = param1;
+            }
+            this.graphics.lineStyle(0, _cfg.clineVolume);
+            this.graphics.moveTo(param1, 0);
+            this.graphics.lineTo(param1, 5);
+            if (param1 + param2.length * 6.5 > (_isTType ? (_cfg.TW) : (_cfg.KW)))
+            {
+                return;
+            }
+            if (!param3 && param1 - this._lastX < param2.length * 7.5)
+            {
+                return;
+            }
+            this._lastX = param1;
+            var _loc_4:* = this._timeTexts[this._timeArrI];
+            if (!this._timeTexts[this._timeArrI])
+            {
+                _loc_4 = this.getTextField(_cfg.LB_COLOR, 0, 11);
+                this._timeContainer.addChild(_loc_4);
+                this._timeTexts.push(_loc_4);
+            }
+            _loc_4.text = param2;
+            _loc_4.x = param1 - 1;
+            if (_isTType && _id == 5)
+            {
+                _loc_4.x = _loc_4.x + (_cfg.TW * 0.2 - _loc_4.width) * 0.5;
+            }
+            var _loc_5:String = this;
+            var _loc_6:* = this._timeArrI + 1;
+            _loc_5._timeArrI = _loc_6;
+            return;
+        }// end function
+
+        public function showTipOnDateSel(param1:String) : void
+        {
+            this._dateSel.showErr(param1);
+            return;
+        }// end function
+
+        private function onBarMsDown(event:MouseEvent) : void
+        {
+            var _loc_2:* = event.target as Bar;
+            _loc_2.isDown = true;
+            setChildIndex(_loc_2, (this.numChildren - 1));
+            stage.addEventListener(MouseEvent.MOUSE_MOVE, this.onStageMsMove);
+            stage.addEventListener(MouseEvent.MOUSE_UP, this.onStageMsUp);
+            this._isMoving = false;
+            return;
+        }// end function
+
+        private function drawBgLine() : void
+        {
+            var _loc_1:Array = null;
+            var _loc_2:String = null;
+            if (_isTType)
+            {
+                _dataMgr.tdata.calcBGLinePoses(_dataMgr.tdata["datas_" + _id]);
+                _loc_1 = _dataMgr.tdata.bgLinePoses;
+                this._bgLineRealLen = _dataMgr.tdata.bgLineRealLen + 1;
+            }
+            else
+            {
+                _loc_2 = "k" + _id + _cfg.reDirection;
+                _dataMgr.kdata.calcDataBGPoses(_dataMgr.kdata.kdataState[_loc_2]);
+                _loc_1 = _dataMgr.kdata.bgLinePoses;
+                this._bgLineRealLen = _loc_1.length;
+            }
+            this._timeArrI = 0;
+            this.initLineShape(this._grayLine, _loc_1, _cfg.clineVolume, 0.6, true);
+            this.initLineShape(this._colorLine, _loc_1, _cfg.clinePrice);
+            while (this._timeContainer.numChildren > this._timeArrI)
+            {
+                
+                this._timeContainer.removeChildAt((this._timeContainer.numChildren - 1));
+                this._timeTexts.pop();
+            }
+            return;
+        }// end function
+
+        private function onClickTo(event:MouseEvent) : void
+        {
+            var _loc_2:uint = 0;
+            var _loc_3:Number = NaN;
+            var _loc_4:uint = 0;
+            var _loc_5:uint = 0;
+            var _loc_6:uint = 0;
+            var _loc_7:Number = NaN;
+            var _loc_8:uint = 0;
+            if (this._isMoving)
+            {
+                return;
+            }
+            this._isMoving = true;
+            this._mousePressX = this.mouseX;
+            if (_isTType)
+            {
+                _loc_4 = this.getNearIndexByXpos(this._leftThumb.x);
+                _loc_5 = this.getNearIndexByXpos(this._rightThumb.x);
+                _loc_6 = _loc_5 - _loc_4;
+                _loc_7 = _cfg.TW / _id;
+                _loc_2 = Math.floor(this._mousePressX / _loc_7);
+                if (_loc_2 >= _loc_5)
+                {
+                    _loc_2 = _loc_4 + (_loc_2 - _loc_5 + 1);
+                }
+                if (_loc_2 > _id)
+                {
+                    _loc_2 = _id - _loc_6;
+                }
+                this._leftIndex = _loc_2;
+                this._rightIndex = this._leftIndex + _loc_6;
+                _loc_3 = _loc_2 * _cfg.TW / _id;
+                this._dataNeedChange = true;
+            }
+            else
+            {
+                _loc_8 = _dataMgr.kdata.kdataState["k" + _id].length;
+                if (this._mousePressX <= 0)
+                {
+                    _loc_2 = 0;
+                }
+                else
+                {
+                    _loc_2 = int(this._mousePressX * _loc_8 / _cfg.KW);
+                }
+                _loc_6 = this._rightIndex - this._leftIndex;
+                if (this._mousePressX < this._leftThumb.x)
+                {
+                    _loc_3 = this._mousePressX;
+                }
+                else if (this._mousePressX > this._rightThumb.x)
+                {
+                    _loc_3 = this._leftThumb.x + (this._mousePressX - this._rightThumb.x);
+                }
+                else
+                {
+                    _loc_3 = this._leftThumb.x;
+                }
+                if (_loc_3 > _cfg.KW)
+                {
+                    _loc_3 = _cfg.KW;
+                }
+                if (_loc_3 < 0)
+                {
+                    _loc_4 = 0;
+                }
+                else
+                {
+                    _loc_4 = int(_loc_3 * _loc_8 / _cfg.KW);
+                }
+                if (_loc_4 >= _loc_8)
+                {
+                    _loc_4 = _loc_4 - _loc_6;
+                }
+                _loc_5 = _loc_4 + _loc_6;
+                if (_loc_5 > _loc_8)
+                {
+                    _loc_5 = _loc_8;
+                }
+                if (_loc_4 == this._leftIndex && _loc_5 == this._rightIndex)
+                {
+                    this._dataNeedChange = false;
+                }
+                else
+                {
+                    this._leftIndex = _loc_4;
+                    this._rightIndex = _loc_5;
+                    this._dataNeedChange = true;
+                }
+            }
+            if (this._dataNeedChange)
+            {
+                this.motionTo(this._block, _loc_3);
+                this.sendOutSelection();
+            }
+            return;
+        }// end function
+
+        private function drawTriangle(param1:Graphics, param2:Boolean = false) : void
+        {
+            var _loc_3:* = _cfg.hbar * 0.25;
+            param1.clear();
+            param1.beginFill(4091313);
+            param1.moveTo(0, _loc_3);
+            param1.lineTo(param2 ? (-_loc_3) : (_loc_3), _cfg.hbar * 0.5);
+            param1.lineTo(0, _cfg.hbar - _loc_3);
+            param1.lineTo(0, _loc_3);
+            param1.endFill();
+            return;
+        }// end function
+
+        private function onClkNav(event:MouseEvent) : void
+        {
+            this.tNav(event.currentTarget.name == "b");
+            return;
+        }// end function
+
+        public function globalDrag(param1:Number) : void
+        {
+            if (!this._useable)
+            {
+                return;
+            }
+            var _loc_2:Boolean = true;
+            this._bar2.isDown = true;
+            this._bar1.isDown = _loc_2;
+            this._mousePressX = param1;
+            this._isGlobalDrag = true;
+            this._curRangeLen = Math.abs(_dataMgr.kdata.kdataState["k" + _id + "r"] - _dataMgr.kdata.kdataState["k" + _id + "l"]);
+            this._globalMaxIndex = _dataMgr.kdata.kdataState["k" + _id].length;
+            this._toRate = _cfg.KW / this._globalMaxIndex;
+            stage.addEventListener(MouseEvent.MOUSE_MOVE, this.onGlobalMsMove);
+            stage.addEventListener(MouseEvent.MOUSE_UP, this.onStageMsUp);
+            stage.removeEventListener(MouseEvent.MOUSE_MOVE, this.onStageMsMove);
+            return;
+        }// end function
+
+        public function exitTmMode(param1:Boolean = false, param2:Boolean = true, param3:Boolean = false) : void
+        {
+            this._isTimeMachine = false;
+            if (param2)
+            {
+                this._dateSel.hideTm();
+            }
+            _dataMgr.tdata.datas_5 = _dataMgr.tdata.latest5;
+            if (param1)
+            {
+                this._leftIndex = param3 ? ((_id - 1)) : (_dataMgr.tdata.tDataState["t" + _id + "l"]);
+                this._rightIndex = param3 ? (_id) : (_dataMgr.tdata.tDataState["t" + _id + "r"]);
+                this._leftThumb.x = _cfg.TW / _id * this._leftIndex;
+                this._rightThumb.x = _cfg.TW / _id * this._rightIndex;
+                this.blockRedraw();
+                this.update(true);
+            }
+            return;
+        }// end function
+
+        private function sendOutSelection(param1:Boolean = false, param2:Boolean = false) : void
+        {
+            if (!this._dataNeedChange)
+            {
+                return;
+            }
+            if (_isTType)
+            {
+                _dataMgr.tdata.tDataState["t" + _id + "l"] = this._leftIndex;
+                _dataMgr.tdata.tDataState["t" + _id + "r"] = this._rightIndex;
+                if (_dataMgr.tdata.datas_5)
+                {
+                    this._dateSel.setTDate(_dataMgr.tdata.datas_5[this._leftIndex][0].date, param2);
+                }
+            }
+            else
+            {
+                _dataMgr.kdata.kdataState["k" + _id + "l"] = this._leftIndex;
+                _dataMgr.kdata.kdataState["k" + _id + "r"] = this._rightIndex;
+                this._dateSel.setFromToDate(_dataMgr.kdata.kdataState["k" + _id][this._leftIndex].date, _dataMgr.kdata.kdataState["k" + _id][(this._rightIndex - 1)].date, param2);
+            }
+            DisplayMgr(this.parent).barControllerCallBack(this._leftIndex, this._rightIndex, param1);
+            return;
+        }// end function
+
+        override public function selectRangleReset() : void
+        {
+            this.graphics.clear();
+            this.graphics.lineStyle(1, _cfg.clineDayEdge);
+            this.graphics.drawRect(-1, 0, (_isTType ? (_cfg.TW) : (_cfg.KW)) + 2, (_cfg.hbar + 1));
+            return;
+        }// end function
+
+        private function newTriangleBtn(param1:Boolean = false) : Sprite
+        {
+            var _loc_2:* = new Sprite();
+            _loc_2.buttonMode = true;
+            _loc_2.addEventListener(MouseEvent.CLICK, this.onClkNav);
+            _loc_2.addEventListener(MouseEvent.MOUSE_OVER, this.onOverNav);
+            _loc_2.addEventListener(MouseEvent.MOUSE_OUT, this.onOutNav);
+            _loc_2.name = param1 ? ("b") : ("f");
+            this.drawTriangle(_loc_2.graphics, param1);
+            _loc_2.alpha = 0.5;
+            return _loc_2;
+        }// end function
+
+        private function byDateRange(param1:uint = 0, param2:Date = null, param3:Date = null, param4:Date = null) : void
+        {
+            var _loc_5:Number = NaN;
+            var _loc_6:uint = 0;
+            var _loc_7:Array = null;
+            var _loc_8:uint = 0;
+            var _loc_9:Boolean = false;
+            var _loc_10:Boolean = false;
+            var _loc_11:uint = 0;
+            var _loc_12:int = 0;
+            this._isTimeMachine = false;
+            if (_isTType)
+            {
+                if (param2)
+                {
+                    this.toHistoryT(param2);
+                    return;
+                }
+                _loc_6 = _id;
+                this._rightIndex = _loc_6;
+                this._leftIndex = _loc_6 - param1;
+                _loc_5 = _cfg.TW / _id;
+            }
+            else
+            {
+                _loc_7 = _dataMgr.kdata.kdataState["k" + _id];
+                _loc_8 = _loc_7.length;
+                _loc_9 = false;
+                _loc_10 = false;
+                if (param3 < _loc_7[0].date)
+                {
+                    _loc_9 = true;
+                    this._leftIndex = 0;
+                    param3 = _loc_7[0].date;
+                }
+                switch(_id)
+                {
+                    case 5:
+                    {
+                        _loc_11 = 1;
+                        break;
+                    }
+                    case 15:
+                    {
+                        _loc_11 = 2;
+                        break;
+                    }
+                    case 30:
+                    {
+                        _loc_11 = 4;
+                        break;
+                    }
+                    case 60:
+                    {
+                        _loc_11 = 8;
+                        break;
+                    }
+                    case 24:
+                    {
+                        _loc_11 = 50;
+                        break;
+                    }
+                    case 168:
+                    {
+                        _loc_11 = 280;
+                        break;
+                    }
+                    case 720:
+                    {
+                        _loc_11 = 1000;
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
+                }
+                if ((param4.time - param3.time) / 86400000 < _loc_11)
+                {
+                    if (_loc_9)
+                    {
+                        this._rightIndex = _cfg.NK > _loc_7.length ? (_loc_7.length) : (_cfg.NK);
+                        _loc_10 = true;
+                    }
+                    else
+                    {
+                        param3 = new Date(param4.time - _loc_11 * 86400000);
+                        if (param3 < _loc_7[0].date)
+                        {
+                            _loc_9 = true;
+                            this._leftIndex = 0;
+                            this._rightIndex = _cfg.NK > _loc_7.length ? (_loc_7.length) : (_cfg.NK);
+                            _loc_10 = true;
+                        }
+                    }
+                }
+                _loc_12 = 0;
+                while (_loc_12 < (_loc_8 - 1))
+                {
+                    
+                    if (!_loc_9)
+                    {
+                        if (_loc_7[_loc_12].date >= param3)
+                        {
+                            _loc_9 = true;
+                            this._leftIndex = _loc_12;
+                        }
+                    }
+                    if (!_loc_10)
+                    {
+                        if (_loc_7[(_loc_12 + 1)].date > param4)
+                        {
+                            _loc_10 = true;
+                            this._rightIndex = _loc_12 + 1;
+                        }
+                    }
+                    if (_loc_9 && _loc_10)
+                    {
+                        if (this._rightIndex - this._leftIndex < _cfg.NK)
+                        {
+                            this._leftIndex = this._leftIndex - _cfg.NK < 0 ? (0) : (this._leftIndex - _cfg.NK);
+                        }
+                        break;
+                    }
+                    _loc_12++;
+                }
+                if (!_loc_9)
+                {
+                    this._leftIndex = 0;
+                }
+                if (!_loc_10)
+                {
+                    this._rightIndex = _loc_7.length;
+                }
+                _loc_5 = _cfg.KW / _loc_8;
+            }
+            this._leftThumb.x = _loc_5 * this._leftIndex;
+            this._rightThumb.x = _loc_5 * this._rightIndex;
+            this.blockRedraw();
+            this.sendOutSelection(false, true);
+            DisplayMgr(this.parent).interactiveEnd();
+            return;
+        }// end function
+
+        private function onGlobalMsMove(event:MouseEvent) : void
+        {
+            if (_isTType)
+            {
+                return;
+            }
+            if (Math.abs(mouseX - this._mousePressX) < _cfg.KW / this._curRangeLen)
+            {
+                return;
+            }
+            this._mIndex = (mouseX - this._mousePressX) * this._curRangeLen / _cfg.KW;
+            this._mIndex = this._mIndex < 0 ? (Math.floor(this._mIndex)) : (Math.ceil(this._mIndex));
+            this._mousePressX = mouseX;
+            this._leftIndex = this._leftIndex - this._mIndex;
+            this._rightIndex = this._rightIndex - this._mIndex;
+            if (this._rightIndex >= this._globalMaxIndex)
+            {
+                this._rightIndex = this._globalMaxIndex;
+                this._leftIndex = this._rightIndex - this._curRangeLen;
+            }
+            if (this._leftIndex < 0)
+            {
+                this._leftIndex = 0;
+                this._rightIndex = this._leftIndex + this._curRangeLen;
+            }
+            this._leftThumb.x = this._leftIndex * this._toRate;
+            this._rightThumb.x = this._rightIndex * this._toRate;
+            this.blockRedraw();
+            this.sendOutSelection();
+            return;
+        }// end function
+
+        private function drawHotArea() : void
+        {
+            this._magicMove.graphics.clear();
+            this._magicMove.graphics.beginFill(0, 0);
+            this._magicMove.graphics.drawRect(0, 0, _cfg.TW, _cfg.hbar);
+            this._magicMove.graphics.endFill();
+            return;
+        }// end function
+
+        private function onTimer(event:TimerEvent) : void
+        {
+            var _loc_2:* = (this._to - this._target.x) * 0.5;
+            this._target.x = this._target.x + _loc_2;
+            this._leftThumb.x = this._leftThumb.x + _loc_2;
+            this._rightThumb.x = this._rightThumb.x + _loc_2;
+            this.blockRedraw();
+            return;
+        }// end function
+
+        public function showMoreOrLess(param1:Boolean) : void
+        {
+            if (_isTType || !this._useable)
+            {
+                return;
+            }
+            var _loc_2:* = _dataMgr.kdata.kdataState["k" + _id].length;
+            var _loc_3:* = Math.ceil((this._rightIndex - this._leftIndex) * 0.1);
+            if (param1)
+            {
+                if (this._leftIndex > 0)
+                {
+                    var _loc_4:* = this._leftIndex - _loc_3;
+                    this._leftIndex = this._leftIndex - _loc_3;
+                    if (_loc_4 < 0)
+                    {
+                        this._leftIndex = 0;
+                    }
+                }
+                else if (this._rightIndex < _loc_2)
+                {
+                    var _loc_4:* = this._rightIndex + _loc_3;
+                    this._rightIndex = this._rightIndex + _loc_3;
+                    if (_loc_4 > _loc_2)
+                    {
+                        this._rightIndex = _loc_2;
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                if (this._leftIndex + _cfg.NK == this._rightIndex)
+                {
+                    return;
+                }
+                var _loc_4:* = this._leftIndex + _loc_3;
+                this._leftIndex = this._leftIndex + _loc_3;
+                if (_loc_4 >= this._rightIndex - _cfg.NK)
+                {
+                    this._leftIndex = this._rightIndex - _cfg.NK;
+                }
+            }
+            this._bar1.x = this._leftIndex * _cfg.KW / _loc_2;
+            this._bar2.x = this._rightIndex * _cfg.KW / _loc_2;
+            this.blockRedraw();
+            this._dataNeedChange = true;
+            this.sendOutSelection();
+            return;
+        }// end function
+
+        override public function resize() : void
+        {
+            var _loc_1:uint = 0;
+            this._dateSel.y = _cfg.hbar + 10;
+            this._prevBtn.x = -9;
+            this._nextBtn.x = _cfg.TW + 9;
+            this.drawTriangle(this._prevBtn.graphics, true);
+            this.drawTriangle(this._nextBtn.graphics);
+            if (_isTType)
+            {
+                this._leftThumb.x = _cfg.TW / _id * this._leftIndex;
+                this._rightThumb.x = _cfg.TW / _id * this._rightIndex;
+            }
+            else
+            {
+                _loc_1 = _dataMgr.kdata.kdataState["k" + _id].length;
+                if (this._rightIndex + this.OFFSET > _loc_1)
+                {
+                    this._rightIndex = _loc_1;
+                }
+                this._leftThumb.x = this._leftIndex * _cfg.KW / _loc_1;
+                this._rightThumb.x = this._rightIndex * _cfg.KW / _loc_1;
+            }
+            this._bar1.resize(10, _cfg.hbar);
+            this._bar2.resize(10, _cfg.hbar);
+            this.drawHotArea();
+            this.selectRangleReset();
+            this.blockRedraw();
+            this.drawBgLine();
+            this._dataNeedChange = true;
+            this.sendOutSelection();
+            return;
+        }// end function
+
+        public function removeStageListener() : void
+        {
+            this.onStageMsUp(null);
+            return;
+        }// end function
+
+        private function onOutNav(event:MouseEvent) : void
+        {
+            var _loc_2:* = Sprite(event.target);
+            _loc_2.alpha = 0.5;
+            return;
+        }// end function
+
+        private function getNearIndexByXpos(param1:Number) : uint
+        {
+            if (param1 <= 0)
+            {
+                return 0;
+            }
+            if (param1 > _cfg.TW)
+            {
+                param1 = _cfg.TW;
+            }
+            var _loc_2:* = _id * 2;
+            var _loc_3:* = _cfg.TW / _loc_2;
+            var _loc_4:uint = 0;
+            var _loc_5:int = 1;
+            while (_loc_5 <= _loc_2)
+            {
+                
+                if (param1 <= _loc_3 * _loc_5)
+                {
+                    _loc_4 = _loc_5 / 2;
+                    break;
+                }
+                _loc_5++;
+            }
+            return _loc_4;
+        }// end function
+
+        public function update(param1:Boolean = false) : void
+        {
+            var _loc_3:uint = 0;
+            var _loc_2:Boolean = false;
+            if (_isTType)
+            {
+                _loc_2 = true;
+            }
+            else
+            {
+                var _loc_4:String = this;
+                _loc_4._kUpdateCount = this._kUpdateCount + 1;
+                if (param1 || ++this._kUpdateCount % 3 == 0)
+                {
+                    this._kUpdateCount = 0;
+                    if (_id < 1)
+                    {
+                        return;
+                    }
+                    _loc_3 = _dataMgr.kdata.kdataState["k" + _id].length;
+                    if (this._rightIndex + this.OFFSET > _loc_3)
+                    {
+                        this._rightIndex = _loc_3;
+                    }
+                    this._bar1.x = this._leftIndex * _cfg.KW / _loc_3;
+                    this._bar2.x = this._rightIndex * _cfg.KW / _loc_3;
+                    this.blockRedraw();
+                    _loc_2 = this._rightIndex >= _loc_3 && this._rightIndex - this._leftIndex <= this._K_REFRESH_LIMIT;
+                    if (param1)
+                    {
+                        _loc_2 = true;
+                    }
+                }
+            }
+            if (_loc_2)
+            {
+                this.drawBgLine();
+                this._dataNeedChange = true;
+                this.sendOutSelection();
+            }
+            return;
+        }// end function
+
+        private function getSprite(param1:Number, param2:Number) : Sprite
+        {
+            var _loc_3:* = new Sprite();
+            _loc_3.mouseEnabled = false;
+            _loc_3.mouseChildren = false;
+            _loc_3.x = param1;
+            _loc_3.y = param2;
+            addChild(_loc_3);
+            return _loc_3;
+        }// end function
+
+        private function onMsDownOfBlock(event:MouseEvent) : void
+        {
+            var _loc_2:Boolean = true;
+            this._bar2.isDown = true;
+            this._bar1.isDown = _loc_2;
+            this._mousePressX = mouseX;
+            stage.addEventListener(MouseEvent.MOUSE_MOVE, this.onStageMsMove);
+            stage.addEventListener(MouseEvent.MOUSE_UP, this.onStageMsUp);
+            this._isMoving = false;
+            return;
+        }// end function
+
+        private function onOverNav(event:MouseEvent) : void
+        {
+            var _loc_2:* = Sprite(event.target);
+            _loc_2.alpha = 1;
+            return;
+        }// end function
+
+        private function motionTo(param1:Sprite, param2:Number) : void
+        {
+            this._isMoving = true;
+            this._target = param1;
+            this._to = param2;
+            this._motionTimer = new Timer(50, 5);
+            this._motionTimer.addEventListener(TimerEvent.TIMER, this.onTimer);
+            this._motionTimer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onTimerComplete);
+            this._motionTimer.start();
+            return;
+        }// end function
+
+        private function onStageMsMove(event:MouseEvent) : void
+        {
+            var _loc_2:Number = NaN;
+            var _loc_4:Number = NaN;
+            if (this._bar1.x > this._bar2.x)
+            {
+                this._leftThumb = this._bar2;
+                this._rightThumb = this._bar1;
+            }
+            else
+            {
+                this._leftThumb = this._bar1;
+                this._rightThumb = this._bar2;
+            }
+            var _loc_3:* = _isTType ? (_cfg.TW) : (_cfg.KW);
+            if (this._bar1.isDown && this._bar2.isDown)
+            {
+                _loc_2 = mouseX - this._mousePressX;
+                _loc_4 = this._rightThumb.x - this._leftThumb.x;
+                if (this._leftThumb.x + _loc_2 < 0)
+                {
+                    this._leftThumb.x = 0;
+                    this._rightThumb.x = _loc_4;
+                }
+                else if (this._rightThumb.x + _loc_2 > _loc_3)
+                {
+                    this._rightThumb.x = _loc_3;
+                    this._leftThumb.x = _loc_3 - _loc_4;
+                }
+                else
+                {
+                    this._leftThumb.x = this._leftThumb.x + _loc_2;
+                    this._rightThumb.x = this._rightThumb.x + _loc_2;
+                }
+                this._mousePressX = mouseX;
+            }
+            else
+            {
+                _loc_2 = mouseX;
+                if (_loc_2 < 0)
+                {
+                    _loc_2 = 0;
+                }
+                else if (_loc_2 > _loc_3)
+                {
+                    _loc_2 = _loc_3;
+                }
+                if (this._bar1.isDown)
+                {
+                    this._bar1.x = _loc_2;
+                }
+                else if (this._bar2.isDown)
+                {
+                    this._bar2.x = _loc_2;
+                }
+            }
+            this.blockRedraw();
+            if (!_isTType)
+            {
+                this.checkRange();
+            }
+            return;
+        }// end function
+
+        public function set useable(param1:Boolean) : void
+        {
+            if (param1)
+            {
+                this.alpha = 1;
+                this._block.addEventListener(MouseEvent.MOUSE_DOWN, this.onMsDownOfBlock);
+                this._bar1.addEventListener(MouseEvent.MOUSE_DOWN, this.onBarMsDown);
+                this._bar2.addEventListener(MouseEvent.MOUSE_DOWN, this.onBarMsDown);
+            }
+            else
+            {
+                this.alpha = 0.4;
+                this._block.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMsDownOfBlock);
+                this._bar1.removeEventListener(MouseEvent.MOUSE_DOWN, this.onBarMsDown);
+                this._bar2.removeEventListener(MouseEvent.MOUSE_DOWN, this.onBarMsDown);
+            }
+            this._block.buttonMode = param1;
+            this._dateSel.functionable(param1);
+            this._bar1.useable = param1;
+            this._bar2.useable = param1;
+            this._useable = param1;
+            return;
+        }// end function
+
+        public function toHistoryT(param1:Date) : void
+        {
+            this._isTimeMachine = true;
+            DisplayMgr(this.parent).showEveryT(param1);
+            return;
+        }// end function
+
+        private function initLineShape(param1:Shape, param2:Array, param3:uint, param4:Number = 1, param5:Boolean = false) : void
+        {
+            var _loc_10:int = 0;
+            var _loc_11:Date = null;
+            var _loc_12:uint = 0;
+            var _loc_13:uint = 0;
+            var _loc_14:Date = null;
+            var _loc_15:uint = 0;
+            var _loc_6:* = param2.length;
+            var _loc_7:* = _isTType ? (_cfg.TW) : (_cfg.KW);
+            var _loc_8:* = (_isTType ? (_cfg.TW) : (_cfg.KW)) / _loc_6;
+            if (_loc_6 < _cfg.NK)
+            {
+                _loc_8 = _loc_7 / _cfg.NK;
+            }
+            var _loc_9:Number = 0;
+            param1.graphics.clear();
+            param1.graphics.lineStyle(1, 16777215, param4);
+            if (param3 == _cfg.clinePrice)
+            {
+                param1.graphics.beginFill(13490924);
+            }
+            else
+            {
+                param1.graphics.beginFill(16316664);
+            }
+            param1.graphics.moveTo((_loc_7 - 1), _cfg.hbar);
+            param1.graphics.lineTo(_loc_9, _cfg.hbar);
+            param1.graphics.lineTo(_loc_9, param2[0].y);
+            param1.graphics.lineStyle(1, param3, param4);
+            if (!param5)
+            {
+                _loc_10 = 0;
+                while (_loc_10 < this._bgLineRealLen)
+                {
+                    
+                    var _loc_16:* = _loc_9 + _loc_8;
+                    _loc_9 = _loc_9 + _loc_8;
+                    param1.graphics.lineTo(_loc_16, param2[_loc_10].y);
+                    _loc_10++;
+                }
+            }
+            else if (_isTType)
+            {
+                _loc_10 = 0;
+                while (_loc_10 < this._bgLineRealLen)
+                {
+                    
+                    var _loc_16:* = _loc_9 + _loc_8;
+                    _loc_9 = _loc_9 + _loc_8;
+                    param1.graphics.lineTo(_loc_16, param2[_loc_10].y);
+                    if (_id == 3)
+                    {
+                        if (_loc_10 % 244 == 0)
+                        {
+                            _loc_11 = param2[_loc_10].d;
+                            this.drawYearLb(_loc_9, _loc_11.fullYear + "/" + (_loc_11.month + 1) + "/" + _loc_11.date, true);
+                        }
+                    }
+                    else if (param2[_loc_10].d)
+                    {
+                        _loc_11 = param2[_loc_10].d;
+                        this.drawYearLb(_loc_9, (_loc_11.month + 1) + "/" + _loc_11.date, true);
+                    }
+                    _loc_10++;
+                }
+            }
+            else
+            {
+                switch(_id)
+                {
+                    case 15:
+                    {
+                        _loc_12 = 32;
+                        break;
+                    }
+                    case 30:
+                    {
+                        _loc_12 = 40;
+                        break;
+                    }
+                    case 60:
+                    {
+                        _loc_12 = this._bgLineRealLen < 200 ? (60) : (168);
+                        break;
+                    }
+                    case 24:
+                    {
+                        _loc_12 = this._bgLineRealLen < 700 ? (1) : (Math.round(this._bgLineRealLen / 250 / this.MAX_LB));
+                        break;
+                    }
+                    case 168:
+                    {
+                        _loc_12 = this._bgLineRealLen < 200 ? (1) : (Math.round(this._bgLineRealLen / 52 / this.MAX_LB));
+                        break;
+                    }
+                    case 720:
+                    {
+                        _loc_12 = this._bgLineRealLen < 100 ? (1) : (Math.round(this._bgLineRealLen / 12 / this.MAX_LB));
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
+                }
+                _loc_15 = 0;
+                _loc_10 = 0;
+                while (_loc_10 < this._bgLineRealLen)
+                {
+                    
+                    if (_id == 5)
+                    {
+                        if (!_dataTool.isSameDay_date(param2[_loc_10].d, _loc_14))
+                        {
+                            _loc_14 = param2[_loc_10].d;
+                            this.drawYearLb(_loc_9, _dataTool.dateObj2dateStr(param2[_loc_10].d, "/"), _loc_10 == 0 ? (true) : (false));
+                        }
+                    }
+                    else if (_id == 15 || _id == 30 || _id == 60)
+                    {
+                        if (_loc_15 % _loc_12 == 0)
+                        {
+                            this.drawYearLb(_loc_9, _dataTool.dateObj2dateStr(param2[_loc_10].d, "/"), _loc_10 == 0 ? (true) : (false));
+                        }
+                        _loc_15 = _loc_15 + 1;
+                    }
+                    else if (param2[_loc_10].d.fullYear != _loc_13)
+                    {
+                        _loc_13 = param2[_loc_10].d.fullYear;
+                        if (_loc_10 == 0 || _loc_13 % _loc_12 == 0)
+                        {
+                            this.drawYearLb(_loc_9, param2[_loc_10].d.fullYear, _loc_10 == 0 ? (true) : (false));
+                        }
+                    }
+                    _loc_9 = _loc_9 + _loc_8;
+                    param1.graphics.lineTo(_loc_9, param2[_loc_10].y);
+                    _loc_10++;
+                }
+            }
+            param1.graphics.lineStyle(1, 16777215, param4);
+            param1.graphics.lineTo(_loc_9 + 2 > _loc_7 ? ((_loc_7 - 1)) : (_loc_9), _cfg.hbar);
+            param1.graphics.endFill();
+            return;
+        }// end function
+
+        private function onStageMsUp(event:MouseEvent) : void
+        {
+            this._isGlobalDrag = false;
+            stage.removeEventListener(MouseEvent.MOUSE_MOVE, this.onStageMsMove);
+            stage.removeEventListener(MouseEvent.MOUSE_UP, this.onStageMsUp);
+            stage.removeEventListener(MouseEvent.MOUSE_MOVE, this.onGlobalMsMove);
+            this.blockRedraw();
+            if (event)
+            {
+                this.checkRange(true);
+            }
+            return;
+        }// end function
+
+        private function blockRedraw() : void
+        {
+            this._block.graphics.clear();
+            var _loc_1:* = new Matrix();
+            _loc_1.createGradientBox(this._rightThumb.x - this._leftThumb.x, (_cfg.hbar + 1), Math.PI / 2, 0, 0);
+            this._block.graphics.beginGradientFill("linear", [15856113, 9089190], [0.3, 1], [0, 127], _loc_1);
+            this._block.graphics.drawRect(0, 0, this._rightThumb.x - this._leftThumb.x, (_cfg.hbar + 1));
+            this._block.graphics.endFill();
+            this._block.x = this._leftThumb.x;
+            this._colorLineMask.graphics.clear();
+            this._colorLineMask.graphics.lineStyle(0, 0, 0);
+            this._colorLineMask.graphics.beginFill(0, 0);
+            this._colorLineMask.graphics.drawRect(0, 0, this._rightThumb.x - this._leftThumb.x, (_cfg.hbar + 1));
+            this._colorLineMask.graphics.endFill();
+            this._colorLineMask.x = this._leftThumb.x;
+            this._topLine.graphics.clear();
+            this._topLine.graphics.lineStyle(0, 0);
+            this._topLine.graphics.moveTo(0, 0);
+            this._topLine.graphics.lineTo(this._leftThumb.x, 0);
+            this._topLine.graphics.moveTo(this._rightThumb.x, 0);
+            this._topLine.graphics.lineTo(_isTType ? (_cfg.TW) : (_cfg.KW), 0);
+            this._topLine.graphics.moveTo(this._leftThumb.x, (_cfg.hbar + 1));
+            this._topLine.graphics.lineTo(this._rightThumb.x, (_cfg.hbar + 1));
+            return;
+        }// end function
+
+        private function getBar(param1:Number, param2:Number) : Bar
+        {
+            var _loc_3:* = new Bar(10, _cfg.hbar);
+            _loc_3.addEventListener(MouseEvent.MOUSE_DOWN, this.onBarMsDown);
+            _loc_3.x = param1;
+            _loc_3.y = param2;
+            return _loc_3;
+        }// end function
+
+        override public function setTypeId(param1:Boolean, param2:uint) : void
+        {
+            var _loc_3:uint = 0;
+            super.setTypeId(param1, param2);
+            this._isMoving = false;
+            this._navBtnLayer.visible = false;
+            if (param1)
+            {
+                if (param2 != 3)
+                {
+                    this._navBtnLayer.visible = !this._hidingTmRelated;
+                }
+                this._leftIndex = _dataMgr.tdata.tDataState["t" + param2 + "l"];
+                this._rightIndex = _dataMgr.tdata.tDataState["t" + param2 + "r"];
+                if (this.is5T)
+                {
+                    this._leftIndex = 0;
+                    this._rightIndex = 5;
+                }
+                else if (param2 == 5 && !this._isTimeMachine)
+                {
+                    var _loc_4:int = 4;
+                    this._leftIndex = 4;
+                    _dataMgr.tdata.tDataState["t5l"] = _loc_4;
+                    var _loc_4:int = 5;
+                    this._rightIndex = 5;
+                    _dataMgr.tdata.tDataState["t5r"] = _loc_4;
+                }
+                this._leftThumb.x = this._leftIndex * _cfg.TW / param2;
+                this._rightThumb.x = this._rightIndex * _cfg.TW / param2;
+            }
+            else
+            {
+                _loc_3 = _dataMgr.kdata.kdataState["k" + param2].length;
+                this._leftIndex = _dataMgr.kdata.kdataState["k" + param2 + "l"];
+                this._rightIndex = _dataMgr.kdata.kdataState["k" + param2 + "r"];
+                if (this._rightIndex + this.OFFSET > _loc_3)
+                {
+                    this._rightIndex = _loc_3;
+                }
+                this._leftThumb.x = this._leftIndex * _cfg.KW / _loc_3;
+                this._rightThumb.x = this._rightIndex * _cfg.KW / _loc_3;
+            }
+            this._dateSel.changeMode(!param1, _id, this.is5T);
+            this.selectRangleReset();
+            this.drawBgLine();
+            this.blockRedraw();
+            this._dataNeedChange = true;
+            if (!_isTType)
+            {
+                this.useable = Boolean(this._rightIndex - this._leftIndex >= _cfg.NK);
+            }
+            else
+            {
+                this.useable = Boolean(_id != 1);
+            }
+            this.sendOutSelection(true, this._isTimeMachine);
+            this._isTimeMachine = false;
+            return;
+        }// end function
+
+        private function onTimerComplete(event:TimerEvent) : void
+        {
+            var _loc_2:uint = 0;
+            var _loc_3:uint = 0;
+            var _loc_4:Number = NaN;
+            var _loc_5:Number = NaN;
+            this._motionTimer.stop();
+            this._motionTimer.removeEventListener(TimerEvent.TIMER, this.onTimer);
+            this._motionTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, this.onTimerComplete);
+            this._motionTimer = null;
+            this._target.x = this._to;
+            if (_isTType)
+            {
+                _loc_2 = this.getNearIndexByXpos(this._bar1.x);
+                _loc_3 = this.getNearIndexByXpos(this._bar2.x);
+                _loc_4 = _loc_2 * _cfg.TW / _id;
+                _loc_5 = _loc_3 * _cfg.TW / _id;
+                this._bar1.x = _loc_4;
+                this._bar2.x = _loc_5;
+            }
+            this.blockRedraw();
+            this._isMoving = false;
+            return;
+        }// end function
+
+    }
+}

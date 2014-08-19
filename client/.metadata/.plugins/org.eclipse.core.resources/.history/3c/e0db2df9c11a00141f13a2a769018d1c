@@ -1,0 +1,93 @@
+﻿package codegeass
+{
+    import flash.external.*;
+
+    public class CodeGeass extends Object
+    {
+        public static const FIXED_STR:String = "waKarU?NiekEineaHnung~";
+        private static const CHARS:String = "defghijklmnopqrstuvwxyz";
+
+        public function CodeGeass()
+        {
+            return;
+        }
+
+        public static function getSubPart(param1:String) : String
+        {
+            var _loc_6:Array = null;
+            var _loc_2:* = param1.charAt(31);
+            var _loc_3:* = getSubNum(_loc_2);
+            var _loc_4:* = ExternalInterface.call("function(){return location.pathname;}");
+            var _loc_5:String = "";
+            if (_loc_3 > 0 && _loc_4)
+            {
+                _loc_6 = _loc_4.split("/");
+                if (_loc_6 && _loc_6[0] == "")
+                {
+                    _loc_6.shift();
+                }
+                while (_loc_6.length > _loc_3)
+                {
+                    
+                    var _loc_7:* = _loc_6;
+                    var _loc_8:* = _loc_6.length - 1;
+                    _loc_7.length = _loc_8;
+                }
+                _loc_5 = "/" + _loc_6.join("/");
+            }
+            return _loc_5;
+        }
+
+       
+
+        public static function genCode(param1:String) : String
+        {
+            var _loc_2:* = new RegExp("/", "g");
+            var _loc_3:* = param1.match(_loc_2);
+            var _loc_4:* = _loc_3.length;
+            if (_loc_3.length > CHARS.length)
+            {
+                return "Err: too many sub directories";
+            }
+            var _loc_5:* = calc(param1);
+            var _loc_6:* = subFromAlphabet(_loc_4);
+            var _loc_7:* = _loc_5 + _loc_6;
+            return _loc_5 + _loc_6;
+        }
+
+        public static function calc(param1:String) : String
+        {
+            var _loc_2:* = SHA1.hash(FIXED_STR + param1);
+            var _loc_3:* = messFunc(_loc_2);
+            return _loc_3;
+        }
+
+        public static function getSubNum(param1:String) : int
+        {
+            var _loc_2:* = param1.charCodeAt(0);
+            _loc_2 = _loc_2 - 100;
+            return _loc_2;
+        }
+
+        private static function subFromAlphabet(param1:uint) : String
+        {
+            var _loc_2:String = null;
+            var _loc_3:int = 0;
+            var _loc_4:int = 0;
+            var _loc_5:uint = 0;
+            while (_loc_5 < CHARS.length)
+            {
+                
+                _loc_2 = CHARS.charAt(_loc_5);
+                _loc_3 = getSubNum(_loc_2);
+                if (_loc_3 == param1)
+                {
+                    return _loc_2;
+                }
+                _loc_5 = _loc_5 + 1;
+            }
+            return "d";
+        }
+
+    }
+}

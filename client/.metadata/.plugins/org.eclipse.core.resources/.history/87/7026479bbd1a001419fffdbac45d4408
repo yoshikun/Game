@@ -1,0 +1,214 @@
+﻿package com.ui
+{
+    import flash.display.*;
+
+    public class BackgroundManager extends Sprite implements IUis
+    {
+        private var _grid:Shape;
+        private var _cfg:Config;
+
+        public function BackgroundManager()
+        {
+            this._cfg = Config.getInstance();
+            var _loc_1:Boolean = false;
+            mouseChildren = false;
+            mouseEnabled = _loc_1;
+            this._grid = new Shape();
+            this.resize();
+            addChild(this._grid);
+            return;
+        }// end function
+
+        public function resize() : void
+        {
+            this._grid.x = this._cfg.posX;
+            this._grid.y = this._cfg.posY;
+            return;
+        }// end function
+
+        private function drawDashLine(param1:Graphics, param2:Number, param3:Number, param4:Number, param5:Boolean) : void
+        {
+            if (param5)
+            {
+                while (param2 < param3)
+                {
+                    
+                    param1.moveTo(param2, param4);
+                    param2 = param2 + 2;
+                    param1.lineTo(param2, param4);
+                    param2 = param2 + 2;
+                }
+            }
+            else
+            {
+                while (param2 < param3)
+                {
+                    
+                    param1.moveTo(param4, param2);
+                    param2 = param2 + 2;
+                    param1.lineTo(param4, param2);
+                    param2 = param2 + 2;
+                }
+            }
+            return;
+        }// end function
+
+        public function setPopGrid(param1:uint, param2:Boolean = false, param3:Boolean = false) : void
+        {
+            var _loc_7:int = 0;
+            var _loc_12:uint = 0;
+            var _loc_13:Number = NaN;
+            var _loc_14:Number = NaN;
+            var _loc_4:* = param3 ? (this._cfg.KW) : (this._cfg.TW);
+            var _loc_5:* = this._cfg.hMain;
+            var _loc_6:* = this._cfg.hTimeLb;
+            if (param1 == 365)
+            {
+                param1 = 1;
+            }
+            else if (param1 == 665)
+            {
+                param1 = 2;
+            }
+            else if (param1 == 965)
+            {
+                param1 = 3;
+            }
+            this._grid.graphics.clear();
+            this._grid.graphics.lineStyle(1, this._cfg.clineDayEdge);
+            if (param2)
+            {
+                this._grid.graphics.drawRect(-1, -1, _loc_4 + 2, this._cfg.hcompare + 2);
+            }
+            else
+            {
+                this._grid.graphics.drawRect(-1, 0, _loc_4 + 2, (_loc_5 + 1));
+                this._grid.graphics.drawRect(-1, _loc_5 + _loc_6, _loc_4 + 2, this._cfg.hVol);
+            }
+            this._grid.graphics.lineStyle(0, this._cfg.clineBackground, 1, true, "none");
+            var _loc_8:* = param2 ? (12) : (13);
+            var _loc_9:* = param2 ? (this._cfg.hcompare / _loc_8) : (_loc_5 / 8);
+            var _loc_10:* = param2 ? (this._cfg.hcompare / _loc_8) : (_loc_5 / 8);
+            _loc_7 = 1;
+            while (_loc_7 < _loc_8)
+            {
+                
+                if (!param3)
+                {
+                    if (!param2 && _loc_7 != 8 && _loc_7 != 9)
+                    {
+                        this.drawDashLine(this._grid.graphics, -1, _loc_4, _loc_10, true);
+                    }
+                }
+                else if (_loc_7 > 9)
+                {
+                    this.drawDashLine(this._grid.graphics, -1, _loc_4, _loc_10, true);
+                }
+                if (param2)
+                {
+                    this.drawDashLine(this._grid.graphics, -1, _loc_4, _loc_10, true);
+                }
+                if (_loc_7 == 8)
+                {
+                    if (!param2)
+                    {
+                        _loc_10 = _loc_10 + _loc_6;
+                        ;
+                    }
+                }
+                if (!param2 && _loc_7 >= 9)
+                {
+                    _loc_9 = this._cfg.hVol / 4;
+                }
+                _loc_10 = _loc_10 + _loc_9;
+                _loc_7++;
+            }
+            this.drawDashLine(this._grid.graphics, -1, _loc_4, this._cfg.hMTV + 10, true);
+            this.drawDashLine(this._grid.graphics, -1, _loc_4, this._cfg.hMTV + (this._cfg.hindicator + 10) / 2, true);
+            if (param3)
+            {
+                return;
+            }
+            var _loc_11:* = param2 ? ((this._cfg.hcompare + 1)) : (this._cfg.hMTV);
+            if (param1 <= 2)
+            {
+                _loc_12 = 8;
+                _loc_13 = _loc_4 / _loc_12;
+                _loc_14 = _loc_13;
+                _loc_7 = 1;
+                while (_loc_7 < _loc_12)
+                {
+                    
+                    this._grid.graphics.lineStyle(0, this._cfg.clineBackground, 1, true, "none");
+                    if (param1 == 2 && _loc_7 == 4)
+                    {
+                        this._grid.graphics.lineStyle(0, this._cfg.clineDayEdge, 1, true, "none");
+                    }
+                    if (param2)
+                    {
+                        this.drawDashLine(this._grid.graphics, 1, _loc_11, _loc_14, false);
+                    }
+                    else
+                    {
+                        this.drawDashLine(this._grid.graphics, 1, _loc_5, _loc_14, false);
+                        this.drawDashLine(this._grid.graphics, _loc_5 + _loc_6 + 1, _loc_11, _loc_14, false);
+                    }
+                    _loc_14 = _loc_14 + _loc_13;
+                    _loc_7++;
+                }
+            }
+            else if (param1 == 3)
+            {
+                _loc_12 = 6;
+                _loc_13 = _loc_4 / _loc_12;
+                _loc_14 = _loc_13;
+                _loc_7 = 1;
+                while (_loc_7 < _loc_12)
+                {
+                    
+                    this._grid.graphics.lineStyle(0, this._cfg.clineBackground, 1, true, "none");
+                    if (_loc_7 == 2 || _loc_7 == 4)
+                    {
+                        this._grid.graphics.lineStyle(0, this._cfg.clineDayEdge, 1, true, "none");
+                    }
+                    if (param2)
+                    {
+                        this.drawDashLine(this._grid.graphics, 1, _loc_11, _loc_14, false);
+                    }
+                    else
+                    {
+                        this.drawDashLine(this._grid.graphics, 1, _loc_5, _loc_14, false);
+                        this.drawDashLine(this._grid.graphics, _loc_5 + _loc_6 + 1, _loc_11, _loc_14, false);
+                    }
+                    _loc_14 = _loc_14 + _loc_13;
+                    _loc_7++;
+                }
+            }
+            else if (param1 >= 3 && param1 <= 5)
+            {
+                _loc_12 = param1;
+                _loc_13 = _loc_4 / _loc_12;
+                _loc_14 = _loc_13;
+                _loc_7 = 1;
+                while (_loc_7 < _loc_12)
+                {
+                    
+                    this._grid.graphics.lineStyle(0, this._cfg.clineDayEdge, 1, true, "none");
+                    if (param2)
+                    {
+                        this.drawDashLine(this._grid.graphics, 1, _loc_11, _loc_14, false);
+                    }
+                    else
+                    {
+                        this.drawDashLine(this._grid.graphics, 1, _loc_5, _loc_14, false);
+                        this.drawDashLine(this._grid.graphics, _loc_5 + _loc_6 + 1, _loc_11, _loc_14, false);
+                    }
+                    _loc_14 = _loc_14 + _loc_13;
+                    _loc_7++;
+                }
+            }
+            return;
+        }// end function
+
+    }
+}

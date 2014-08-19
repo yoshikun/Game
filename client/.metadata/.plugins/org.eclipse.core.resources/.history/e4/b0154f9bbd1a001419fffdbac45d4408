@@ -1,0 +1,112 @@
+﻿package com.ui
+{
+    import com.evts.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.text.*;
+
+    public class OverprintBtn extends Sprite
+    {
+        private const _NO_FUNC_COLOR:uint = 13816530;
+        private const _H:uint = 18;
+        public const W:uint = 70;
+        private var _cfg:Config;
+        private var _isFuncional:Boolean = false;
+        private const _FUNC_COLOR:uint = 2576294;
+        private var _bg:Shape;
+        private var _mark:Shape;
+        private var _txt:TextField;
+        public var toPrint:Boolean = false;
+        private const _MARK_SIZE:uint = 10;
+
+        public function OverprintBtn(param1:String = "sh")
+        {
+            this._cfg = Config.getInstance();
+            this._bg = new Shape();
+            this._txt = new TextField();
+            this._mark = new Shape();
+            this.buttonMode = false;
+            this._switchBg();
+            addChild(this._bg);
+            this._txt.defaultTextFormat = new TextFormat("arial", 12, 16777215);
+            this._txt.autoSize = "left";
+            this._txt.mouseEnabled = false;
+            this._txt.y = -1;
+            var _loc_2:* = param1 == "sh" ? ("沪") : ("深");
+            this._txt.text = "叠加" + _loc_2 + "指";
+            addChild(this._txt);
+            this._mark.x = this.W - this._MARK_SIZE - 3;
+            this._mark.y = (this._H - this._MARK_SIZE) * 0.5;
+            addChild(this._mark);
+            this._switchMark();
+            addEventListener(MouseEvent.CLICK, this._onClk);
+            return;
+        }// end function
+
+        private function _switchMark() : void
+        {
+            this._mark.graphics.clear();
+            this._mark.graphics.lineStyle(1, 16777215);
+            if (this.toPrint)
+            {
+                this._mark.graphics.moveTo(0, 0);
+                this._mark.graphics.lineTo(this._MARK_SIZE, this._MARK_SIZE);
+                this._mark.graphics.moveTo(this._MARK_SIZE, 0);
+                this._mark.graphics.lineTo(0, this._MARK_SIZE);
+            }
+            else
+            {
+                this._mark.graphics.moveTo(1, this._MARK_SIZE * 0.5);
+                this._mark.graphics.lineTo(this._MARK_SIZE * 0.5, (this._MARK_SIZE - 1));
+                this._mark.graphics.lineTo(this._MARK_SIZE, 0);
+            }
+            return;
+        }// end function
+
+        private function _onClk(event:MouseEvent) : void
+        {
+            if (!this._isFuncional)
+            {
+                return;
+            }
+            this.setState(!this.toPrint, true);
+            var _loc_2:* = this.toPrint ? ("on") : ("off");
+            this._cfg.sendStatistic("suimp.htm?type=" + _loc_2);
+            return;
+        }// end function
+
+        public function setState(param1:Boolean, param2:Boolean = true) : void
+        {
+            if (!this._isFuncional)
+            {
+                return;
+            }
+            this.toPrint = param1;
+            this._switchMark();
+            if (param2)
+            {
+                dispatchEvent(new DataMgrEvent(DataMgrEvent.OVERPRINT));
+            }
+            return;
+        }// end function
+
+        public function set isFunctional(param1:Boolean) : void
+        {
+            var _loc_2:* = param1;
+            this.buttonMode = param1;
+            this._isFuncional = _loc_2;
+            this._switchBg();
+            return;
+        }// end function
+
+        private function _switchBg() : void
+        {
+            this._bg.graphics.clear();
+            this._bg.graphics.beginFill(this._isFuncional ? (this._FUNC_COLOR) : (this._NO_FUNC_COLOR));
+            this._bg.graphics.drawRoundRect(0, 0, this.W, this._H, 3, 3);
+            this._bg.graphics.endFill();
+            return;
+        }// end function
+
+    }
+}

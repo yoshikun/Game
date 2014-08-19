@@ -1,0 +1,14 @@
+﻿package assets
+{
+    import flash.display.*;
+
+    dynamic public class BtnMcDisabledDrawTool extends MovieClip
+    {
+
+        public function BtnMcDisabledDrawTool()
+        {
+            return;
+        }// end function
+
+    }
+}

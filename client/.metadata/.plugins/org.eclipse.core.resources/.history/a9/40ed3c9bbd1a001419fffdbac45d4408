@@ -1,0 +1,221 @@
+﻿package com.sina.finance.ui
+{
+
+    public class IndicatorBOLL extends Indicator
+    {
+        private var _bollLine:LineCurve;
+        private var _bolls:Array;
+        private var _min:Number;
+        private var _lowerLine:LineCurve;
+        private const CUPPER:uint = 16711935;
+        private var _max:Number;
+        private const EN:uint = 20;
+        private var _stdsums:Array;
+        private const CBOOL:uint = 255;
+        private var _uppers:Array;
+        private var _lowers:Array;
+        private var _upperLine:LineCurve;
+        private const CLOWER:uint = 65535;
+
+        public function IndicatorBOLL()
+        {
+            _color1 = this.CBOOL;
+            _color2 = this.CUPPER;
+            _color3 = this.CLOWER;
+            this._bollLine = new LineCurve(1, this.CBOOL, 1, false);
+            this._upperLine = new LineCurve(1, this.CUPPER, 1, false);
+            this._lowerLine = new LineCurve(1, this.CLOWER, 1, false);
+            addChild(this._bollLine);
+            addChild(this._upperLine);
+            addChild(this._lowerLine);
+            return;
+        }// end function
+
+        override public function draw(param1:uint = 24) : void
+        {
+            this._bollLine.clear(true);
+            this._upperLine.clear(true);
+            this._lowerLine.clear(true);
+            var _loc_2:* = _objs.length;
+            var _loc_3:* = _cfg.KW / _loc_2;
+            if (_loc_2 < _cfg.NK)
+            {
+                _loc_3 = _cfg.KW / _cfg.NK;
+            }
+            var _loc_4:* = _loc_3 / 2;
+            var _loc_5:uint = 0;
+            while (_loc_5 < _loc_2)
+            {
+                
+                if (_loc_5 == 0)
+                {
+                    this._bollLine.moveTo(_loc_4, _objs[_loc_5].bolly);
+                    this._upperLine.moveTo(_loc_4, _objs[_loc_5].uppery);
+                    this._lowerLine.moveTo(_loc_4, _objs[_loc_5].lowery);
+                }
+                else
+                {
+                    this._bollLine.lineTo(_loc_4, _objs[_loc_5].bolly);
+                    this._upperLine.lineTo(_loc_4, _objs[_loc_5].uppery);
+                    this._lowerLine.lineTo(_loc_4, _objs[_loc_5].lowery);
+                }
+                _loc_4 = _loc_4 + _loc_3;
+                _loc_5 = _loc_5 + 1;
+            }
+            return;
+        }// end function
+
+        override public function initDatasBySource(param1:Array) : void
+        {
+            var _loc_3:Number = NaN;
+            var _loc_4:Number = NaN;
+            var _loc_5:Number = NaN;
+            destroyArray(this._bolls);
+            destroyArray(this._uppers);
+            destroyArray(this._lowers);
+            destroyArray(_objs);
+            this._bolls = [];
+            this._stdsums = [];
+            this._uppers = [];
+            this._lowers = [];
+            _objs = [];
+            this.setMAData(param1, this.EN);
+            var _loc_2:* = param1.length;
+            var _loc_6:uint = 0;
+            while (_loc_6 < _loc_2)
+            {
+                
+                if (_loc_6 < this.EN)
+                {
+                    _loc_5 = Math.sqrt(this._stdsums[_loc_6] / (_loc_6 + 1));
+                }
+                else
+                {
+                    _loc_5 = Math.sqrt(this._stdsums[_loc_6] / this.EN);
+                }
+                _loc_3 = this._bolls[_loc_6] + 2 * _loc_5;
+                _loc_4 = this._bolls[_loc_6] - 2 * _loc_5;
+                this._uppers.push(_loc_3);
+                this._lowers.push(_loc_4);
+                _loc_6 = _loc_6 + 1;
+            }
+            return;
+        }// end function
+
+        override public function setDefaultText() : void
+        {
+            var _loc_1:* = _objs.length - 1;
+            setTitleText("BOLL: " + Number(_objs[_loc_1].boll).toFixed(2), "UPPER: " + Number(_objs[_loc_1].upper).toFixed(2), "LOWER: " + Number(_objs[_loc_1].lower).toFixed(2));
+            return;
+        }// end function
+
+        override public function calcObjs(param1:uint, param2:uint) : void
+        {
+            var _loc_4:Number = NaN;
+            var _loc_5:Number = NaN;
+            var _loc_9:Object = null;
+            var _loc_3:* = param2 - param1;
+            while (_objs.length > _loc_3)
+            {
+                
+                _objs.pop();
+            }
+            while (_objs.length < _loc_3)
+            {
+                
+                _objs.push({});
+            }
+            this._max = -10000000;
+            this._min = 10000000;
+            var _loc_6:* = param1;
+            while (_loc_6 < param2)
+            {
+                
+                _loc_9 = _objs[_loc_6 - param1];
+                _loc_9.boll = this._bolls[_loc_6];
+                _loc_9.upper = this._uppers[_loc_6];
+                _loc_9.lower = this._lowers[_loc_6];
+                if (this._min > _loc_9.lower)
+                {
+                    this._min = _loc_9.lower;
+                }
+                if (this._max < _loc_9.upper)
+                {
+                    this._max = _loc_9.upper;
+                }
+                _loc_6 = _loc_6 + 1;
+            }
+            var _loc_7:* = this._max - this._min;
+            var _loc_8:* = _cfg.hindicator - 10;
+            _loc_6 = 0;
+            while (_loc_6 < _loc_3)
+            {
+                
+                _objs[_loc_6].bolly = _loc_8 * (this._max - _objs[_loc_6].boll) / _loc_7;
+                _objs[_loc_6].uppery = _loc_8 * (this._max - _objs[_loc_6].upper) / _loc_7;
+                _objs[_loc_6].lowery = _loc_8 * (this._max - _objs[_loc_6].lower) / _loc_7;
+                _loc_6 = _loc_6 + 1;
+            }
+            setLeftText(this._min, this._max, 3, 2);
+            return;
+        }// end function
+
+        override public function interactiveEnd() : void
+        {
+            this._bollLine.interactiveEnd();
+            this._upperLine.interactiveEnd();
+            this._lowerLine.interactiveEnd();
+            return;
+        }// end function
+
+        private function setMAData(param1:Array, param2:uint) : void
+        {
+            var _loc_3:Number = NaN;
+            var _loc_4:Number = 0;
+            var _loc_5:Number = 0;
+            var _loc_6:* = param1.length;
+            var _loc_7:* = Number(param1[0].close);
+            var _loc_8:Array = [];
+            var _loc_9:uint = 0;
+            while (_loc_9 < _loc_6)
+            {
+                
+                _loc_7 = Number(param1[_loc_9].close);
+                _loc_4 = _loc_4 + _loc_7;
+                if (_loc_9 >= (param2 - 1))
+                {
+                    _loc_3 = _loc_4 / param2;
+                    _loc_4 = _loc_4 - param1[_loc_9 - param2 + 1].close;
+                }
+                else
+                {
+                    _loc_3 = _loc_4 / (_loc_9 + 1);
+                }
+                this._bolls.push(_loc_3);
+                _loc_8[_loc_9] = Math.pow(_loc_7 - _loc_3, 2);
+                _loc_5 = _loc_5 + _loc_8[_loc_9];
+                if (_loc_9 > (param2 - 1))
+                {
+                    _loc_5 = _loc_5 - _loc_8[_loc_9 - param2];
+                }
+                this._stdsums.push(_loc_5);
+                _loc_9 = _loc_9 + 1;
+            }
+            return;
+        }// end function
+
+        override public function interactiveTo(param1:uint) : void
+        {
+            this._bollLine.interactiveTo(param1);
+            this._upperLine.interactiveTo(param1);
+            this._lowerLine.interactiveTo(param1);
+            if (param1 >= _objs.length)
+            {
+                param1 = _objs.length - 1;
+            }
+            setTitleText("BOLL: " + Number(_objs[param1].boll).toFixed(2), "UPPER: " + Number(_objs[param1].upper).toFixed(2), "LOWER: " + Number(_objs[param1].lower).toFixed(2));
+            return;
+        }// end function
+
+    }
+}

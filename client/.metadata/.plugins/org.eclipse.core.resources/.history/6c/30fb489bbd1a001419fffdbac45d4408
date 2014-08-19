@@ -1,0 +1,38 @@
+﻿package com.ui.datebar
+{
+    import hsuan.*;
+
+    public class DateSelectorButtons extends ButtonBar
+    {
+        private var _num:int;
+        public var isFiveT:Boolean = false;
+
+        public function DateSelectorButtons(param1:String = null, ... args)
+        {
+            super(param1, 13950191, 13950191, 11978723, 12, 20, 45);
+            return;
+        }// end function
+
+        public function set num(param1:int) : void
+        {
+            this._num = param1;
+            reset();
+            var _loc_2:* = param1 == 3 ? ("年") : ("日");
+            var _loc_3:uint = 1;
+            while (_loc_3 <= param1)
+            {
+                
+                addNewBtn(_loc_3 + _loc_2, String(_loc_3));
+                _loc_3 = _loc_3 + 1;
+            }
+            initShape();
+            drawBg();
+            if (this.isFiveT)
+            {
+                moveShape((param1 - 1));
+            }
+            return;
+        }// end function
+
+    }
+}

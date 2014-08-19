@@ -1,0 +1,66 @@
+﻿package com.ui.dayKNews
+{
+    import flash.display.*;
+    import flash.events.*;
+    import flash.text.*;
+
+    public class NewsItem extends Sprite
+    {
+        private const _HOVER_C:String = "#ff0000";
+        private const _MAX_CHARS:uint = 25;
+        private var _d:TextField;
+        private var _cfg:Config;
+        private var _url:String;
+        private var _t:TextField;
+
+        public function NewsItem()
+        {
+            this._cfg = Config.getInstance();
+            if (stage)
+            {
+                this._init();
+            }
+            else
+            {
+                addEventListener(Event.ADDED_TO_STAGE, this._init);
+            }
+            return;
+        }// end function
+
+        public function setDateTitleUrl(param1:String, param2:String, param3:String) : void
+        {
+            this._url = param3;
+            this._d.text = param1;
+            if (param2.length > this._MAX_CHARS)
+            {
+                param2 = param2.substr(0, this._MAX_CHARS) + "...";
+            }
+            this._t.htmlText = "<a target=\'_blank\' href=\'" + param3 + "\'>" + param2 + "</a>";
+            return;
+        }// end function
+
+        private function _init(event:Event = null) : void
+        {
+            removeEventListener(Event.ADDED_TO_STAGE, this._init);
+            this._d = new TextField();
+            this._d.defaultTextFormat = new TextFormat("arial", 12, 7171437);
+            this._d.autoSize = "left";
+            this._d.selectable = false;
+            this._d.y = 2;
+            this._d.x = 343;
+            this._t = new TextField();
+            this._t.selectable = false;
+            this._t.defaultTextFormat = new TextFormat("arial", 12, this._cfg.LB_COLOR);
+            this._t.width = 312;
+            this._t.height = 20;
+            this._t.x = 20;
+            var _loc_2:* = new StyleSheet();
+            _loc_2.parseCSS("a:hover{color:" + this._HOVER_C + ";text-decoration:underline;}");
+            this._t.styleSheet = _loc_2;
+            addChild(this._d);
+            addChild(this._t);
+            return;
+        }// end function
+
+    }
+}

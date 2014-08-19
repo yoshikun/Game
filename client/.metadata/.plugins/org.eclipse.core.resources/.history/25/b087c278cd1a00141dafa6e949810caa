@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="application1_creationCompleteHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			
+			[Bindable]
+			public var TICKER:ArrayCollection = new ArrayCollection([
+				{date:"1/8/05 8:30:00 AM",open:42.57,high:43.08,low:42.08,close:42.75},
+				{date:"1/8/05 9:00:00 AM",open:42.89,high:43.5,low:42.61,close:43.19},
+				{date:"1/8/05 9:30:00 AM",open:43.19,high:43.31,low:42.77,close:43.22},
+				{date:"1/8/05 10:00:00 AM",open:42.89,high:43,low:42.29,close:42.71},
+				{date:"1/8/05 10:30:00 AM",open:42.49,high:43.36,low:42.02,close:42.99},
+				{date:"1/8/05 11:00:00 AM",open:43,high:43.25,low:42.61,close:42.65},
+				{date:"1/8/05 11:30:00 AM",open:42.93,high:43.89,low:42.91,close:43.82},
+				{date:"1/8/05 12:00:00 PM",open:44,high:44.39,low:43.31,close:43.38},
+				{date:"1/8/05 12:30:00 PM",open:43.39,high:44.12,low:43.25,close:44},
+				{date:"1/8/05 1:00:00 PM",open:43.46,high:46.22,low:43.36,close:46.1},
+				{date:"1/8/05 1:30:00 PM",open:43.46,high:46.22,low:43.36,close:46.1},
+				{date:"1/8/05 2:00:00 PM",open:43.46,high:46.22,low:43.36,close:46.1},
+				{date:"1/8/05 2:30:00 PM",open:43.46,high:46.22,low:43.36,close:46.1},
+				{date:"1/8/05 3:00:00 PM",open:43.46,high:46.22,low:43.36,close:46.1},
+				{date:"2/8/05 8:30:00 AM",open:42.57,high:43.08,low:42.08,close:42.75},
+				{date:"2/8/05 9:00:00 AM",open:42.89,high:43.5,low:42.61,close:43.19},
+				{date:"2/8/05 9:30:00 AM",open:43.19,high:43.31,low:42.77,close:43.22},
+				{date:"2/8/05 10:00:00 AM",open:42.89,high:43,low:42.29,close:42.71},
+				{date:"2/8/05 10:30:00 AM",open:42.49,high:43.36,low:42.02,close:42.99},
+				{date:"2/8/05 11:00:00 AM",open:43,high:43.25,low:42.61,close:42.65},
+				{date:"2/8/05 11:30:00 AM",open:42.93,high:43.89,low:42.91,close:43.82},
+				{date:"2/8/05 12:00:00 PM",open:44,high:44.39,low:43.31,close:43.38},
+				{date:"2/8/05 12:30:00 PM",open:43.39,high:44.12,low:43.25,close:44},
+				{date:"2/8/05 1:00:00 PM",open:43.46,high:46.22,low:43.36,close:46.1},
+				{date:"2/8/05 1:30:00 PM",open:43.46,high:46.22,low:43.36,close:46.1},
+				{date:"2/8/05 2:00:00 PM",open:43.46,high:46.22,low:43.36,close:46.1},
+				{date:"2/8/05 2:30:00 PM",open:43.46,high:46.22,low:43.36,close:46.1},
+				{date:"2/8/05 3:00:00 PM",open:43.46,high:46.22,low:43.36,close:46.1}
+			]);
+			
+			public function myParseFunction(s:String):Date {
+				// Get an array of Strings from the
+				// comma-separated String passed in.
+				var a:Array = s.split(/:|\/|\s/);
+				trace("String a : " + a.toString());
+				// Trace out year, month, and day values.
+				// To create a Date object, you pass "YYYY,MM,DD",
+				// where MM is zero-based, to the Date() constructor.
+				var newDate:Date = new Date(a[2],a[1],a[0],a[3],a[4]);                 
+				return newDate;
+			}
+			
+			private function formatDateLabel(value:Number, prevValue:Number, axis:DateTimeAxis):String
+			{
+				var dateValue:Date = new Date();
+				dateValue.setTime(value + ((dateValue.timezoneOffset + 60) * 60 * 1000));
+				switch(axis.labelUnits)
+				{
+					case "months":
+						return labelMonthFormatter.format(dateValue);
+						break;
+					case "days":
+						return labelDayFormatter.format(dateValue);
+					default:
+						return labelDefaultFormatter.format(dateValue);
+						break;
+				}
+			}
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				//Alert.show(myParseFunction((TICKER.getItemAt(TICKER.length-1).date)).toString());
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<mx:DateFormatter id="fullDateFormat" formatString="YYYY-MM-DD" />
+		<mx:DateFormatter id="labelMonthFormatter" formatString="MM/YY" />
+		<mx:DateFormatter id="labelDayFormatter" formatString="MMM DD" />
+		<mx:DateFormatter id="labelDefaultFormatter" formatString="EEE MMM D" />
+		<mx:DateFormatter id="labelSummaryDateFormatter" formatString="EEE MMM DD, YYYY" />
+	</fx:Declarations>
+	
+	<mx:Panel title="HighLowOpenClose Chart" width="100%" height="100%">
+		<!-- HLOCChart CandlestickChart-->
+		<mx:CandlestickChart id="myChart"
+					  dataProvider="{TICKER}"
+					  showDataTips="true"
+					  width="100%" height="100%"
+					  >
+			<mx:verticalAxis>
+				<mx:LinearAxis minimum="30" maximum="50"/>
+			</mx:verticalAxis>
+			<mx:series>
+				<mx:HLOCSeries
+					dataProvider="{TICKER}"
+					openField="open"
+					highField="high"
+					lowField="low"
+					closeField="close"
+					displayName="TICKER"
+					xField="date"  >
+				</mx:HLOCSeries>
+			</mx:series>
+			
+			<mx:horizontalAxis>
+				<mx:DateTimeAxis
+					parseFunction="myParseFunction"  
+					id="dt1"
+					disabledDays="[0,1]"
+					dataUnits="hours"
+					alignLabelsToUnits="true"
+					labelFunction="formatDateLabel" />
+			</mx:horizontalAxis>
+			
+			<mx:horizontalAxisRenderers>
+				<mx:AxisRenderer
+					id="dt1Rnd"
+					showLabels="true"
+					axis="{dt1}"  
+					visible="true"
+					minWidth="1"  />
+			</mx:horizontalAxisRenderers>        
+			
+		</mx:CandlestickChart>
+		<mx:Legend dataProvider="{myChart}"/>
+	</mx:Panel>
+	<mx:Panel x="98" y="40" width="485" height="392" layout="absolute">
+		<mx:CandlestickChart x="10" y="10" id="myCandleChart" height="271" width="445" dataProvider="{TICKER}" showDataTips="true">
+			<mx:horizontalAxis>
+				<mx:CategoryAxis dataProvider="{TICKER}" categoryField="date"/>
+			</mx:horizontalAxis>
+			<mx:series>
+				<mx:CandlestickSeries displayName="haha" openField="open" closeField="close" highField="hight" lowField="low"/>
+			</mx:series>
+		</mx:CandlestickChart>
+		<mx:Legend dataProvider="{myCandleChart}" x="10" y="289" width="445"/>
+		
+	</mx:Panel>
+</s:Application>

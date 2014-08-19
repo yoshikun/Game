@@ -1,0 +1,14 @@
+﻿package com.image.paintTool
+{
+    import flash.display.*;
+
+    dynamic public class ParallelLineIcon extends Sprite
+    {
+
+        public function ParallelLineIcon()
+        {
+            return;
+        }// end function
+
+    }
+}

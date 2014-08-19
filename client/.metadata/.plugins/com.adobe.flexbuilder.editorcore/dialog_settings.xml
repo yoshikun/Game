@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="com.adobe.flexbuilder.editorcore.ui.pi.PropertiesView">
+		<item value="true" key="大小和位置"/>
+		<item value="true" key="布局"/>
+		<item value="true" key="样式"/>
+		<item value="1" key="ViewOption"/>
+		<item value="true" key="公共"/>
+	</section>
+</section>

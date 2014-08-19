@@ -1,0 +1,200 @@
+﻿package com.ui
+{
+    import com.sina.finance.data.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
+    import flash.net.*;
+    import flash.text.*;
+
+    public class StockTitle extends Sprite implements IUis
+    {
+        private var _percent:Number;
+        private var _priceStr:String;
+        private var _moreBtn:Sprite;
+        private var _endTime:String;
+        private var _iHq:IHQ;
+        private var _tc:uint;
+        private var _isLoadingEndTime:Boolean = false;
+        private var _cfg:Config;
+        private var _hq:HQ;
+        private var _capital:Number;
+        private var _prefix:String;
+        private var _turnoverRate:Number;
+        private var _dataTool:DataTool;
+        private var _postFixStr:String;
+        private const _MORE_BTN_W:uint = 90;
+        private var _percentStr:String;
+        private var _dataMgr:DataMgr;
+        private var _priceAndPercent:String;
+        private var _title:TextField;
+        private var _extraStr:String;
+        private var _priceOffsetStr:String;
+        private const _GAP:String = "   ";
+        private var _tempStr:String = "";
+
+        public function StockTitle(param1:DataMgr)
+        {
+            this._cfg = Config.getInstance();
+            this._dataTool = DataTool.getInstance();
+            this._dataMgr = param1;
+            this._iHq = this._dataMgr.iHQ;
+            this._capital = this._iHq.capital;
+            if (this._dataMgr.tdata.hq)
+            {
+                this._hq = this._dataMgr.tdata.hq;
+            }
+            this._prefix = (this._hq ? (this._hq.name) : ("")) + "(" + this._dataMgr.symbol + ")";
+            this._title = new TextField();
+            this._title.selectable = false;
+            this._title.defaultTextFormat = new TextFormat("arial", 12);
+            this._title.autoSize = "left";
+            addChild(this._title);
+            this.initMoreBtn();
+            this.resize();
+            this.update();
+            return;
+        }// end function
+
+        private function endTimeIoErr(event:IOErrorEvent) : void
+        {
+            event.target.removeEventListener(Event.COMPLETE, this.endTimeLoaded);
+            event.target.removeEventListener(IOErrorEvent.IO_ERROR, this.endTimeIoErr);
+            this._isLoadingEndTime = false;
+            return;
+        }// end function
+
+        private function initMoreBtn() : void
+        {
+            var _loc_2:TextField = null;
+            if (!this._moreBtn)
+            {
+                this._moreBtn = new Sprite();
+                this._moreBtn.buttonMode = true;
+                this._moreBtn.addEventListener(MouseEvent.CLICK, this.onClkMore);
+                addChild(this._moreBtn);
+                _loc_2 = new TextField();
+                _loc_2.mouseEnabled = false;
+                _loc_2.defaultTextFormat = new TextFormat("arial", 12, 16777215, null, null, null, null, null, "center");
+                _loc_2.width = this._MORE_BTN_W;
+                _loc_2.height = 20;
+                _loc_2.text = "更多数据";
+                this._moreBtn.addChild(_loc_2);
+            }
+            var _loc_1:* = new Matrix();
+            _loc_1.createGradientBox(this._MORE_BTN_W, 20, Math.PI * 0.5);
+            this._moreBtn.graphics.clear();
+            this._moreBtn.graphics.beginGradientFill("linear", [9282766, 8230339], [1, 1], [0, 255], _loc_1);
+            this._moreBtn.graphics.drawRect(0, 0, this._MORE_BTN_W, 20);
+            this._moreBtn.graphics.endFill();
+            return;
+        }// end function
+
+        private function loadStopEndTime() : void
+        {
+            if (this._isLoadingEndTime)
+            {
+                return;
+            }
+            this._isLoadingEndTime = true;
+            this._dataTool.loadDataFromUrl(this._cfg.E_END_TIME_URL.replace("$symbol", this._dataMgr.symbol), this.endTimeLoaded, null, this.endTimeIoErr);
+            return;
+        }// end function
+
+        public function resize() : void
+        {
+            this._moreBtn.x = this._cfg.viewW - this._MORE_BTN_W;
+            return;
+        }// end function
+
+        private function onClkMore(event:MouseEvent) : void
+        {
+            var _loc_2:* = /[gz]/.test(this._cfg.stockType) ? (this._cfg.BOND_URL.replace("$symbol", this._hq.symbol)) : (this._cfg.FINANCE_URL + this._hq.symbol + "/nc.shtml");
+            navigateToURL(new URLRequest(this._cfg.getStatUrl(_loc_2)), "_blank");
+            return;
+        }// end function
+
+        private function getHtmlStr(param1:uint, param2:String, param3:String = "") : String
+        {
+            return "<font color=\'#" + param1.toString(16) + "\'>" + param2 + param3 + "</font>";
+        }// end function
+
+        public function update() : void
+        {
+            if (!this._hq || this._hq.isStopDay && !this._hq.buy && !this._hq.sell)
+            {
+                this._title.htmlText = this._prefix + this._GAP + this.getHtmlStr(this._cfg.cfontRise, "停牌");
+                return;
+            }
+            if (this._hq.status == "00" || this._hq.buy || this._hq.sell)
+            {
+                this._tempStr = "";
+                if (this._endTime)
+                {
+                    this._endTime = null;
+                }
+            }
+            else if (this._endTime)
+            {
+                this._tempStr = this.getHtmlStr(this._cfg.clineDayEdge, this._hq.statusStr, "至" + this._endTime + this._GAP);
+            }
+            else
+            {
+                this.loadStopEndTime();
+            }
+            this._tc = 0;
+            if (this._hq.price < this._hq.prevclose)
+            {
+                this._tc = this._cfg.cfontFall;
+            }
+            else if (this._hq.price > this._hq.prevclose)
+            {
+                this._tc = this._cfg.cfontRise;
+            }
+            this._percent = (this._hq.price - this._hq.prevclose) / this._hq.prevclose * 100;
+            this._percentStr = (this._percent > 0 ? ("+") : ("")) + this._percent.toFixed(this._hq.ppp);
+            this._priceStr = this._hq.price.toFixed(this._hq.ppp);
+            this._priceOffsetStr = (this._percent > 0 ? ("+") : ("")) + (this._hq.price - this._hq.prevclose).toFixed(this._hq.ppp);
+            this._priceAndPercent = this.getHtmlStr(this._tc, this._priceStr + this._GAP + this._priceOffsetStr + this._GAP + this._percentStr, "%");
+            if (/[abn]/.test(this._cfg.stockType) && this._hq.price > 0)
+            {
+                if (this._hq.isPre25Min)
+                {
+                    this._extraStr = "- -";
+                }
+                else
+                {
+                    this._turnoverRate = this._capital == 0 ? (0) : (this._hq.totalVolume / this._capital);
+                    this._extraStr = isNaN(this._turnoverRate) ? ("- -") : (this._turnoverRate.toFixed(2) + "%");
+                }
+                this._postFixStr = this._GAP + "换手率: " + this._extraStr;
+            }
+            else if (this._cfg.stockType == "i")
+            {
+                this._extraStr = this._hq.isPre25Min ? ("0") : (this._dataTool.price2string(this._hq.hqTotalAmount));
+                this._postFixStr = this._GAP + "成交额: " + this._extraStr + "元";
+            }
+            else
+            {
+                this._postFixStr = "";
+            }
+            this._title.htmlText = this._prefix + this._GAP + this._tempStr + this._priceAndPercent + this._postFixStr;
+            return;
+        }// end function
+
+        private function endTimeLoaded(event:Event) : void
+        {
+            this._isLoadingEndTime = false;
+            event.target.removeEventListener(Event.COMPLETE, this.endTimeLoaded);
+            event.target.removeEventListener(IOErrorEvent.IO_ERROR, this.endTimeIoErr);
+            var _loc_2:* = String(event.target.data).split(" ");
+            if (_loc_2 && _loc_2.length > 2)
+            {
+                this._endTime = String(_loc_2[2]).substr(0, 8);
+                this.update();
+            }
+            return;
+        }// end function
+
+    }
+}

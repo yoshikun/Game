@@ -1,0 +1,14 @@
+﻿package com.image.paintTool
+{
+    import flash.display.*;
+
+    dynamic public class MouseOverBox extends Sprite
+    {
+
+        public function MouseOverBox()
+        {
+            return;
+        }// end function
+
+    }
+}

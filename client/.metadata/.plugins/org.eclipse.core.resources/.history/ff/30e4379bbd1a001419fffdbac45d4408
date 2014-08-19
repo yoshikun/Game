@@ -1,0 +1,153 @@
+﻿package com.sina.finance.data
+{
+
+    public class TDataObj extends TDataObjBase
+    {
+        private var _special:Boolean;
+
+        public function TDataObj(param1:HQ)
+        {
+            super(param1);
+            return;
+        }// end function
+
+        override protected function setExtValue() : void
+        {
+            var _loc_1:Number = NaN;
+            var _loc_2:Number = NaN;
+            var _loc_4:Array = null;
+            var _loc_5:Number = NaN;
+            var _loc_3:int = 0;
+            while (_loc_3 < datasLength)
+            {
+                
+                if (datas[_loc_3].price <= 0)
+                {
+                }
+                else
+                {
+                    realLen = _loc_3;
+                    _loc_1 = !isNaN(datas[_loc_3].avg_price) && datas[_loc_3].avg_price > 0 ? (Math.min(datas[_loc_3].price, datas[_loc_3].avg_price)) : (datas[_loc_3].price);
+                    _loc_2 = !isNaN(datas[_loc_3].avg_price) && datas[_loc_3].avg_price > 0 ? (Math.max(datas[_loc_3].price, datas[_loc_3].avg_price)) : (datas[_loc_3].price);
+                    if (minPrice > _loc_1)
+                    {
+                        minPrice = _loc_1;
+                    }
+                    if (maxPrice < _loc_2)
+                    {
+                        maxPrice = _loc_2;
+                    }
+                    if (maxVolume < datas[_loc_3].volume)
+                    {
+                        maxVolume = datas[_loc_3].volume;
+                    }
+                }
+                _loc_3++;
+            }
+            this._special = false;
+            if (!this._special)
+            {
+                _loc_5 = Math.max(Math.abs(prevclose - maxPrice), Math.abs(prevclose - minPrice));
+                if (_loc_5 / prevclose < 0.01)
+                {
+                    _loc_5 = prevclose * 0.01;
+                }
+                minPrice = prevclose - _loc_5;
+                maxPrice = prevclose + _loc_5;
+            }
+            maxPercent = Math.max((maxPrice - prevclose) / prevclose, 0);
+            minPercent = Math.min((minPrice - prevclose) / prevclose, 0);
+            labelMaxP = maxPrice;
+            labelMinP = minPrice;
+            _loc_4 = _dataTool.adjustHighLow(maxVolume, 0, 0, true);
+            labelMaxVol = _loc_4[0];
+            labelVolumeCount = _loc_4[2];
+            return;
+        }// end function
+
+        override protected function calcPoses() : void
+        {
+            var _loc_1:Object = null;
+            var _loc_2:Object = null;
+            var _loc_3:Number = NaN;
+            var _loc_5:uint = 0;
+            var _loc_4:uint = 0;
+            while (_loc_4 <= realLen)
+            {
+                
+                _loc_1 = poses[_loc_4];
+                _loc_2 = marks[_loc_4];
+                if (datas[_loc_4].price > 0)
+                {
+                    _loc_3 = (datas[_loc_4].price - prevclose) / prevclose;
+                    datas[_loc_4].percent = _loc_3;
+                    _loc_1.price = _dataTool.calcPricePosy(datas[_loc_4].price, labelMinP, labelMaxP, _cfg.hMain);
+                    _loc_1.avg_price = _dataTool.calcPricePosy(datas[_loc_4].avg_price || datas[_loc_4 == 0 ? (0) : ((_loc_4 - 1))].avg_price, labelMinP, labelMaxP, _cfg.hMain);
+                    _loc_1.volume = _dataTool.calcVolumePosy(datas[_loc_4].volume, labelMaxVol);
+                    _loc_2.price = _dataTool.price2string(datas[_loc_4].price, hq.ppp);
+                    _loc_2.avg_price = _dataTool.price2string(datas[_loc_4].avg_price, hq.ppp);
+                    _loc_2.volume = _dataTool.volume2string(datas[_loc_4].volume, true);
+                    _loc_2.percent = (_loc_3 * 100).toFixed(hq.ppp) + "%";
+                }
+                else
+                {
+                    _loc_5 = _loc_4 == 0 ? (0) : ((_loc_4 - 1));
+                    datas[_loc_4].percent = datas[_loc_5].percent;
+                    datas[_loc_4].price = datas[_loc_5].price;
+                    datas[_loc_4].avg_price = datas[_loc_5].avg_price;
+                    _loc_1.price = poses[_loc_5].price;
+                    _loc_1.avg_price = poses[_loc_5].avg_price;
+                    _loc_1.volume = _dataTool.calcVolumePosy(0, labelMaxVol);
+                    _loc_2.price = marks[_loc_5].price;
+                    _loc_2.avg_price = marks[_loc_5].avg_price;
+                    _loc_2.volume = 0;
+                    _loc_2.percent = marks[_loc_5].percent;
+                }
+                if (days == 365 || days == 665 || days == 965)
+                {
+                    _loc_2.avg_price = "-";
+                }
+                _loc_4 = _loc_4 + 1;
+            }
+            return;
+        }// end function
+
+        override public function setData(param1:Array, param2:uint) : void
+        {
+            var _loc_3:Date = null;
+            var _loc_4:uint = 0;
+            var _loc_5:uint = 0;
+            super.setData(param1, param2);
+            dates = [];
+            if (days == 1)
+            {
+                dates = ["09:30", "10:30", "11:30/13:00", "14:00", "15:00"];
+            }
+            else if (days <= 5)
+            {
+                _loc_4 = 0;
+                while (_loc_4 < days)
+                {
+                    
+                    _loc_3 = datas[_loc_4 * 242].date;
+                    dates.push(_loc_3.fullYear + "/" + (_loc_3.month + 1) + "/" + _loc_3.date + " 周" + _loc_3.day);
+                    _loc_4 = _loc_4 + 1;
+                }
+            }
+            else
+            {
+                _loc_4 = 0;
+                while (_loc_4 < 5)
+                {
+                    
+                    _loc_5 = Math.floor((datasLength - 1) * _loc_4 / 4);
+                    _loc_3 = datas[_loc_5].date;
+                    dates.push(_loc_3.fullYear + "/" + (_loc_3.month < 9 ? ("0" + (_loc_3.month + 1)) : ((_loc_3.month + 1))) + "/" + (_loc_3.date < 10 ? ("0" + _loc_3.date) : (_loc_3.date)));
+                    _loc_4 = _loc_4 + 1;
+                }
+            }
+            return;
+        }// end function
+
+    }
+}

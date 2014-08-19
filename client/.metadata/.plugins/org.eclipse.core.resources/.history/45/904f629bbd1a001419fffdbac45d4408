@@ -1,0 +1,175 @@
+﻿package stock.com.ui.elements.xpainting.painter
+{
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
+    import stock.com.ui.elements.xpainting.*;
+    import stock.com.ui.elements.xpainting.painter.square.*;
+
+    public class PeriodLinesXPainter extends XPainter
+    {
+        private var directP:Point;
+        private var endP:Point;
+        private var endSquare:SmallSquare;
+        private var startSquare:SmallSquare;
+        private const MINDISTANCE:Number = 8;
+        private var startP:Point;
+        private var distance:Number = 0;
+
+        public function PeriodLinesXPainter()
+        {
+            this.directP = new Point(0, 1);
+            this.init();
+            return;
+        }// end function
+
+        private function onStartSquareDown(event:MouseEvent) : void
+        {
+            movingObject = STARTSQUARE;
+            this.onSquareDown();
+            return;
+        }// end function
+
+        private function onLeave(event:Event) : void
+        {
+            this.endListening();
+            endPaint();
+            return;
+        }// end function
+
+        private function onEndSquareDown(event:MouseEvent) : void
+        {
+            movingObject = ENDSQUARE;
+            this.onSquareDown();
+            return;
+        }// end function
+
+        private function updatePoints(param1:int, param2:Point) : void
+        {
+            var _loc_4:Point = null;
+            var _loc_3:* = super.globalToLocal(param2);
+            if (param1 == STARTSQUARE)
+            {
+                _loc_4 = new Point(_loc_3.x, (rect.top + rect.bottom) / 2);
+                this.endP.x = this.endP.x + (_loc_4.x - this.startP.x);
+                this.startP = _loc_4;
+            }
+            else
+            {
+                this.endP = this.getEndPoint(_loc_3);
+            }
+            return;
+        }// end function
+
+        private function init() : void
+        {
+            this.startSquare = new SmallSquare();
+            this.endSquare = new SmallSquare(6, controllableColor);
+            super.addChild(this.startSquare);
+            super.addChild(this.endSquare);
+            squares = [this.startSquare, this.endSquare];
+            hideSmallSquare();
+            this.startSquare.addEventListener(MouseEvent.MOUSE_DOWN, this.onStartSquareDown, false, 0, true);
+            this.endSquare.addEventListener(MouseEvent.MOUSE_DOWN, this.onEndSquareDown, false, 0, true);
+            return;
+        }// end function
+
+        override protected function beginListening() : void
+        {
+            sensor.addEventListener(MouseEvent.MOUSE_MOVE, this.onMove);
+            sensor.addEventListener(MouseEvent.MOUSE_UP, this.onUp);
+            _stage.addEventListener(Event.MOUSE_LEAVE, this.onLeave);
+            return;
+        }// end function
+
+        private function onMove(event:MouseEvent) : void
+        {
+            this.updatePoints(movingObject, new Point(event.stageX, event.stageY));
+            this.drawlines(this.startP, this.endP);
+            event.stopPropagation();
+            return;
+        }// end function
+
+        private function onUp(event:MouseEvent) : void
+        {
+            this.endListening();
+            endPaint();
+            event.stopPropagation();
+            return;
+        }// end function
+
+        private function onSquareDown() : void
+        {
+            hideSmallSquare();
+            this.beginListening();
+            return;
+        }// end function
+
+        override public function begingPaint(param1:Sprite, param2:Stage, param3:Rectangle, param4:Point) : void
+        {
+            super.begingPaint(param1, param2, param3, param4);
+            this.startP = new Point(param4.x, (param3.top + param3.bottom) / 2);
+            movingObject = ENDSQUARE;
+            this.beginListening();
+            return;
+        }// end function
+
+        private function getEndPoint(param1:Point) : Point
+        {
+            var _loc_2:* = Calculator.instance.calcNormalVector(this.directP);
+            this.distance = Calculator.instance.calcLinesDistance(this.startP, param1, _loc_2);
+            this.distance = Math.max(this.distance, this.MINDISTANCE);
+            return new Point(this.startP.x + this.distance * _loc_2.x, this.startP.y + this.distance * _loc_2.y);
+        }// end function
+
+        override protected function endListening() : void
+        {
+            sensor.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMove);
+            sensor.removeEventListener(MouseEvent.MOUSE_UP, this.onUp);
+            _stage.removeEventListener(Event.MOUSE_LEAVE, this.onLeave);
+            return;
+        }// end function
+
+        override public function destroy() : void
+        {
+            this.startSquare.removeEventListener(MouseEvent.MOUSE_DOWN, this.onStartSquareDown);
+            this.endSquare.removeEventListener(MouseEvent.MOUSE_DOWN, this.onEndSquareDown);
+            this.endListening();
+            this.startSquare = null;
+            this.endSquare = null;
+            super.destroy();
+            return;
+        }// end function
+
+        private function drawlines(param1:Point, param2:Point) : void
+        {
+            this.startSquare.x = param1.x;
+            this.startSquare.y = param1.y;
+            this.endSquare.x = param2.x;
+            this.endSquare.y = param2.y;
+            clearPaint();
+            var _loc_3:* = this.getLineNum();
+            var _loc_4:* = new Point(param2.x - param1.x, param2.y - param1.y);
+            var _loc_5:int = 0;
+            while (_loc_5 < _loc_3)
+            {
+                
+                drawStraightLine(new Point(this.startP.x + _loc_4.x * _loc_5, this.startP.y + _loc_4.y * _loc_5), this.directP, rect);
+                _loc_5++;
+            }
+            return;
+        }// end function
+
+        private function getLineNum() : int
+        {
+            var _loc_1:* = Calculator.instance.calcNormalVector(this.directP);
+            var _loc_2:* = Calculator.instance.calcLinesDirectedDistance(this.startP, new Point(rect.left, rect.top), _loc_1);
+            var _loc_3:* = Calculator.instance.calcLinesDirectedDistance(this.startP, new Point(rect.left, rect.bottom), _loc_1);
+            var _loc_4:* = Calculator.instance.calcLinesDirectedDistance(this.startP, new Point(rect.right, rect.top), _loc_1);
+            var _loc_5:* = Calculator.instance.calcLinesDirectedDistance(this.startP, new Point(rect.right, rect.bottom), _loc_1);
+            var _loc_6:* = Math.max(_loc_2, _loc_3, _loc_4, _loc_5);
+            return (Math.floor(_loc_6 / this.distance) + 1);
+        }// end function
+
+    }
+}

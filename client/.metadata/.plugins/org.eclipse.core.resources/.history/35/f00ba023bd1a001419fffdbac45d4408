@@ -1,0 +1,13 @@
+package
+{
+	import flash.display.Sprite;
+	
+	[Frame(factoryClass="com.yo.game.core.PreLoader")]
+	public class Stock extends Sprite
+	{
+		public function Stock()
+		{
+			
+		}
+	}
+}

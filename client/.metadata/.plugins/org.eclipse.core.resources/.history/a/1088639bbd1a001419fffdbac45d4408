@@ -1,0 +1,36 @@
+﻿package stock.com.ui.elements.xpainting.painter.square
+{
+    import flash.display.*;
+
+    public class SmallSquare extends Sprite
+    {
+
+        public function SmallSquare(param1:Number = 6, param2:uint = 0)
+        {
+            this.init(param1, param2);
+            return;
+        }// end function
+
+        private function init(param1:Number = 6, param2:uint = 15728640) : void
+        {
+            super.graphics.beginFill(param2);
+            super.graphics.drawRect((-param1) / 2, (-param1) / 2, param1, param1);
+            super.graphics.endFill();
+            this.hide();
+            return;
+        }// end function
+
+        public function hide() : void
+        {
+            this.visible = false;
+            return;
+        }// end function
+
+        public function show() : void
+        {
+            this.visible = true;
+            return;
+        }// end function
+
+    }
+}

@@ -1,0 +1,14 @@
+﻿package assets
+{
+    import flash.display.*;
+
+    dynamic public class BtnKset extends SimpleButton
+    {
+
+        public function BtnKset()
+        {
+            return;
+        }// end function
+
+    }
+}

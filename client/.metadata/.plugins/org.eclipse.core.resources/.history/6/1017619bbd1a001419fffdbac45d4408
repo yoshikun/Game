@@ -1,0 +1,13 @@
+﻿package stock.com.ui.elements.xpainting.painter
+{
+
+    public class NormalXPainter extends XPainter
+    {
+
+        public function NormalXPainter()
+        {
+            return;
+        }// end function
+
+    }
+}

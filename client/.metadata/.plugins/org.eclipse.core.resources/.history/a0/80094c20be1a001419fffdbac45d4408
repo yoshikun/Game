@@ -1,0 +1,118 @@
+﻿package com.sina.finance.data
+{
+    import flash.events.*;
+    import flash.net.*;
+    import hsuan.*;
+
+    public class DataTool extends Object
+    {
+        private var _timeArray:Array;
+        private const B64CHARS:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        private var _cfg:Config;
+        private static var _instance:DataTool;
+
+        public function DataTool()
+        {
+            this._cfg = Config.getInstance();
+        }
+
+       
+
+        private function narrowCount(param1:uint, param2:Boolean = false) : uint
+        {
+            if (param2)
+            {
+                while (param1 > 5)
+                {
+                    
+                    if (param1 % 2 == 0)
+                    {
+                        param1 = param1 / 2;
+                        continue;
+                    }
+                    if (param1 % 3 == 0)
+                    {
+                        param1 = param1 / 3;
+                        continue;
+                    }
+                    break;
+                }
+            }
+            else if (param1 > 9)
+            {
+                if (param1 % 3 == 0)
+                {
+                    param1 = param1 / 3;
+                }
+                else if (param1 % 4 == 0)
+                {
+                    param1 = param1 / 4;
+                }
+                else if (param1 % 2 == 0)
+                {
+                    param1 = param1 / 2;
+                }
+            }
+            return param1;
+        }
+
+        public function calcPricePosy(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+        {
+            if (isNaN(param1) || param1 <= param2)
+            {
+                return param4;
+            }
+            if (param1 >= param3)
+            {
+                return 1;
+            }
+            return Math.max(param4 * (1 - (param1 - param2) / (param3 - param2)), 1);
+        }
+
+        private function notRightNum(param1:Number) : Boolean
+        {
+            var _loc_2:* = uint(Math.round(param1 * 100));
+            if (_loc_2 % 100 != 0)
+            {
+                if (_loc_2 % 10 == 0)
+                {
+                    _loc_2 = _loc_2 / 10;
+                }
+                if (_loc_2 % 5 != 0 && _loc_2 % 2 != 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public function isSameDay_str(param1:String, param2:String) : Boolean
+        {
+            if (param1 == param2)
+            {
+                return true;
+            }
+            var _loc_3:* = param1.split("-");
+            var _loc_4:* = param2.split("-");
+            if (_loc_3.length != 3 || _loc_4.length != 3)
+            {
+                return false;
+            }
+            if (Number(_loc_3[0]) == Number(_loc_4[0]) && Number(_loc_3[1]) == Number(_loc_4[1]) && Number(_loc_3[2]) == Number(_loc_4[2]))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static function getInstance() : DataTool
+        {
+            if (_instance == null)
+            {
+				_instance = new DataTool();
+            }
+            return _instance;
+        }
+
+    }
+}

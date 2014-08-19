@@ -1,0 +1,125 @@
+﻿package com.ui.dayKNews
+{
+    import flash.display.*;
+    import flash.events.*;
+
+    public class NewsMark extends Sprite
+    {
+        private var _cfg:Config;
+        public var dStr:String;
+        public var date:Date;
+        public var type:String;
+        private var _cb:Function;
+
+        public function NewsMark(param1:Function)
+        {
+            this._cfg = Config.getInstance();
+            this._cb = param1;
+            this._initEvt();
+            this._initFigure();
+            return;
+        }// end function
+
+        private function _initFigure() : void
+        {
+            this.graphics.beginFill(0, 0);
+            this.graphics.drawCircle(0, 0, 4);
+            this.graphics.endFill();
+            var _loc_1:Number = 6;
+            var _loc_2:* = _loc_1 * 0.5;
+            var _loc_3:* = new Shape();
+            var _loc_4:* = this._cfg.LB_COLOR;
+            _loc_3.graphics.beginFill(_loc_4);
+            _loc_3.graphics.drawCircle(_loc_2, _loc_2, 2);
+            _loc_3.graphics.endFill();
+            _loc_3.graphics.lineStyle(0, _loc_4);
+            _loc_3.graphics.moveTo(0, 0);
+            _loc_3.graphics.lineTo(_loc_1, _loc_1);
+            _loc_3.graphics.moveTo(_loc_1, 0);
+            _loc_3.graphics.lineTo(0, _loc_1);
+            var _loc_5:* = -_loc_2;
+            _loc_3.y = -_loc_2;
+            _loc_3.x = _loc_5;
+            this.addChild(_loc_3);
+            return;
+        }// end function
+
+        private function _onClkNewsMark(event:MouseEvent) : void
+        {
+            this._cb(this.date, this.type);
+            return;
+        }// end function
+
+        private function _onOverOutNewsMark(event:MouseEvent) : void
+        {
+            var _loc_2:* = Sprite(event.currentTarget);
+            switch(event.type)
+            {
+                default:
+                {
+                    var _loc_3:int = 1;
+                    _loc_2.scaleY = 1;
+                    _loc_2.scaleX = _loc_3;
+                    break;
+                }
+                case :
+                {
+                    var _loc_3:Number = 1.5;
+                    _loc_2.scaleY = 1.5;
+                    _loc_2.scaleX = _loc_3;
+                    break;
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function clear() : void
+        {
+            this.removeEventListener(MouseEvent.CLICK, this._onClkNewsMark);
+            this.removeEventListener(MouseEvent.MOUSE_OVER, this._onOverOutNewsMark);
+            this.removeEventListener(MouseEvent.MOUSE_OUT, this._onOverOutNewsMark);
+            return;
+        }// end function
+
+        private function _init() : void
+        {
+            var _loc_1:* = new Sprite();
+            _loc_1.buttonMode = true;
+            _loc_1.addEventListener(MouseEvent.CLICK, this._onClkNewsMark);
+            _loc_1.addEventListener(MouseEvent.MOUSE_OVER, this._onOverOutNewsMark);
+            _loc_1.addEventListener(MouseEvent.MOUSE_OUT, this._onOverOutNewsMark);
+            _loc_1.graphics.beginFill(0, 0);
+            _loc_1.graphics.drawCircle(0, 0, 4);
+            _loc_1.graphics.endFill();
+            var _loc_2:Number = 6;
+            var _loc_3:* = _loc_2 * 0.5;
+            var _loc_4:* = new Shape();
+            var _loc_5:* = this._cfg.LB_COLOR;
+            _loc_4.graphics.beginFill(_loc_5);
+            _loc_4.graphics.drawCircle(_loc_3, _loc_3, 2);
+            _loc_4.graphics.endFill();
+            _loc_4.graphics.lineStyle(0, _loc_5);
+            _loc_4.graphics.moveTo(0, 0);
+            _loc_4.graphics.lineTo(_loc_2, _loc_2);
+            _loc_4.graphics.moveTo(_loc_2, 0);
+            _loc_4.graphics.lineTo(0, _loc_2);
+            var _loc_6:* = -_loc_3;
+            _loc_4.y = -_loc_3;
+            _loc_4.x = _loc_6;
+            _loc_1.addChild(_loc_4);
+            addChild(_loc_1);
+            return;
+        }// end function
+
+        private function _initEvt() : void
+        {
+            this.buttonMode = true;
+            this.addEventListener(MouseEvent.CLICK, this._onClkNewsMark);
+            this.addEventListener(MouseEvent.MOUSE_OVER, this._onOverOutNewsMark);
+            this.addEventListener(MouseEvent.MOUSE_OUT, this._onOverOutNewsMark);
+            return;
+        }// end function
+
+    }
+}

@@ -1,0 +1,14 @@
+﻿package com.image.paintTool
+{
+    import flash.display.*;
+
+    dynamic public class SegmentLineIcon extends Sprite
+    {
+
+        public function SegmentLineIcon()
+        {
+            return;
+        }// end function
+
+    }
+}

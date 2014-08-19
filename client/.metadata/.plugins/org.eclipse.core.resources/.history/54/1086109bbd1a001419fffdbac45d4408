@@ -1,0 +1,14 @@
+﻿package assets
+{
+    import flash.display.*;
+
+    dynamic public class BtnShowHideFloater extends MovieClip
+    {
+
+        public function BtnShowHideFloater()
+        {
+            return;
+        }// end function
+
+    }
+}

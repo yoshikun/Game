@@ -1,0 +1,14 @@
+﻿package com.image.paintTool
+{
+    import flash.display.*;
+
+    dynamic public class CancelButton extends SimpleButton
+    {
+
+        public function CancelButton()
+        {
+            return;
+        }// end function
+
+    }
+}

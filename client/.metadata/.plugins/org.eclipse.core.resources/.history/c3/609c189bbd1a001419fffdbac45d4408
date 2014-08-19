@@ -1,0 +1,16 @@
+﻿package com.image.paintTool
+{
+    import flash.display.*;
+
+    dynamic public class PaintToolPanel extends Sprite
+    {
+        public var closeBtn:SimpleButton;
+        public var window:MovieClip;
+
+        public function PaintToolPanel()
+        {
+            return;
+        }// end function
+
+    }
+}

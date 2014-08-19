@@ -1,0 +1,16 @@
+﻿package com.evts
+{
+    import flash.events.*;
+
+    public class SettingEvent extends Event
+    {
+        public static const NEW_SET:String = "newSet";
+
+        public function SettingEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
+        {
+            super(param1, param2, param3);
+            return;
+        }// end function
+
+    }
+}

@@ -1,0 +1,35 @@
+﻿package com.evts
+{
+    import flash.events.*;
+
+    public class DataMgrEvent extends Event
+    {
+        public var kParam:String;
+        public var indicatorType:String = "MACD";
+        public var errTxt:String;
+        public var overprintBtnState:String;
+        public static const I_HQ_READY:String = "iHqReady";
+        public static const NO_HQ:String = "nohq";
+        public static const UPDATE:String = "update";
+        public static const COMPARE_ERR:String = "对比添加失败，请重新\n输入股票名称或代码";
+        public static const COMPARE_NOT_EXIST:String = "该股长期停牌或已退市，\n无法添加";
+        public static const COMPARE_EXIST:String = "已经添加了该股票";
+        public static const LOADING:String = "loading";
+        public static const ERR_LOADING:String = "errLoading";
+        public static const FATAL_ERR:String = "fatalErr";
+        public static const DAYKED:String = "dayked";
+        public static const INDICATOR:String = "indicator";
+        public static const FLOAT_T_LOADED:String = "floatTLoaded";
+        public static const NEWDATE:String = "newdate";
+        public static const MINKED:String = "minked";
+        public static const OVERPRINT:String = "overprint";
+        public static const COMPARE_NO_MORE_THAN_5:String = "最多可对比5只股票";
+
+        public function DataMgrEvent(param1:String)
+        {
+            super(param1);
+            return;
+        }// end function
+
+    }
+}

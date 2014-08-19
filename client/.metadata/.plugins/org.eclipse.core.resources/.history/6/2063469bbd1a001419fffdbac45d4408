@@ -1,0 +1,321 @@
+﻿package com.sina.finance.ui
+{
+    import com.sina.finance.data.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.text.*;
+
+    public class TechChartMgr extends UIMgr
+    {
+        private var _lastType:String;
+        private var _indicator:Indicator;
+        private var _lb:Sprite;
+        private var _type:String = "";
+        private var _right:uint = 1;
+        private var _fakeLbLine:Shape;
+        private var _left:uint;
+        private var _selector:IndicatorSelection;
+        public static const OBV:String = "OBV";
+        public static const WVAD:String = "WVAD";
+        public static const RSI:String = "RSI";
+        public static const BOLL:String = "BOLL";
+        public static const KDJ:String = "KDJ";
+        public static const MACD:String = "MACD";
+        public static const PSY:String = "PSY";
+        public static const CCI:String = "CCI";
+        public static const ALL_TECH_NAME_REG:RegExp = new RegExp("(\\b" + MACD + "\\b)|(\\b" + KDJ + "\\b)|(\\b" + BOLL + "\\b)|(\\b" + PSY + "\\b)|(\\b" + OBV + "\\b)|(\\b" + RSI + "\\b)|(\\b" + WVAD + "\\b)|(\\b" + CCI + "\\b)", "i");
+
+        public function TechChartMgr(param1:DataMgr)
+        {
+            super(param1);
+            this.initLbAndYearLb();
+            return;
+        }// end function
+
+        public function get type() : String
+        {
+            return this._type;
+        }// end function
+
+        private function initLbAndYearLb() : void
+        {
+            this._lb = new Sprite();
+            this._lb.graphics.clear();
+            this._lb.graphics.beginFill(11189725);
+            this._lb.graphics.drawRect(-1, 0, 58, 20);
+            this._lb.graphics.endFill();
+            var _loc_1:* = new TextField();
+            _loc_1.autoSize = "left";
+            _loc_1.selectable = false;
+            _loc_1.defaultTextFormat = new TextFormat("arial", 12, _cfg.LB_COLOR);
+            _loc_1.text = "量比";
+            _loc_1.x = 14;
+            this._lb.addChild(_loc_1);
+            this._lb.y = _cfg.hindicator + 1;
+            addChild(this._lb);
+            this._fakeLbLine = new Shape();
+            return;
+        }// end function
+
+        public function redraw(param1:uint, param2:uint) : void
+        {
+            var _loc_3:String = null;
+            this._left = param1;
+            this._right = param2;
+            if (!this._indicator || _id == 3)
+            {
+                return;
+            }
+            if (this._indicator is IndicatorLB)
+            {
+                (this._indicator as IndicatorLB).realLen = _dataMgr.tdata.tdataObj.realLen;
+                if (_id == 1)
+                {
+                    this._indicator.initDatasBySource([_dataMgr.tdata.datas_1]);
+                }
+                else if (_id == 5)
+                {
+                    this._indicator.initDatasBySource(_dataMgr.tdata.datas_5 ? (_dataMgr.tdata.datas_5) : ([_dataMgr.tdata.datas_1]));
+                }
+            }
+            else
+            {
+                _loc_3 = "k" + _id + _cfg.reDirection;
+                if (_id != 24 && _id != 168)
+                {
+                    this._indicator.initDatasBySource(_dataMgr.kdata.kdataState[_loc_3]);
+                }
+            }
+            this._indicator.calcObjs(param1, param2);
+            this._indicator.draw();
+            this._indicator.setDefaultText();
+            this._indicator.y = 10;
+            addChild(this._indicator);
+            return;
+        }// end function
+
+        public function callIndicatorByType(param1:String) : void
+        {
+            if (param1 != this._selector.type)
+            {
+                this._selector.type = param1;
+            }
+            if (this._indicator && contains(this._indicator))
+            {
+                removeChild(this._indicator);
+            }
+            this._type = param1;
+            switch(this._type)
+            {
+                case MACD:
+                default:
+                {
+                    this._indicator = new IndicatorMACDs();
+                    break;
+                }
+                case BOLL:
+                {
+                    this._indicator = new IndicatorKDJ();
+                    break;
+                }
+                case PSY:
+                {
+                    this._indicator = new IndicatorBOLL();
+                    break;
+                }
+                case OBV:
+                {
+                    this._indicator = new IndicatorPSY();
+                    break;
+                }
+                case RSI:
+                {
+                    this._indicator = new IndicatorOBV();
+                    break;
+                }
+                case WVAD:
+                {
+                    this._indicator = new IndicatorRSI();
+                    break;
+                }
+                case CCI:
+                {
+                    this._indicator = new IndicatorWVAD();
+                    break;
+                }
+                case :
+                {
+                    this._indicator = new IndicatorCCI();
+                    break;
+                    break;
+                }
+            }
+            var _loc_2:* = "k" + _id + _cfg.reDirection;
+            this._indicator.initDatasBySource(_dataMgr.kdata.kdataState[_loc_2]);
+            this.redraw(this._left, this._right);
+            if (param1 && param1 != "" && this._lastType != param1)
+            {
+                _cfg.sendStatistic("tech.html?type=" + param1.toLocaleLowerCase());
+                this._lastType = param1;
+            }
+            return;
+        }// end function
+
+        override public function interactiveEnd() : void
+        {
+            if (this._indicator)
+            {
+                this._indicator.interactiveEnd();
+                this._indicator.setDefaultText();
+            }
+            return;
+        }// end function
+
+        private function drawFakeYearLb() : void
+        {
+            this._fakeLbLine.graphics.clear();
+            this._fakeLbLine.graphics.lineStyle(1, _cfg.clinePrice);
+            this._fakeLbLine.graphics.moveTo(0, _cfg.hindicator * 0.5 + 5);
+            this._fakeLbLine.graphics.lineTo(_cfg.TW, _cfg.hindicator * 0.5 + 5);
+            return;
+        }// end function
+
+        private function initBackground() : void
+        {
+            var _loc_1:* = _isTType ? (_cfg.TW) : (_cfg.KW);
+            this.graphics.clear();
+            this.graphics.lineStyle(1, _cfg.clineDayEdge);
+            this.graphics.drawRect(-1, 0, _loc_1 + 2, _cfg.hindicator);
+            return;
+        }// end function
+
+        override public function resize() : void
+        {
+            if (this._lb)
+            {
+                this._lb.y = _cfg.hindicator + 1;
+            }
+            if (this._selector)
+            {
+                this._selector.y = _cfg.hindicator + 1;
+            }
+            this._indicator.resize();
+            if (contains(this._fakeLbLine))
+            {
+                this.drawFakeYearLb();
+            }
+            this.initBackground();
+            return;
+        }// end function
+
+        override public function setTypeId(param1:Boolean, param2:uint) : void
+        {
+            _isTType = param1;
+            _id = param2;
+            this.initBackground();
+            if (param1)
+            {
+                if (this._selector && contains(this._selector))
+                {
+                    removeChild(this._selector);
+                }
+                if (this._indicator && contains(this._indicator))
+                {
+                    removeChild(this._indicator);
+                }
+                addChildAt(this._lb, 0);
+                if (param2 == 1 || param2 == 5)
+                {
+                    if (contains(this._fakeLbLine))
+                    {
+                        removeChild(this._fakeLbLine);
+                    }
+                    this._indicator = new IndicatorLB();
+                    (this._indicator as IndicatorLB).realLen = _dataMgr.tdata.tdataObj.realLen;
+                    if (param2 == 1)
+                    {
+                        this._indicator.initDatasBySource([_dataMgr.tdata.datas_1]);
+                    }
+                    else if (param2 == 5)
+                    {
+                        this._indicator.initDatasBySource(_dataMgr.tdata.datas_5 ? (_dataMgr.tdata.datas_5) : ([_dataMgr.tdata.datas_1]));
+                    }
+                }
+                else if (param2 == 3)
+                {
+                    if (this._indicator && contains(this._indicator))
+                    {
+                        removeChild(this._indicator);
+                        this._indicator = null;
+                    }
+                    this.drawFakeYearLb();
+                    addChild(this._fakeLbLine);
+                }
+                if (_dataMgr.comparing && contains(this._lb))
+                {
+                    removeChild(this._lb);
+                }
+            }
+            else
+            {
+                if (contains(this._lb))
+                {
+                    removeChild(this._lb);
+                }
+                if (contains(this._fakeLbLine))
+                {
+                    removeChild(this._fakeLbLine);
+                }
+                if (!this._selector)
+                {
+                    this._selector = new IndicatorSelection();
+                    this._selector.addEventListener(Event.SELECT, this.onSelect);
+                }
+                this._selector.y = _cfg.hindicator + 1;
+                addChildAt(this._selector, 0);
+                this.onSelect(null);
+            }
+            return;
+        }// end function
+
+        private function onSelect(event:Event) : void
+        {
+            if (!event)
+            {
+                this.callIndicatorByType(this._selector.type);
+            }
+            else
+            {
+                if (this._selector.type == this.type)
+                {
+                    return;
+                }
+                this.callIndicatorByType(this._selector.type);
+            }
+            return;
+        }// end function
+
+        override public function interactiveTo(param1:uint) : void
+        {
+            if (this._indicator)
+            {
+                this._indicator.interactiveTo(param1);
+            }
+            return;
+        }// end function
+
+        public function dealWithER() : void
+        {
+            if (_isTType && !_dataMgr.comparing)
+            {
+                addChild(this._lb);
+            }
+            else if (contains(this._lb))
+            {
+                removeChild(this._lb);
+            }
+            return;
+        }// end function
+
+    }
+}

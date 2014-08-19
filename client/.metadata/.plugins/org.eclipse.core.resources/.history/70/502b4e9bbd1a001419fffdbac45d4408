@@ -1,0 +1,217 @@
+﻿package com.ui
+{
+    import flash.display.*;
+    import flash.events.*;
+    import flash.net.*;
+    import flash.ui.*;
+
+    public class MyContextMenu extends Object
+    {
+        private var _normalK:ContextMenuItem;
+        private var _backK:ContextMenuItem;
+        public var theStage:Stage;
+        private var _foreK:ContextMenuItem;
+        private const _NORMAL_K:String = "不复权";
+        private var _menu:ContextMenu;
+        private const _BACK_K:String = "后复权";
+        private var _cfg:Config;
+        private const _FORE_K:String = "前复权";
+        private var _version:String = "v2.7.71";
+        private var _wb:ShareTo;
+        private var _name:String = "";
+        private var _symbol:String = "sh000001";
+        public var rightMenuFunc:Function;
+        private static var _instance:MyContextMenu;
+
+        public function MyContextMenu(param1:String) : void
+        {
+            this._cfg = Config.getInstance();
+            this._wb = ShareTo.getInstance();
+            this._menu = new ContextMenu();
+            this.name = param1;
+            this.init();
+            return;
+        }// end function
+
+        public function showOrHideReKItems(param1:Boolean) : void
+        {
+            var _loc_2:* = param1;
+            this._backK.enabled = param1;
+            var _loc_2:* = _loc_2;
+            this._foreK.enabled = _loc_2;
+            this._normalK.enabled = _loc_2;
+            return;
+        }// end function
+
+        private function navigateToWeibo(event:ContextMenuEvent) : void
+        {
+            this.rightMenuFunc(this._cfg.HIDE_MASK_NO_FS_CMD);
+            this._wb.send(this.theStage, this._name, this._symbol);
+            return;
+        }// end function
+
+        private function navToSinaFin(event:ContextMenuEvent) : void
+        {
+            var _loc_2:* = /[gz]/.test(this._cfg.stockType) ? (this._cfg.BOND_URL.replace("$symbol", this._symbol)) : (this._cfg.FINANCE_URL + this._symbol + "/nc.shtml");
+            navigateToURL(new URLRequest(this._cfg.getStatUrl(_loc_2)), "_blank");
+            return;
+        }// end function
+
+        private function gotoBar(event:ContextMenuEvent) : void
+        {
+            var _loc_2:* = this._cfg.STOCKBAR_URL.replace("$symbol", this._symbol);
+            navigateToURL(new URLRequest(this._cfg.getStatUrl(_loc_2)), "_blank");
+            return;
+        }// end function
+
+        private function _kViewFunc(event:ContextMenuEvent) : void
+        {
+            switch(ContextMenuItem(event.target).caption)
+            {
+                case this._NORMAL_K:
+                {
+                    this.rightMenuFunc("0");
+                    break;
+                }
+                case this._FORE_K:
+                {
+                    this.rightMenuFunc("1");
+                    break;
+                }
+                case this._BACK_K:
+                {
+                    this.rightMenuFunc("2");
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        private function init() : void
+        {
+            var _loc_5:ContextMenuItem = null;
+            var _loc_6:ContextMenuItem = null;
+            var _loc_1:* = new ContextMenuItem("截图并转发到我的微博");
+            var _loc_2:* = new ContextMenuItem(this._version);
+            _loc_2.enabled = false;
+            var _loc_3:* = new ContextMenuItem("加入我的自选股");
+            var _loc_4:* = new ContextMenuItem("进入" + this._name + "吧", false, true);
+            _loc_3.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, this.navigateToSina);
+            _loc_1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, this.navigateToWeibo);
+            _loc_4.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, this.gotoBar);
+            this._menu.hideBuiltInItems();
+            this._menu.builtInItems.print = true;
+            this._menu.customItems.push(_loc_2);
+            if (this._cfg.paramArr[0] == true)
+            {
+                _loc_6 = new ContextMenuItem("查看" + this._name + "详细信息");
+                _loc_6.enabled = true;
+                _loc_6.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, this.navToSinaFin);
+                this._menu.customItems.push(_loc_6);
+            }
+            _loc_5 = this.checkHis();
+            if (_loc_5)
+            {
+                this._menu.customItems.push(_loc_5);
+            }
+            this._menu.customItems.push(_loc_1);
+            this._menu.customItems.push(_loc_3);
+            this._menu.customItems.push(_loc_4);
+            this._normalK = new ContextMenuItem(this._NORMAL_K, true, false);
+            this._foreK = new ContextMenuItem(this._FORE_K, false, false);
+            this._backK = new ContextMenuItem(this._BACK_K, false, false);
+            this._normalK.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, this._kViewFunc);
+            this._foreK.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, this._kViewFunc);
+            this._backK.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, this._kViewFunc);
+            this._menu.customItems.push(this._normalK);
+            this._menu.customItems.push(this._foreK);
+            this._menu.customItems.push(this._backK);
+            return;
+        }// end function
+
+        public function set name(param1:String) : void
+        {
+            this._name = param1;
+            return;
+        }// end function
+
+        public function get menu() : ContextMenu
+        {
+            return this._menu;
+        }// end function
+
+        public function set symbol(param1:String) : void
+        {
+            this._symbol = param1;
+            return;
+        }// end function
+
+        private function navigateToSina(event:ContextMenuEvent) : void
+        {
+            navigateToURL(new URLRequest(this._cfg.getStatUrl("http://vip.stock.finance.sina.com.cn/portfolio/qjia.php?symbol=" + this._symbol)), "_blank");
+            return;
+        }// end function
+
+        private function checkHis() : ContextMenuItem
+        {
+            var info:String;
+            var url:String;
+            var item:ContextMenuItem;
+            var date:* = new Date();
+            var y:* = date.fullYear;
+            var m:* = (date.month + 1);
+            var d:* = date.date;
+            if (m == 12 && d == 19)
+            {
+                info = y - 1990 + " 年前的今天 上交所开业";
+                url;
+            }
+            else if (m == 7 && d == 3)
+            {
+                info = y - 1991 + " 年前的今天 深交所开业";
+                url;
+            }
+            else if (m == 7 && d == 2)
+            {
+                info = y - 2010 + " 年前的今天 新浪财经行情Flash第一版诞生";
+                url;
+            }
+            else
+            {
+                return null;
+            }
+            if (info)
+            {
+                item = new ContextMenuItem(info);
+            }
+            else
+            {
+                return null;
+            }
+            if (item && url)
+            {
+                item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function (event:ContextMenuEvent) : void
+            {
+                navigateToURL(new URLRequest(_cfg.getStatUrl(url)));
+                return;
+            }// end function
+            );
+            }
+            return item;
+        }// end function
+
+        public static function getInstance(param1:String) : MyContextMenu
+        {
+            if (!_instance)
+            {
+                _instance = new MyContextMenu(param1);
+            }
+            return _instance;
+        }// end function
+
+    }
+}

@@ -1,0 +1,4 @@
+#Tue Jun 24 10:17:36 CST 2014
+eclipse.preferences.version=1
+com.adobe.flash.codecoverage.Excludes=,flashx.*.*,mx.*.*,spark.*.*,org.osmf.*.*,
+com.adobe.flash.codecoverage.Includes=,,

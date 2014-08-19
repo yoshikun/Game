@@ -1,0 +1,464 @@
+﻿package com.sina.finance.ui
+{
+    import com.sina.finance.data.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.net.*;
+    import flash.text.*;
+    import flash.utils.*;
+
+    public class SelectionMgr extends Sprite implements IUis
+    {
+        private var _subMenu:Sprite;
+        private var _removeSubTimeout:uint = 0;
+        private var _mainBtnLayer:Sprite;
+        private var _isttypes:Array;
+        private const _HIGHLIGHT_COLOR:uint = 7804;
+        public var id:uint = 5;
+        private var _cfg:Config;
+        private var _selectedTabShape:Shape;
+        private var _restoreMark:int;
+        public var isTType:Boolean = true;
+        private var _subBtnArr:Array;
+        private var _idArr:Array;
+        private var _is5T:Boolean = false;
+        private var _dataMgr:DataMgr;
+        private var _selectedTabIndex:uint;
+        private var _btnW:Number;
+        private var _isOverShapeOnSub:Boolean = false;
+        private const _BTNH:Number = 22;
+        private var _clickingShape:Shape;
+        private const _SELECTED_TAB_COLOR:uint = 16777215;
+        private const _OVER_SHAPE_COLOR:uint = 16777215;
+        private var _so:SharedObject;
+        private var _btnTf:TextFormat;
+
+        public function SelectionMgr(param1:DataMgr)
+        {
+            var dataMgr:* = param1;
+            this._cfg = Config.getInstance();
+            this._selectedTabShape = new Shape();
+            this._clickingShape = new Shape();
+            this._isttypes = [];
+            this._idArr = [];
+            this._restoreMark = this._cfg.reK;
+            this._mainBtnLayer = new Sprite();
+            this._subMenu = new Sprite();
+            this._subBtnArr = [];
+            this._btnTf = new TextFormat("arial", 12, this._HIGHLIGHT_COLOR, null, null, null, null, null, "center");
+            this._dataMgr = dataMgr;
+            this.setBtnW();
+            this.initMainMenu();
+            this.initShapes();
+            this.initSubMenu();
+            this.initListeners();
+            try
+            {
+                this._so = SharedObject.getLocal(this._cfg.LOCAL_STORAGE, this._cfg.LOCAL_PATH);
+            }
+            catch (err:Error)
+            {
+            }
+            return;
+        }// end function
+
+        public function get restoreMark() : int
+        {
+            return this._restoreMark;
+        }// end function
+
+        private function initSubMenu() : void
+        {
+            this._subMenu.y = this._BTNH - 1;
+            this._subMenu.buttonMode = true;
+            this._subMenu.addEventListener(MouseEvent.MOUSE_MOVE, this.msOnSub);
+            this._subMenu.addEventListener(MouseEvent.MOUSE_OUT, this.msOutSub);
+            this._subMenu.addEventListener(MouseEvent.MOUSE_UP, this.msUpSub);
+            this.addSubButton("不复权", "no");
+            this.addSubButton("前复权", "fore");
+            this.addSubButton("后复权", "back");
+            this.drawSubMenu();
+            return;
+        }// end function
+
+        private function initListeners() : void
+        {
+            addEventListener(MouseEvent.MOUSE_UP, this.onMsClick);
+            addEventListener(MouseEvent.MOUSE_MOVE, this.onMsMove);
+            addEventListener(MouseEvent.MOUSE_OUT, this.onMsOut);
+            return;
+        }// end function
+
+        private function initSelectedShape() : void
+        {
+            this._selectedTabShape.graphics.clear();
+            this._selectedTabShape.graphics.beginFill(this._SELECTED_TAB_COLOR);
+            this._selectedTabShape.graphics.drawRect(0, 0, this._btnW, this._BTNH);
+            this._selectedTabShape.graphics.endFill();
+            this._selectedTabShape.graphics.lineStyle(2, this._HIGHLIGHT_COLOR, 1, false, "normal", "none");
+            this._selectedTabShape.graphics.moveTo(0, -1);
+            this._selectedTabShape.graphics.lineTo(this._btnW, -1);
+            this._selectedTabShape.graphics.lineStyle(0, this._HIGHLIGHT_COLOR, 0.2);
+            this._selectedTabShape.graphics.lineTo(this._btnW, (this._BTNH - 1));
+            this._selectedTabShape.graphics.moveTo(0, -1);
+            this._selectedTabShape.graphics.lineTo(0, (this._BTNH - 1));
+            return;
+        }// end function
+
+        private function msUpSub(event:MouseEvent) : void
+        {
+            this._isOverShapeOnSub = false;
+            this._restoreMark = Math.floor(event.localY / this._BTNH);
+            if (this._restoreMark > 2)
+            {
+                this._restoreMark = 2;
+            }
+            this.saveReK();
+            return;
+        }// end function
+
+        private function initShapes() : void
+        {
+            this.initSelectedShape();
+            this.initOverShape();
+            addChildAt(this._selectedTabShape, 0);
+            addChildAt(this._clickingShape, 0);
+            return;
+        }// end function
+
+        private function onMsClick(event:MouseEvent) : void
+        {
+            var _loc_2:* = Math.floor(this.mouseX / this._btnW);
+            if (_loc_2 >= this._idArr.length)
+            {
+                return;
+            }
+            this._selectedTabIndex = _loc_2;
+            this._is5T = _loc_2 == 1;
+            var _loc_3:* = _loc_2 * this._btnW;
+            if (this._selectedTabShape.x != _loc_3)
+            {
+                this._selectedTabShape.x = _loc_3;
+            }
+            this.isTType = this._isttypes[_loc_2];
+            this.id = this._idArr[_loc_2];
+            dispatchEvent(new Event(Event.SELECT));
+            this.removeSub();
+            var _loc_4:* = this._is5T ? (2) : (this.id == 5 && this.isTType ? (0) : (this.id));
+            this._cfg.mainTabStatistic(_loc_4);
+            return;
+        }// end function
+
+        private function onMsOut(event:MouseEvent) : void
+        {
+            var evt:* = event;
+            try
+            {
+                this._clickingShape.parent.removeChild(this._clickingShape);
+            }
+            catch (err:Error)
+            {
+            }
+            clearTimeout(this._removeSubTimeout);
+            this._removeSubTimeout = setTimeout(this.removeSub, 50);
+            return;
+        }// end function
+
+        public function resetSelection(param1:uint = 0, param2:Boolean = false, param3:int = -1) : void
+        {
+            this.id = param1 == 0 || param1 == UrlHashDecoder.FAKE_T5DAY_ID ? (5) : (param1);
+            var _loc_4:uint = 0;
+            switch(param1)
+            {
+                case UrlHashDecoder.TIME_SHARE_ID:
+                {
+                    _loc_4 = 0;
+                    break;
+                }
+                case UrlHashDecoder.FAKE_T5DAY_ID:
+                {
+                    _loc_4 = 1;
+                    break;
+                }
+                case UrlHashDecoder.CLOSE_LINE_ID:
+                {
+                    _loc_4 = 2;
+                    break;
+                }
+                case UrlHashDecoder.DAY_K_ID:
+                {
+                    _loc_4 = 3;
+                    break;
+                }
+                case UrlHashDecoder.WEEK_K_ID:
+                {
+                    _loc_4 = 4;
+                    break;
+                }
+                case UrlHashDecoder.MONTH_K_ID:
+                {
+                    _loc_4 = 5;
+                    break;
+                }
+                case UrlHashDecoder.MIN_K_5_ID:
+                {
+                    _loc_4 = 6;
+                    break;
+                }
+                case UrlHashDecoder.MIN_K_15_ID:
+                {
+                    _loc_4 = 7;
+                    break;
+                }
+                case UrlHashDecoder.MIN_K_30_ID:
+                {
+                    _loc_4 = 8;
+                    break;
+                }
+                case UrlHashDecoder.MIN_K_60_ID:
+                {
+                    _loc_4 = 9;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            var _loc_5:* = _loc_4 * this._btnW;
+            this._clickingShape.x = _loc_4 * this._btnW;
+            this._selectedTabShape.x = _loc_5;
+            this.isTType = param1 < 5;
+            this._is5T = _loc_4 == 1;
+            this._restoreMark = param3;
+            if (param2)
+            {
+                dispatchEvent(new Event(Event.SELECT));
+            }
+            this.saveReK();
+            return;
+        }// end function
+
+        private function removeSub() : void
+        {
+            if (this._subMenu && this._subMenu.parent && this._subMenu.parent.contains(this._subMenu))
+            {
+                this._subMenu.parent.removeChild(this._subMenu);
+            }
+            return;
+        }// end function
+
+        private function newTxt(param1:String, param2:Boolean = false, param3:uint = 12) : TextField
+        {
+            var _loc_4:* = new TextField();
+            new TextField().width = this._btnW;
+            _loc_4.height = this._BTNH;
+            _loc_4.defaultTextFormat = this._btnTf;
+            _loc_4.text = param1;
+            _loc_4.mouseEnabled = false;
+            return _loc_4;
+        }// end function
+
+        public function resize() : void
+        {
+            var _loc_1:TextField = null;
+            this.setBtnW();
+            this.initOverShape();
+            this.initSelectedShape();
+            this._selectedTabShape.x = this._selectedTabIndex * this._btnW;
+            var _loc_2:* = this._mainBtnLayer.numChildren;
+            var _loc_3:uint = 0;
+            while (_loc_3 < _loc_2)
+            {
+                
+                if (this._mainBtnLayer.getChildAt(_loc_3) is TextField)
+                {
+                    _loc_1 = TextField(this._mainBtnLayer.getChildAt(_loc_3));
+                    _loc_1.width = this._btnW;
+                    _loc_1.x = _loc_3 * this._btnW;
+                }
+                _loc_3 = _loc_3 + 1;
+            }
+            this.drawSubMenu();
+            _loc_2 = this._subMenu.numChildren;
+            _loc_3 = 0;
+            while (_loc_3 < _loc_2)
+            {
+                
+                if (this._subMenu.getChildAt(_loc_3) is TextField)
+                {
+                    _loc_1 = TextField(this._subMenu.getChildAt(_loc_3));
+                    _loc_1.width = this._btnW;
+                }
+                _loc_3 = _loc_3 + 1;
+            }
+            return;
+        }// end function
+
+        private function saveReK() : void
+        {
+            if (this._restoreMark < 0)
+            {
+                return;
+            }
+            if (this._so)
+            {
+                this._so.data.reK = this._restoreMark;
+            }
+            this._cfg.reK = this._restoreMark;
+            return;
+        }// end function
+
+        private function addNewButton(param1:String, param2:Boolean, param3:uint, param4:Boolean = false) : void
+        {
+            var _loc_5:* = this._isttypes.length;
+            var _loc_6:* = this.newTxt(param1, param4);
+            this.newTxt(param1, param4).x = _loc_5 * this._btnW;
+            this._mainBtnLayer.addChild(_loc_6);
+            this._isttypes.push(param2);
+            this._idArr.push(param3);
+            return;
+        }// end function
+
+        private function msOutSub(event:MouseEvent) : void
+        {
+            this._isOverShapeOnSub = false;
+            this.removeSub();
+            return;
+        }// end function
+
+        private function drawSubMenu() : void
+        {
+            var _loc_1:* = this._subBtnArr.length;
+            this._subMenu.graphics.clear();
+            this._subMenu.graphics.lineStyle(0, 14476790);
+            this._subMenu.graphics.beginFill(this._cfg.BG_COLOR);
+            this._subMenu.graphics.drawRect(-1, 0, this._btnW + 2, this._BTNH * _loc_1 + 6);
+            this._subMenu.graphics.endFill();
+            var _loc_2:uint = 1;
+            while (_loc_2 < _loc_1)
+            {
+                
+                this._subMenu.graphics.moveTo(0, (this._BTNH + 2) * _loc_2);
+                this._subMenu.graphics.lineTo(this._btnW, (this._BTNH + 2) * _loc_2);
+                _loc_2 = _loc_2 + 1;
+            }
+            return;
+        }// end function
+
+        private function initOverShape() : void
+        {
+            this._clickingShape.graphics.clear();
+            this._clickingShape.graphics.beginFill(this._OVER_SHAPE_COLOR);
+            this._clickingShape.graphics.drawRect(0, -2, (this._btnW + 1), (this._BTNH + 1));
+            this._clickingShape.graphics.endFill();
+            return;
+        }// end function
+
+        private function msOnSub(event:MouseEvent) : void
+        {
+            this._isOverShapeOnSub = true;
+            clearTimeout(this._removeSubTimeout);
+            this._subMenu.addChildAt(this._clickingShape, 0);
+            this._clickingShape.x = 0;
+            var _loc_2:* = Math.floor(event.localY / this._BTNH);
+            if (_loc_2 >= this._subBtnArr.length)
+            {
+                _loc_2 = this._subBtnArr.length - 1;
+            }
+            var _loc_3:* = 3 + _loc_2 * (this._BTNH + 2);
+            if (Math.abs(this._clickingShape.y - _loc_3) > 1)
+            {
+                this._clickingShape.y = _loc_3;
+            }
+            return;
+        }// end function
+
+        private function onMsMove(event:MouseEvent) : void
+        {
+            var _loc_2:uint = 0;
+            var _loc_3:Number = NaN;
+            this._restoreMark = this._cfg.reK;
+            clearTimeout(this._removeSubTimeout);
+            if (mouseX > this._idArr.length * this._btnW)
+            {
+                return;
+            }
+            if (!this._isOverShapeOnSub)
+            {
+                addChildAt(this._clickingShape, 0);
+                _loc_2 = Math.floor(mouseX / this._btnW);
+                if (_loc_2 >= this._idArr.length)
+                {
+                    _loc_2 = this._idArr.length - 1;
+                }
+                _loc_3 = _loc_2 * this._btnW;
+                if (Math.abs(this._clickingShape.x - _loc_3) > 1)
+                {
+                    this._clickingShape.x = _loc_3;
+                }
+                this._clickingShape.y = 0;
+            }
+            if (this._cfg.stockType == "a" || this._cfg.stockType == "b")
+            {
+                if (mouseX <= this._btnW * 3 || mouseX > this._btnW * 6)
+                {
+                    this.removeSub();
+                }
+                else if (_loc_2 > 2 && _loc_2 < 6)
+                {
+                    this._subMenu.x = _loc_3;
+                    addChild(this._subMenu);
+                }
+            }
+            return;
+        }// end function
+
+        public function get is5T() : Boolean
+        {
+            return this._is5T;
+        }// end function
+
+        private function addSubButton(param1:String, param2:String) : void
+        {
+            var _loc_3:* = this._subBtnArr.length;
+            var _loc_4:* = this.newTxt(param1, false, 12);
+            this.newTxt(param1, false, 12).y = _loc_3 * this._BTNH + 1 + 2 * _loc_3;
+            this._subMenu.addChild(_loc_4);
+            this._subBtnArr.push(param2);
+            return;
+        }// end function
+
+        private function initMainMenu() : void
+        {
+            buttonMode = true;
+            addChild(this._mainBtnLayer);
+            this.addNewButton("分时", true, 5, true);
+            this.addNewButton("五日", true, 5);
+            this.addNewButton("一年", true, 3);
+            this.addNewButton("日K", false, 24, true);
+            this.addNewButton("周K", false, 168);
+            this.addNewButton("月K", false, 720);
+            this.addNewButton(" 5分", false, 5);
+            this.addNewButton("15分", false, 15);
+            this.addNewButton("30分", false, 30);
+            this.addNewButton("60分", false, 60);
+            return;
+        }// end function
+
+        private function setBtnW() : void
+        {
+            this._btnW = (this._cfg.viewW - 50) * 0.1;
+            if (this._btnW > 100)
+            {
+                this._btnW = 100;
+            }
+            else if (this._btnW < 40)
+            {
+                this._btnW = 40;
+            }
+            return;
+        }// end function
+
+    }
+}

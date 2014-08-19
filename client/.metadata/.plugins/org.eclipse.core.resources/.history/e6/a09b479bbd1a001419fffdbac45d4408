@@ -1,0 +1,89 @@
+﻿package com.ui
+{
+    import assets.*;
+    import com.evts.*;
+    import com.sina.finance.ui.*;
+    import flash.display.*;
+    import flash.events.*;
+
+    public class CfgPanel extends Sprite implements IUis
+    {
+        private var _container:Sprite;
+        private var _cfg:Config;
+        private var _btn:BtnKset;
+        private var _isShowing:Boolean = false;
+
+        public function CfgPanel()
+        {
+            this._cfg = Config.getInstance();
+            this._btn = new BtnKset();
+            this.resize();
+            this._btn.addEventListener(MouseEvent.CLICK, this.clkSet);
+            addChild(this._btn);
+            this.setContainer();
+            return;
+        }// end function
+
+        private function clkSet(event:MouseEvent) : void
+        {
+            DisplayMgr(this.parent).goFullScreen(null, true);
+            if (this.parent && this.parent.contains(this))
+            {
+                this.parent.addChild(this);
+            }
+            var _loc_2:* = new UsrPreference(this.hideMe);
+            _loc_2.x = (this._cfg.viewW - _loc_2.w) * 0.5;
+            _loc_2.y = (this._cfg.viewH - _loc_2.h) * 0.5;
+            this._container.addChild(_loc_2);
+            var _loc_3:Boolean = true;
+            this._isShowing = true;
+            this._container.visible = _loc_3;
+            this._cfg.sendStatistic("common.html?type=cfg");
+            return;
+        }// end function
+
+        private function hideMe() : void
+        {
+            this.clear();
+            var _loc_1:Boolean = false;
+            this._isShowing = false;
+            this._container.visible = _loc_1;
+            dispatchEvent(new SettingEvent(SettingEvent.NEW_SET));
+            return;
+        }// end function
+
+        private function clear() : void
+        {
+            while (this._container.numChildren)
+            {
+                
+                delete this[this._container.removeChildAt(0)];
+            }
+            return;
+        }// end function
+
+        public function resize() : void
+        {
+            this._btn.x = this._cfg.posX + this._cfg.KW + this._cfg.GAP_MAIN_BTN;
+            this._btn.y = this._cfg.posY + this._cfg.hMain + this._cfg.hTimeLb + this._cfg.iconBtnOffsetY + this._cfg.GAP_ICON_BTN * 2;
+            return;
+        }// end function
+
+        public function get isShowing() : Boolean
+        {
+            return this._isShowing;
+        }// end function
+
+        private function setContainer() : void
+        {
+            this._container = new Sprite();
+            this._container.visible = false;
+            this._container.graphics.beginFill(16777215, 0.7);
+            this._container.graphics.drawRect(0, 0, this._cfg.viewW, this._cfg.viewH);
+            this._container.graphics.endFill();
+            addChild(this._container);
+            return;
+        }// end function
+
+    }
+}

@@ -1,0 +1,104 @@
+﻿package hsuan
+{
+    import flash.display.*;
+    import flash.events.*;
+    import flash.text.*;
+
+    public class TabModule extends Sprite
+    {
+        private var _cfg:Config;
+        private var _fN:TextFormat;
+        private var _btnArr:Array;
+        public const BTN_H:uint = 37;
+        private const _BORDER_COLOR:uint = 13361904;
+        private const _TAB_BG_COLOR:uint = 16777215;
+        private const _BTN_W:uint = 84;
+
+        public function TabModule(param1:Array)
+        {
+            var _loc_3:TextField = null;
+            var _loc_4:Sprite = null;
+            var _loc_5:Shape = null;
+            this._cfg = Config.getInstance();
+            this._fN = new TextFormat("arial", 12, this._cfg.LB_COLOR, null, null, null, null, null, "center");
+            this._btnArr = [];
+            var _loc_2:uint = 30;
+            var _loc_6:uint = 0;
+            while (_loc_6 < param1.length)
+            {
+                
+                _loc_4 = new Sprite();
+                _loc_4.x = _loc_2;
+                _loc_4.mouseChildren = false;
+                _loc_4.addEventListener(MouseEvent.CLICK, param1[_loc_6].func);
+                _loc_4.addEventListener(MouseEvent.CLICK, this.clk);
+                addChild(_loc_4);
+                this._btnArr[this._btnArr.length] = _loc_4;
+                _loc_3 = new TextField();
+                _loc_3.name = "t";
+                _loc_3.defaultTextFormat = this._fN;
+                _loc_3.text = param1[_loc_6].txt;
+                _loc_3.width = this._BTN_W;
+                _loc_3.height = 28;
+                _loc_3.y = 7;
+                _loc_4.addChild(_loc_3);
+                _loc_5 = new Shape();
+                _loc_5.name = "bg";
+                if (_loc_6 == 0)
+                {
+                    this.drawSel(_loc_5.graphics, _loc_3);
+                }
+                else
+                {
+                    _loc_4.buttonMode = true;
+                }
+                _loc_4.addChildAt(_loc_5, 0);
+                _loc_2 = _loc_2 + this._BTN_W;
+                _loc_6 = _loc_6 + 1;
+            }
+            return;
+        }// end function
+
+        private function clk(event:MouseEvent) : void
+        {
+            var _loc_2:Sprite = null;
+            var _loc_3:Shape = null;
+            var _loc_4:TextField = null;
+            var _loc_5:uint = 0;
+            while (_loc_5 < this._btnArr.length)
+            {
+                
+                _loc_2 = this._btnArr[_loc_5] as Sprite;
+                _loc_2.buttonMode = true;
+                _loc_3 = _loc_2.getChildByName("bg") as Shape;
+                _loc_3.graphics.clear();
+                _loc_4 = _loc_2.getChildByName("t") as TextField;
+                _loc_4.setTextFormat(this._fN);
+                _loc_5 = _loc_5 + 1;
+            }
+            var _loc_6:* = event.currentTarget as Sprite;
+            (event.currentTarget as Sprite).buttonMode = false;
+            _loc_4 = _loc_6.getChildByName("t") as TextField;
+            _loc_3 = _loc_6.getChildByName("bg") as Shape;
+            this.drawSel(_loc_3.graphics, _loc_4);
+            return;
+        }// end function
+
+        private function drawSel(param1:Graphics, param2:TextField) : void
+        {
+            var _loc_3:* = this._BTN_W;
+            var _loc_4:* = this.BTN_H;
+            param1.beginFill(this._TAB_BG_COLOR);
+            param1.drawRect(0, 0, _loc_3, _loc_4);
+            param1.endFill();
+            param1.lineStyle(0, this._BORDER_COLOR);
+            param1.moveTo(0, 0);
+            param1.lineTo(0, _loc_4);
+            param1.moveTo(0, 0);
+            param1.lineTo(_loc_3, 0);
+            param1.lineTo(_loc_3, _loc_4);
+            return;
+        }// end function
+
+    }
+}

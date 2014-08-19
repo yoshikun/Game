@@ -1,0 +1,105 @@
+﻿package 
+{
+    import flash.display.*;
+    import flash.events.*;
+    import flash.text.*;
+    import flash.ui.*;
+    import flash.utils.*;
+
+    public class PreLoader extends MovieClip
+    {
+        private const COLOR:uint = 11184810;
+        private const HEIGHT:uint = 4;
+        private const WIDTH:uint = 200;
+		
+        private var _loadingBox:Shape;
+        private var _tf:TextField;
+        private var _loadingLine:Shape;
+
+        public function PreLoader()
+        {
+            _loadingBox = new Shape();
+            _loadingLine = new Shape();
+            _tf = new TextField();
+            if (stage)
+            {
+                init();
+            }
+            else
+            {
+                addEventListener(Event.ADDED_TO_STAGE, init);
+            }
+        }
+
+        private function checkFrame(event:Event) : void
+        {
+            if (loaderInfo.bytesLoaded >= loaderInfo.bytesTotal)
+            {
+                stop();
+                loaded();
+            }
+        }
+
+        private function initUi() : void
+        {
+            _loadingBox.graphics.lineStyle(0, COLOR);
+            _loadingBox.graphics.drawRect(0, 0, WIDTH, HEIGHT);
+            _loadingLine.graphics.lineStyle(0, COLOR);
+            var _loc_1:* = (stage.stageWidth - WIDTH) * 0.5;
+            _loadingLine.x = (stage.stageWidth - WIDTH) * 0.5;
+            _loadingBox.x = _loc_1;
+            _loadingBox.y = (stage.stageHeight - HEIGHT) * 0.5;
+            _loadingLine.y = stage.stageHeight * 0.5;
+            addChild(_loadingLine);
+            addChild(_loadingBox);
+            _tf.defaultTextFormat = new TextFormat("arial", 12, COLOR);
+            _tf.autoSize = "left";
+            _tf.selectable = false;
+            _tf.text = "加载中";
+            locateT();
+            _tf.y = _loadingLine.y + 7;
+            addChild(_tf);
+        }
+
+        private function loaded() : void
+        {
+            removeEventListener(Event.ENTER_FRAME, checkFrame);
+            loaderInfo.removeEventListener(ProgressEvent.PROGRESS, progress);
+            loaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, ioError);
+            startup();
+        }
+
+        private function progress(event:ProgressEvent) : void
+        {
+            _loadingLine.graphics.lineTo(event.bytesLoaded / event.bytesTotal * WIDTH, 0);
+            
+        }
+
+        private function ioError(event:IOErrorEvent) : void
+        {
+            _tf.text = "加载失败,请刷新重试";
+            locateT();
+        }
+
+        private function init(event:Event = null) : void
+        {
+            removeEventListener(Event.ADDED_TO_STAGE, init);
+            contextMenu = new ContextMenu();
+            contextMenu.hideBuiltInItems();
+            initUi();
+            addEventListener(Event.ENTER_FRAME, checkFrame);
+            loaderInfo.addEventListener(ProgressEvent.PROGRESS, progress);
+            loaderInfo.addEventListener(IOErrorEvent.IO_ERROR, ioError);
+        }
+
+        private function locateT() : void
+        {
+            _tf.x = (stage.stageWidth - _tf.width) * 0.5;
+        }
+
+        private function startup() : void
+        {
+            addChild(new MAIN_CLASS());
+        }
+    }
+}

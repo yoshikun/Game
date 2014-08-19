@@ -32,7 +32,7 @@ package com.heptafish.mapeditor.utils
             _fileStream.writeUTFBytes(_xml);
             Alert.show("地图文件写入成功！\n保存路径：" + _file.nativePath);
             return;
-        }// end function
+        }
 
 	}
 }

@@ -1,0 +1,103 @@
+﻿package stock.com.ui.elements.xpainting.painter
+{
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
+    import stock.com.ui.elements.xpainting.painter.square.*;
+
+    public class StraightLineXPainter extends XPainter
+    {
+        private var directP:Point;
+        private var startP:Point;
+        private var startSquare:SmallSquare;
+
+        public function StraightLineXPainter()
+        {
+            this.init();
+            return;
+        }// end function
+
+        override public function begingPaint(param1:Sprite, param2:Stage, param3:Rectangle, param4:Point) : void
+        {
+            super.begingPaint(param1, param2, param3, param4);
+            this.startP = param4;
+            this.startSquare.x = this.startP.x;
+            this.startSquare.y = this.startP.y;
+            this.drawline(this.startP, new Point(this.startP.x + this.directP.x, this.startP.y + this.directP.y));
+            this.beginListening();
+            return;
+        }// end function
+
+        private function onUp(event:MouseEvent) : void
+        {
+            this.endListening();
+            endPaint();
+            return;
+        }// end function
+
+        override protected function endListening() : void
+        {
+            sensor.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMove);
+            sensor.removeEventListener(MouseEvent.MOUSE_UP, this.onUp);
+            _stage.removeEventListener(Event.MOUSE_LEAVE, this.onLeave);
+            return;
+        }// end function
+
+        private function init() : void
+        {
+            this.startSquare = new SmallSquare(6, controllableColor);
+            super.addChild(this.startSquare);
+            squares = [this.startSquare];
+            this.directP = new Point(1, 0);
+            this.startSquare.addEventListener(MouseEvent.MOUSE_DOWN, this.onSquareDown, false, 0, true);
+            return;
+        }// end function
+
+        private function onLeave(event:Event) : void
+        {
+            this.endListening();
+            endPaint();
+            return;
+        }// end function
+
+        override protected function beginListening() : void
+        {
+            sensor.addEventListener(MouseEvent.MOUSE_MOVE, this.onMove);
+            sensor.addEventListener(MouseEvent.MOUSE_UP, this.onUp);
+            _stage.addEventListener(Event.MOUSE_LEAVE, this.onLeave);
+            return;
+        }// end function
+
+        private function onMove(event:MouseEvent) : void
+        {
+            var _loc_2:* = super.globalToLocal(new Point(event.stageX, event.stageY));
+            this.drawline(this.startP, _loc_2);
+            return;
+        }// end function
+
+        private function drawline(param1:Point, param2:Point) : void
+        {
+            this.directP.x = param2.x - param1.x;
+            this.directP.y = param2.y - param1.y;
+            clearPaint();
+            drawStraightLine(param1, this.directP, rect);
+            return;
+        }// end function
+
+        override public function destroy() : void
+        {
+            this.startSquare.removeEventListener(MouseEvent.MOUSE_DOWN, this.onSquareDown);
+            this.startSquare = null;
+            super.destroy();
+            return;
+        }// end function
+
+        private function onSquareDown(event:MouseEvent) : void
+        {
+            hideSmallSquare();
+            this.beginListening();
+            return;
+        }// end function
+
+    }
+}

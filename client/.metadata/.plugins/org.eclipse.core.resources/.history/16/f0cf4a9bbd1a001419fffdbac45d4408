@@ -1,0 +1,265 @@
+﻿package com.ui
+{
+    import com.sina.finance.data.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.text.*;
+
+    public class DropdownMenu extends Sprite
+    {
+        private var _menuArr:Array;
+        private var _callBack:Function;
+        private var _menuH:int = 90;
+        private const _BTN_H:uint = 20;
+        private var _menuW:int = 90;
+        private var _selectedT:TextField;
+        private var _menuContainer:Sprite;
+        private var _cfg:Config;
+        private var _lbFormet:TextFormat;
+        private var _selectedItem:Sprite;
+        private var _overShape:Shape;
+        private var _defaultId:int = 0;
+
+        public function DropdownMenu(param1:Array, param2:Function)
+        {
+            this._cfg = Config.getInstance();
+            this._selectedItem = new Sprite();
+            this._menuContainer = new Sprite();
+            this._lbFormet = new TextFormat("arial", 12, this._cfg.LB_COLOR);
+            this._menuArr = param1;
+            this._callBack = param2;
+            if (stage)
+            {
+                this.init(null);
+            }
+            else
+            {
+                addEventListener(Event.ADDED_TO_STAGE, this.init);
+            }
+            return;
+        }// end function
+
+        private function clkMainMenu(event:MouseEvent) : void
+        {
+            var _loc_2:* = Math.floor(event.localY / this._BTN_H);
+            if (_loc_2 >= this._menuArr.length)
+            {
+                _loc_2 = this._menuArr.length - 1;
+            }
+            _loc_2 = this.translateIndex(_loc_2);
+            this.selecteDefault(_loc_2);
+            this.clkSelectedLb(null);
+            this._callBack(_loc_2);
+            return;
+        }// end function
+
+        private function clkSelectedLb(event:MouseEvent) : void
+        {
+            stage.removeEventListener(MouseEvent.CLICK, this.anyClk);
+            this._menuContainer.visible = !this._menuContainer.visible;
+            if (this._menuContainer.visible)
+            {
+                stage.addEventListener(MouseEvent.CLICK, this.anyClk);
+                addChild(this._menuContainer);
+            }
+            return;
+        }// end function
+
+        private function moveOnMenu(event:MouseEvent) : void
+        {
+            var _loc_2:* = Math.floor(event.localY / this._BTN_H);
+            if (_loc_2 >= this._menuArr.length)
+            {
+                _loc_2 = this._menuArr.length - 1;
+            }
+            this._overShape.y = _loc_2 * this._BTN_H;
+            return;
+        }// end function
+
+        private function init(event:Event) : void
+        {
+            var _loc_2:TextField = null;
+            removeEventListener(Event.ADDED_TO_STAGE, this.init);
+            this.initSelectedLabel();
+            this.initMenuContainer();
+            var _loc_3:* = this._menuArr.length;
+            var _loc_4:Number = 0;
+            var _loc_5:int = 0;
+            while (_loc_5 < _loc_3)
+            {
+                
+                if (!this._selectedT && this._menuArr[_loc_5].id == this._defaultId)
+                {
+                    this._selectedT = this.newTxtfield(this._menuArr[_loc_5].label);
+                    this._selectedItem.addChild(this._selectedT);
+                }
+                _loc_2 = this.newTxtfield(this._menuArr[_loc_5].label);
+                _loc_2.y = _loc_4;
+                _loc_4 = _loc_4 + this._BTN_H;
+                this._menuContainer.addChild(_loc_2);
+                if (_loc_2.width > this._menuW)
+                {
+                    this._menuW = _loc_2.width;
+                }
+                _loc_5++;
+            }
+            this._menuH = _loc_4;
+            this.refreshMenuContainerBg();
+            this.initOverShape();
+            return;
+        }// end function
+
+        private function anyClk(event:MouseEvent) : void
+        {
+            if (this._menuContainer.visible && !this._menuContainer.hitTestPoint(event.stageX, event.stageY) && !this._selectedItem.hitTestPoint(event.stageX, event.stageY))
+            {
+                this.clkSelectedLb(null);
+            }
+            return;
+        }// end function
+
+        public function selecteDefault(param1:int) : void
+        {
+            this._defaultId = param1;
+            var _loc_2:* = this._menuArr.length;
+            var _loc_3:int = 0;
+            while (_loc_3 < _loc_2)
+            {
+                
+                if (this._menuArr[_loc_3].id == param1)
+                {
+                    if (!this._selectedT)
+                    {
+                        this._selectedT = this.newTxtfield(this._menuArr[_loc_3].label);
+                        this._selectedItem.addChild(this._selectedT);
+                    }
+                    else
+                    {
+                        this._selectedT.text = this._menuArr[_loc_3].label;
+                    }
+                    break;
+                }
+                _loc_3++;
+            }
+            this.refreshSelectedBox();
+            return;
+        }// end function
+
+        private function initOverShape() : void
+        {
+            this._overShape = new Shape();
+            this._overShape.graphics.beginFill(this._cfg.BG_COLOR);
+            this._overShape.graphics.drawRect(0, 0, this._menuW, this._BTN_H);
+            this._overShape.graphics.endFill();
+            this._menuContainer.addChildAt(this._overShape, 0);
+            return;
+        }// end function
+
+        private function newTxtfield(param1:String) : TextField
+        {
+            var _loc_2:* = new TextField();
+            _loc_2.defaultTextFormat = this._lbFormet;
+            _loc_2.text = param1;
+            _loc_2.autoSize = "left";
+            _loc_2.height = this._BTN_H;
+            _loc_2.mouseEnabled = false;
+            return _loc_2;
+        }// end function
+
+        private function refreshSelectedBox() : void
+        {
+            var _loc_1:* = this._menuW - this._BTN_H;
+            this._selectedItem.graphics.clear();
+            this._selectedItem.graphics.lineStyle(0, 12764353);
+            this._selectedItem.graphics.beginFill(16777215);
+            this._selectedItem.graphics.drawRect(0, 0, _loc_1, this._BTN_H);
+            this._selectedItem.graphics.drawRect(_loc_1, 0, this._BTN_H, this._BTN_H);
+            var _loc_2:int = 5;
+            var _loc_3:int = 8;
+            var _loc_4:uint = 11;
+            this._selectedItem.graphics.beginFill(3315685);
+            this._selectedItem.graphics.moveTo(_loc_1 + _loc_2, _loc_3);
+            this._selectedItem.graphics.lineTo(_loc_1 + _loc_2 + _loc_4, _loc_3);
+            this._selectedItem.graphics.lineTo(_loc_1 + _loc_2 + _loc_4 * 0.5, _loc_3 + _loc_4 - 4);
+            this._selectedItem.graphics.lineTo(_loc_1 + _loc_2, _loc_3);
+            this._selectedItem.graphics.endFill();
+            return;
+        }// end function
+
+        private function initSelectedLabel() : void
+        {
+            this._selectedItem.addEventListener(MouseEvent.CLICK, this.clkSelectedLb);
+            this._selectedItem.buttonMode = true;
+            addChild(this._selectedItem);
+            return;
+        }// end function
+
+        private function translateIndex(param1:int) : int
+        {
+            switch(param1)
+            {
+                default:
+                {
+                    return 0;
+                }
+                case 2:
+                {
+                    return UrlHashDecoder.FAKE_T5DAY_ID;
+                }
+                case 3:
+                {
+                    return UrlHashDecoder.CLOSE_LINE_ID;
+                }
+                case 4:
+                {
+                    return UrlHashDecoder.DAY_K_ID;
+                }
+                case 5:
+                {
+                    return UrlHashDecoder.WEEK_K_ID;
+                }
+                case 6:
+                {
+                    return UrlHashDecoder.MONTH_K_ID;
+                }
+                case 7:
+                {
+                    return UrlHashDecoder.MIN_K_5_ID;
+                }
+                case 8:
+                {
+                    return UrlHashDecoder.MIN_K_15_ID;
+                }
+                case 9:
+                {
+                    return UrlHashDecoder.MIN_K_30_ID;
+                }
+                case :
+                {
+                    return UrlHashDecoder.MIN_K_60_ID;
+                    break;
+                }
+            }
+        }// end function
+
+        private function refreshMenuContainerBg() : void
+        {
+            this._menuContainer.graphics.clear();
+            this._menuContainer.graphics.beginFill(16777215);
+            this._menuContainer.graphics.drawRect(0, 0, this._menuW, this._menuH);
+            this._menuContainer.graphics.endFill();
+            return;
+        }// end function
+
+        private function initMenuContainer() : void
+        {
+            this._menuContainer.visible = false;
+            this._menuContainer.buttonMode = true;
+            this._menuContainer.y = this._BTN_H;
+            this._menuContainer.addEventListener(MouseEvent.CLICK, this.clkMainMenu);
+            this._menuContainer.addEventListener(MouseEvent.MOUSE_MOVE, this.moveOnMenu);
+            return;
+        }// end function
+
+    }
+}

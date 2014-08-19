@@ -1,0 +1,205 @@
+﻿package com.sina.finance.ui
+{
+
+    public class IndicatorPSY extends Indicator
+    {
+        private const CPSY:uint = 255;
+        private const EPSY:uint = 12;
+        private var _min:Number;
+        private const EPSYMA:uint = 6;
+        private const CPSYMA:uint = 16711935;
+        private var _psymas:Array;
+        private var _psyLine:LineCurve;
+        private var _max:Number;
+        private var _psys:Array;
+        private var _psymaLine:LineCurve;
+
+        public function IndicatorPSY()
+        {
+            _color2 = this.CPSY;
+            _color3 = this.CPSYMA;
+            this._psyLine = new LineCurve(1, this.CPSY, 1, false);
+            this._psymaLine = new LineCurve(1, this.CPSYMA, 1, false);
+            addChild(this._psyLine);
+            addChild(this._psymaLine);
+            return;
+        }// end function
+
+        override public function draw(param1:uint = 24) : void
+        {
+            this._psyLine.clear(true);
+            this._psymaLine.clear(true);
+            var _loc_2:* = _objs.length;
+            var _loc_3:* = _cfg.KW / _loc_2;
+            if (_loc_2 < _cfg.NK)
+            {
+                _loc_3 = _cfg.KW / _cfg.NK;
+            }
+            var _loc_4:* = _loc_3 / 2;
+            var _loc_5:* = _cfg.hindicator * this._max / (this._max - this._min);
+            var _loc_6:uint = 0;
+            while (_loc_6 < _loc_2)
+            {
+                
+                if (_loc_6 == 0)
+                {
+                    this._psyLine.moveTo(_loc_4, _objs[_loc_6].psyy);
+                    this._psymaLine.moveTo(_loc_4, _objs[_loc_6].psymay);
+                }
+                else
+                {
+                    this._psyLine.lineTo(_loc_4, _objs[_loc_6].psyy);
+                    this._psymaLine.lineTo(_loc_4, _objs[_loc_6].psymay);
+                }
+                _loc_4 = _loc_4 + _loc_3;
+                _loc_6 = _loc_6 + 1;
+            }
+            return;
+        }// end function
+
+        override public function initDatasBySource(param1:Array) : void
+        {
+            destroyArray(this._psys);
+            destroyArray(this._psymas);
+            destroyArray(_objs);
+            this._psys = [];
+            this._psymas = [];
+            _objs = [];
+            var _loc_2:* = param1.length;
+            var _loc_3:Number = 0;
+            var _loc_4:Number = 0;
+            var _loc_5:uint = 0;
+            var _loc_6:uint = 0;
+            var _loc_7:* = param1[0];
+            if (isNaN(_loc_7.prevclose) || _loc_7.prevclose < _loc_7.close)
+            {
+                _loc_5 = 1;
+            }
+            else
+            {
+                _loc_5 = 0;
+            }
+            _loc_6 = _loc_5;
+            _loc_3 = _loc_5 / this.EPSY * 100;
+            this._psys.push(_loc_3);
+            this._psymas.push(_loc_3);
+            _loc_4 = _loc_3;
+            var _loc_8:Array = [_loc_5];
+            if (_loc_2 == 1)
+            {
+                return;
+            }
+            var _loc_9:uint = 1;
+            while (_loc_9 < _loc_2)
+            {
+                
+                if (param1[_loc_9].close > param1[(_loc_9 - 1)].close)
+                {
+                    _loc_5 = 1;
+                }
+                else
+                {
+                    _loc_5 = 0;
+                }
+                _loc_8.push(_loc_5);
+                _loc_6 = _loc_6 + _loc_5;
+                if (_loc_9 >= this.EPSY)
+                {
+                    _loc_6 = _loc_6 - _loc_8[_loc_9 - this.EPSY];
+                }
+                _loc_3 = _loc_6 / this.EPSY * 100;
+                this._psys.push(_loc_3);
+                _loc_4 = _loc_4 + _loc_3;
+                if (_loc_9 >= this.EPSYMA)
+                {
+                    _loc_4 = _loc_4 - this._psys[_loc_9 - this.EPSYMA];
+                    this._psymas.push(_loc_4 / this.EPSYMA);
+                }
+                else
+                {
+                    this._psymas.push(_loc_4 / (_loc_9 + 1));
+                }
+                _loc_9 = _loc_9 + 1;
+            }
+            return;
+        }// end function
+
+        override public function setDefaultText() : void
+        {
+            var _loc_1:* = _objs.length - 1;
+            setTitleText("", "PSY: " + Number(_objs[_loc_1].psy).toFixed(2), "PSYMA6: " + Number(_objs[_loc_1].psyma).toFixed(2));
+            return;
+        }// end function
+
+        override public function calcObjs(param1:uint, param2:uint) : void
+        {
+            var _loc_4:Number = NaN;
+            var _loc_5:Number = NaN;
+            var _loc_9:Object = null;
+            var _loc_3:* = param2 - param1;
+            while (_objs.length > _loc_3)
+            {
+                
+                _objs.pop();
+            }
+            while (_objs.length < _loc_3)
+            {
+                
+                _objs.push({});
+            }
+            this._max = 1;
+            this._min = 100;
+            var _loc_6:* = param1;
+            while (_loc_6 < param2)
+            {
+                
+                _loc_9 = _objs[_loc_6 - param1];
+                _loc_9.psy = this._psys[_loc_6];
+                _loc_9.psyma = this._psymas[_loc_6];
+                _loc_4 = Math.min(_loc_9.psy, _loc_9.psyma);
+                _loc_5 = Math.max(_loc_9.psy, _loc_9.psyma);
+                if (this._min > _loc_4)
+                {
+                    this._min = _loc_4;
+                }
+                if (this._max < _loc_5)
+                {
+                    this._max = _loc_5;
+                }
+                _loc_6 = _loc_6 + 1;
+            }
+            var _loc_7:* = this._max - this._min;
+            var _loc_8:* = _cfg.hindicator - 10;
+            _loc_6 = 0;
+            while (_loc_6 < _loc_3)
+            {
+                
+                _objs[_loc_6].psyy = _loc_8 * (this._max - _objs[_loc_6].psy) / _loc_7;
+                _objs[_loc_6].psymay = _loc_8 * (this._max - _objs[_loc_6].psyma) / _loc_7;
+                _loc_6 = _loc_6 + 1;
+            }
+            setLeftText(this._min, this._max, 3, 2);
+            return;
+        }// end function
+
+        override public function interactiveEnd() : void
+        {
+            this._psyLine.interactiveEnd();
+            this._psymaLine.interactiveEnd();
+            return;
+        }// end function
+
+        override public function interactiveTo(param1:uint) : void
+        {
+            this._psyLine.interactiveTo(param1);
+            this._psymaLine.interactiveTo(param1);
+            if (param1 >= _objs.length)
+            {
+                param1 = _objs.length - 1;
+            }
+            setTitleText("", "PSY: " + Number(_objs[param1].psy).toFixed(2), "PSYMA6: " + Number(_objs[param1].psyma).toFixed(2));
+            return;
+        }// end function
+
+    }
+}

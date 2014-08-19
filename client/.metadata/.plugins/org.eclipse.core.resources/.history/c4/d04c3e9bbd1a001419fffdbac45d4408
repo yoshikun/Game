@@ -1,0 +1,182 @@
+﻿package com.sina.finance.ui
+{
+
+    public class IndicatorLB extends Indicator
+    {
+        private const CLB:uint = 31944;
+        private var _max:Number;
+        private var _lbLine:LineCurve;
+        private var _min:Number;
+        private var _realLen:uint = 0;
+        private var _lbs:Array;
+
+        public function IndicatorLB()
+        {
+            _color2 = this.CLB;
+            this._lbLine = new LineCurve(1, this.CLB, 1, false);
+            addChild(this._lbLine);
+            return;
+        }// end function
+
+        override public function draw(param1:uint = 24) : void
+        {
+            this._lbLine.clear(true);
+            var _loc_2:* = _objs.length;
+            var _loc_3:* = _cfg.TW / _loc_2;
+            if (_loc_2 < _cfg.NK)
+            {
+                _loc_3 = _cfg.TW / _cfg.NK;
+            }
+            var _loc_4:* = _loc_3 * 0.5;
+            this._lbLine.moveTo(_loc_4, _objs[0].lby);
+            var _loc_5:uint = 1;
+            while (_loc_5 <= this._realLen)
+            {
+                
+                _loc_4 = _loc_4 + _loc_3;
+                if (_loc_5 % 242 == 0)
+                {
+                    this._lbLine.moveTo(_loc_4, _objs[_loc_5].lby);
+                }
+                else
+                {
+                    this._lbLine.lineTo(_loc_4, _objs[_loc_5].lby);
+                }
+                _loc_5 = _loc_5 + 1;
+            }
+            return;
+        }// end function
+
+        override public function interactiveEnd() : void
+        {
+            this._lbLine.interactiveEnd();
+            return;
+        }// end function
+
+        override public function initDatasBySource(param1:Array) : void
+        {
+            var _loc_3:Number = NaN;
+            var _loc_4:Number = NaN;
+            var _loc_7:uint = 0;
+            destroyArray(this._lbs);
+            destroyArray(_objs);
+            this._lbs = [];
+            _objs = [];
+            var _loc_2:Number = 0;
+            var _loc_5:* = param1.length;
+            var _loc_6:uint = 0;
+            while (_loc_6 < _loc_5)
+            {
+                
+                _loc_4 = 0;
+                if (!isNaN(param1[_loc_6][0].lastfive) && param1[_loc_6][0].lastfive > 0)
+                {
+                    _loc_4 = param1[_loc_6][0].lastfive;
+                }
+                _loc_3 = 0;
+                _loc_7 = 0;
+                while (_loc_7 < 242)
+                {
+                    
+                    _loc_3 = _loc_3 + param1[_loc_6][_loc_7].volume;
+                    _loc_2 = _loc_4 <= 0 ? (0) : (_loc_3 / _loc_4 / (_loc_7 + 1));
+                    if (_loc_2 < 0)
+                    {
+                        _loc_2 = 0;
+                    }
+                    this._lbs.push(_loc_2);
+                    _loc_7 = _loc_7 + 1;
+                }
+                _loc_6 = _loc_6 + 1;
+            }
+            return;
+        }// end function
+
+        override public function setDefaultText() : void
+        {
+            var _loc_1:* = this._realLen;
+            if (_objs && _objs.length > 0)
+            {
+                setTitleText("", "LB: " + Number(_objs[_loc_1].lb).toFixed(3), "");
+            }
+            return;
+        }// end function
+
+        public function set realLen(param1:uint) : void
+        {
+            this._realLen = param1;
+            return;
+        }// end function
+
+        override public function calcObjs(param1:uint, param2:uint) : void
+        {
+            var _loc_3:* = (param2 - param1) * 242;
+            while (_objs.length > _loc_3)
+            {
+                
+                _objs.pop();
+            }
+            while (_objs.length < _loc_3)
+            {
+                
+                _objs.push({});
+            }
+            this._max = 0.1;
+            this._min = 0;
+            var _loc_4:* = param1 * 242;
+            var _loc_5:* = param1 * 242;
+            while (_loc_5 < param2 * 242)
+            {
+                
+                _objs[_loc_5 - _loc_4].lb = this._lbs[_loc_5];
+                if (this._min > this._lbs[_loc_5])
+                {
+                    this._min = this._lbs[_loc_5];
+                }
+                if (this._max < this._lbs[_loc_5])
+                {
+                    this._max = this._lbs[_loc_5];
+                }
+                _loc_5 = _loc_5 + 1;
+            }
+            var _loc_6:* = this._max - this._min;
+            var _loc_7:* = _cfg.hindicator - 10;
+            _loc_5 = 0;
+            while (_loc_5 < _loc_3)
+            {
+                
+                if (_loc_6 == 0 || _objs[_loc_5].lb <= 0.001)
+                {
+                    _objs[_loc_5].lby = _loc_7;
+                }
+                else
+                {
+                    _objs[_loc_5].lby = _loc_7 * (this._max - _objs[_loc_5].lb) / _loc_6;
+                }
+                _loc_5 = _loc_5 + 1;
+            }
+            setLeftText(this._min, this._max, 3, 3);
+            return;
+        }// end function
+
+        override public function interactiveTo(param1:uint) : void
+        {
+            this._lbLine.interactiveTo(param1);
+            if (_objs == null || _objs.length == 0)
+            {
+                return;
+            }
+            if (param1 >= _objs.length)
+            {
+                param1 = _objs.length - 1;
+            }
+            if (param1 > this._realLen)
+            {
+                param1 = this._realLen;
+            }
+            setTitleText("", "LB: " + Number(_objs[param1].lb).toFixed(3), "");
+            return;
+        }// end function
+
+    }
+}

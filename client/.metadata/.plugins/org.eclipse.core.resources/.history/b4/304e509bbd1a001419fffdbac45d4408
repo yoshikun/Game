@@ -1,0 +1,197 @@
+﻿package com.ui
+{
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
+    import flash.text.*;
+    import hsuan.*;
+
+    public class SetMAUi extends SetUiBase
+    {
+        private var _closeApi:Function;
+        private const _BIG_BTN_H:uint = 30;
+        private const _MAX_MA_DAYS:uint = 300;
+        private var _maColorArr:Array;
+        private const _BIG_BTN_W:uint = 93;
+        private var _maDayArr:Array;
+
+        public function SetMAUi()
+        {
+            this._maDayArr = [];
+            this._maColorArr = [];
+            _tip = newTxtField("提示：将天数设为0或留空可隐藏该MA线");
+            _tip.y = -30;
+            _tip.x = 37;
+            addChild(_tip);
+            _panel.y = 10;
+            _panel.x = 30;
+            var _loc_1:* = _cfg.maDayArr.length;
+            var _loc_2:uint = 0;
+            while (_loc_2 < _loc_1)
+            {
+                
+                this.addMASettingPanel(_cfg.maDayArr[_loc_2], _cfg.maColorArr[_loc_2]);
+                _loc_2 = _loc_2 + 1;
+            }
+            this.addBtns();
+            return;
+        }// end function
+
+        public function set closeApi(param1:Function) : void
+        {
+            this._closeApi = param1;
+            return;
+        }// end function
+
+        private function checkNum(param1:String) : uint
+        {
+            if (isNaN(Number(param1)))
+            {
+                return 5;
+            }
+            var _loc_2:* = uint(param1);
+            if (_loc_2 > this._MAX_MA_DAYS)
+            {
+                _loc_2 = this._MAX_MA_DAYS;
+            }
+            return _loc_2;
+        }// end function
+
+        private function addMASettingPanel(param1:uint, param2:uint) : void
+        {
+            var _loc_3:uint = 0;
+            var _loc_4:* = this._maDayArr.length * 33;
+            var _loc_5:* = newTxtField("第" + (this._maDayArr.length + 1) + "条");
+            newTxtField("第" + (this._maDayArr.length + 1) + "条").y = _loc_4;
+            _panel.addChild(_loc_5);
+            _loc_3 = _loc_3 + _loc_5.width;
+            _loc_5 = newTxtField("", 0, true, 30);
+            _loc_5.tabIndex = 0;
+            _loc_5.x = _loc_3;
+            _loc_5.y = _loc_4;
+            _loc_5.text = String(param1);
+            _panel.addChild(_loc_5);
+            this._maDayArr.push(_loc_5);
+            _loc_3 = _loc_3 + _loc_5.width;
+            _loc_5 = newTxtField("日移动平均线");
+            _loc_5.x = _loc_3;
+            _loc_5.y = _loc_4;
+            _panel.addChild(_loc_5);
+            _loc_3 = _loc_3 + (_loc_5.width + 27);
+            _loc_5 = newTxtField("设置颜色");
+            _loc_5.x = _loc_3;
+            _loc_5.y = _loc_4;
+            _panel.addChild(_loc_5);
+            _loc_3 = _loc_3 + (_loc_5.width + 3);
+            var _loc_6:* = new ColorPalette(param2);
+            new ColorPalette(param2).x = _loc_3;
+            _loc_6.y = _loc_4 + 2;
+            _loc_6.addEventListener(MouseEvent.CLICK, this.clkCp);
+            this._maColorArr.push(_loc_6);
+            _panel.addChild(_loc_6);
+            return;
+        }// end function
+
+        private function clkReset(event:MouseEvent) : void
+        {
+            var _loc_2:uint = 0;
+            while (_loc_2 < this._maDayArr.length)
+            {
+                
+                TextField(this._maDayArr[_loc_2]).text = _cfg.DEFAULT_MADAYS_ARR[_loc_2];
+                _loc_2 = _loc_2 + 1;
+            }
+            _loc_2 = 0;
+            while (_loc_2 < this._maColorArr.length)
+            {
+                
+                ColorPalette(this._maColorArr[_loc_2]).setColorPrev(_cfg.DEFAULT_MACOLOR_ARR[_loc_2]);
+                _loc_2 = _loc_2 + 1;
+            }
+            this.clkOk();
+            return;
+        }// end function
+
+        private function clkCp(event:MouseEvent) : void
+        {
+            var _loc_2:ColorPalette = null;
+            for each (_loc_2 in this._maColorArr)
+            {
+                
+                if (event.currentTarget != _loc_2)
+                {
+                    _loc_2.closeCp();
+                }
+            }
+            return;
+        }// end function
+
+        override protected function toSave() : void
+        {
+            var _loc_1:uint = 0;
+            var _loc_2:uint = 0;
+            var _loc_6:TextField = null;
+            var _loc_3:Array = [];
+            var _loc_4:Array = [];
+            var _loc_5:Array = [];
+            var _loc_7:uint = 0;
+            while (_loc_7 < this._maDayArr.length)
+            {
+                
+                _loc_6 = TextField(this._maDayArr[_loc_7]);
+                _loc_1 = this.checkNum(_loc_6.text);
+                _loc_6.text = String(_loc_1);
+                _loc_2 = ColorPalette(this._maColorArr[_loc_7]).seledColor;
+                _loc_3.push([_loc_1, _loc_2]);
+                _cfg.maDayArr[_loc_7] = _loc_1;
+                _cfg.maColorArr[_loc_7] = _loc_2;
+                _loc_7 = _loc_7 + 1;
+            }
+            if (_so)
+            {
+                _so.data.maArr2012 = _loc_3;
+            }
+            return;
+        }// end function
+
+        private function newBtn(param1:String) : Sprite
+        {
+            var _loc_2:* = new Sprite();
+            _loc_2.buttonMode = true;
+            var _loc_3:* = new Matrix();
+            _loc_3.createGradientBox(this._BIG_BTN_W, this._BIG_BTN_H, Math.PI * 0.5);
+            _loc_2.graphics.lineStyle(0, 10012142);
+            _loc_2.graphics.beginGradientFill("linear", [15528703, 13492983], [1, 1], [0, 255], _loc_3);
+            _loc_2.graphics.drawRoundRect(0, 0, this._BIG_BTN_W, this._BIG_BTN_H, 3);
+            _loc_2.graphics.endFill();
+            var _loc_4:* = newTxtField(param1, _cfg.LB_COLOR, false, this._BIG_BTN_W);
+            newTxtField(param1, _cfg.LB_COLOR, false, this._BIG_BTN_W).y = 3;
+            _loc_2.addChild(_loc_4);
+            return _loc_2;
+        }// end function
+
+        private function clkOk(event:MouseEvent = null) : void
+        {
+            this.toSave();
+            showNotice(137);
+            return;
+        }// end function
+
+        private function addBtns() : void
+        {
+            var _loc_1:* = new Sprite();
+            _loc_1.x = 43;
+            _loc_1.y = 170;
+            addChild(_loc_1);
+            var _loc_2:* = this.newBtn("确认修改");
+            _loc_2.addEventListener(MouseEvent.CLICK, this.clkOk);
+            var _loc_3:* = this.newBtn("恢复默认");
+            _loc_3.x = _loc_2.x + _loc_2.width + 25;
+            _loc_3.addEventListener(MouseEvent.CLICK, this.clkReset);
+            _loc_1.addChild(_loc_2);
+            _loc_1.addChild(_loc_3);
+            return;
+        }// end function
+
+    }
+}

@@ -1,0 +1,206 @@
+﻿package stock.com.ui.elements.xpainting
+{
+    import com.image.paintTool.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
+    import flash.net.*;
+    import flash.utils.*;
+    import stock.com.ui.elements.*;
+
+    public class ScreenShot extends Sprite
+    {
+        private var img:ByteArray = null;
+        private var file:FileReference;
+        private var cancelButton:CancelButton;
+        private var endP:Point;
+        private var rect:Rectangle;
+        private var startP:Point;
+        private var localSaveButton:LocalSaveButton;
+        private var _stage:Stage;
+        public static var fileName:String = "";
+
+        public function ScreenShot(param1:Stage)
+        {
+            this.startP = new Point();
+            this.endP = new Point();
+            this._stage = param1;
+            this.init();
+            return;
+        }// end function
+
+        private function addButton() : void
+        {
+            if (!this.cancelButton)
+            {
+                this.cancelButton = new CancelButton();
+            }
+            if (!this.localSaveButton)
+            {
+                this.localSaveButton = new LocalSaveButton();
+            }
+            this.cancelButton.x = this.rect.right - this.localSaveButton.width - 1;
+            this.cancelButton.y = this.rect.bottom - this.localSaveButton.height - this.localSaveButton.height - 5;
+            this.localSaveButton.x = this.rect.right - this.localSaveButton.width - 1;
+            this.localSaveButton.y = this.rect.bottom - this.localSaveButton.height;
+            super.addChild(this.cancelButton);
+            super.addChild(this.localSaveButton);
+            this.cancelButton.addEventListener(MouseEvent.CLICK, this.onCancel);
+            this.localSaveButton.addEventListener(MouseEvent.CLICK, this.onLocalSave);
+            return;
+        }// end function
+
+        private function drawSelectedRect(param1:Point, param2:Point) : void
+        {
+            super.graphics.clear();
+            this.drawBackGround();
+            var _loc_3:* = super.globalToLocal(new Point(0, 0));
+            var _loc_4:* = super.globalToLocal(new Point(this._stage.width, this._stage.height));
+            super.graphics.beginFill(0, 0.2);
+            super.graphics.drawRect(_loc_3.x, _loc_3.y, this._stage.width, param1.y - _loc_3.y);
+            super.graphics.drawRect(_loc_3.x, param2.y, this._stage.width, _loc_4.y - param2.y);
+            super.graphics.drawRect(_loc_3.x, param1.y, param1.x - _loc_3.x, param2.y - param1.y);
+            super.graphics.drawRect(param2.x, param1.y, _loc_4.x - param2.x, param2.y - param1.y);
+            super.graphics.endFill();
+            return;
+        }// end function
+
+        private function getImg(param1:Rectangle) : ByteArray
+        {
+            return ImgHandler.getPNGData(this._stage, param1);
+        }// end function
+
+        private function init() : void
+        {
+            this.drawSelectedRect(this.startP, this.endP);
+            this.beginListening();
+            return;
+        }// end function
+
+        private function beginListening() : void
+        {
+            super.addEventListener(MouseEvent.MOUSE_DOWN, this.onDown);
+            return;
+        }// end function
+
+        private function onMove(event:MouseEvent) : void
+        {
+            this.endP = super.globalToLocal(new Point(event.stageX, event.stageY));
+            this.drawSelectedRect(this.startP, this.endP);
+            event.stopPropagation();
+            return;
+        }// end function
+
+        private function onUp(event:MouseEvent) : void
+        {
+            this.endP = super.globalToLocal(new Point(event.stageX, event.stageY));
+            this.drawSelectedRect(this.startP, this.endP);
+            this.endListening();
+            this.rect = new Rectangle(this.startP.x, this.startP.y, this.endP.x - this.startP.x, this.endP.y - this.startP.y);
+            this.rect = Calculator.instance.calcRegularRectangle(this.rect);
+            if (this.rect.width == 0)
+            {
+                this.rect.width = 1;
+            }
+            if (this.rect.height == 0)
+            {
+                this.rect.height = 1;
+            }
+            this.img = this.getImg(this.rect);
+            this.addButton();
+            event.stopPropagation();
+            return;
+        }// end function
+
+        private function endListening() : void
+        {
+            super.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMove);
+            super.removeEventListener(MouseEvent.MOUSE_UP, this.onUp);
+            return;
+        }// end function
+
+        private function onDown(event:MouseEvent) : void
+        {
+            super.removeEventListener(MouseEvent.MOUSE_DOWN, this.onDown);
+            super.addEventListener(MouseEvent.MOUSE_MOVE, this.onMove);
+            super.addEventListener(MouseEvent.MOUSE_UP, this.onUp);
+            this.startP = new Point(event.stageX, event.stageY);
+            event.stopPropagation();
+            return;
+        }// end function
+
+        private function onLocalSave(event:MouseEvent) : void
+        {
+            if (this.cancelButton)
+            {
+                this.cancelButton.removeEventListener(MouseEvent.CLICK, this.onCancel);
+            }
+            if (this.localSaveButton)
+            {
+                this.localSaveButton.removeEventListener(MouseEvent.CLICK, this.onLocalSave);
+            }
+            this.savePNG(this.img);
+            super.dispatchEvent(new Event(Event.COMPLETE));
+            return;
+        }// end function
+
+        private function savePNG(param1:ByteArray) : void
+        {
+            if (!this.file)
+            {
+                this.file = new FileReference();
+            }
+            this.file.save(param1, fileName + ".png");
+            return;
+        }// end function
+
+        private function drawBackGround() : void
+        {
+            var _loc_1:* = super.globalToLocal(new Point(0, 0));
+            super.graphics.beginFill(0, 0);
+            super.graphics.drawRect(_loc_1.x, _loc_1.y, this._stage.stageWidth, this._stage.height);
+            super.graphics.endFill();
+            return;
+        }// end function
+
+        private function onCancel(event:MouseEvent) : void
+        {
+            if (this.cancelButton)
+            {
+                this.cancelButton.removeEventListener(MouseEvent.CLICK, this.onCancel);
+            }
+            if (this.localSaveButton)
+            {
+                this.localSaveButton.removeEventListener(MouseEvent.CLICK, this.onLocalSave);
+            }
+            super.dispatchEvent(new Event(Event.COMPLETE));
+            return;
+        }// end function
+
+        public function destroy() : void
+        {
+            this._stage = null;
+            return;
+        }// end function
+
+        private function onImgComplete(event:Event) : void
+        {
+            var _loc_3:URLRequest = null;
+            var _loc_4:FileReference = null;
+            var _loc_5:Array = null;
+            URLLoader(event.currentTarget).removeEventListener(Event.COMPLETE, this.onImgComplete);
+            var _loc_2:* = event.target.data as String;
+            _loc_2 = "http://sinafinance-t.stor.sinaapp.com/t/20110624/101352/3e747534e059fd8c8698df45aa132b97/hk87001.png";
+            if (_loc_2 && _loc_2.length > 0)
+            {
+                _loc_3 = new URLRequest();
+                _loc_3.url = _loc_2;
+                _loc_4 = new FileReference();
+                _loc_5 = _loc_2.split("/");
+                _loc_4.download(_loc_3, _loc_5[(_loc_5.length - 1)]);
+            }
+            return;
+        }// end function
+
+    }
+}

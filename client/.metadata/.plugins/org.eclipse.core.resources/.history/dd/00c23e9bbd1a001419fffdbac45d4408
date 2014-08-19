@@ -1,0 +1,239 @@
+﻿package com.sina.finance.ui
+{
+
+    public class IndicatorMACDs extends Indicator
+    {
+        private var _dea:LineCurve;
+        private var _dif:LineCurve;
+        private const E1:uint = 12;
+        private const E2:uint = 26;
+        private var _deas:Array;
+        private var _min:Number;
+        private var _bar:LineRect;
+        private const CUP:uint = 12582912;
+        private const CDOWN:uint = 49152;
+        private var _max:Number;
+        private var _difs:Array;
+        private var _ema1:Number;
+        private var _ema2:Number;
+        private const EDEA:uint = 9;
+        private const CDEA:uint = 16711935;
+        private const CDIF:uint = 255;
+
+        public function IndicatorMACDs()
+        {
+            _color1 = this.CDIF;
+            _color2 = this.CDEA;
+            _color3 = this.CUP;
+            this._dif = new LineCurve(1, this.CDIF, 1, false);
+            this._dea = new LineCurve(1, this.CDEA, 1, false);
+            this._bar = new LineRect(1, 0, 1, true);
+            addChild(this._bar);
+            addChild(this._dea);
+            addChild(this._dif);
+            return;
+        }// end function
+
+        override public function initDatasBySource(param1:Array) : void
+        {
+            var _loc_3:Number = NaN;
+            var _loc_4:Number = NaN;
+            var _loc_5:Number = NaN;
+            destroyArray(_objs);
+            destroyArray(this._deas);
+            destroyArray(this._difs);
+            _objs = [];
+            this._deas = [];
+            this._difs = [];
+            var _loc_2:* = param1.length;
+            var _loc_6:* = param1[0];
+            var _loc_7:* = param1[0].close;
+            var _loc_8:* = _loc_6.close;
+            this._ema1 = _loc_7;
+            this._ema2 = _loc_8;
+            _loc_3 = _loc_7 - _loc_8;
+            _loc_4 = _loc_3 * 2 / (this.EDEA + 1);
+            this._difs.push(_loc_3);
+            this._deas.push(_loc_4);
+            if (_loc_2 == 1)
+            {
+                return;
+            }
+            var _loc_9:uint = 1;
+            while (_loc_9 < _loc_2)
+            {
+                
+                _loc_6 = param1[_loc_9];
+                _loc_7 = this.calcEMA(this._ema1, _loc_6.close, this.E1);
+                _loc_8 = this.calcEMA(this._ema2, _loc_6.close, this.E2);
+                this._ema1 = _loc_7;
+                this._ema2 = _loc_8;
+                _loc_3 = _loc_7 - _loc_8;
+                _loc_4 = this.calcEMA(this._deas[(_loc_9 - 1)], _loc_3, this.EDEA);
+                this._difs.push(_loc_3);
+                this._deas.push(_loc_4);
+                _loc_9 = _loc_9 + 1;
+            }
+            return;
+        }// end function
+
+        override public function interactiveTo(param1:uint) : void
+        {
+            this._dif.interactiveTo(param1);
+            this._dea.interactiveTo(param1);
+            this._bar.interactiveTo(param1);
+            if (param1 >= _objs.length)
+            {
+                param1 = _objs.length - 1;
+            }
+            var _loc_2:uint = 3;
+            if (this._max > 1000)
+            {
+                _loc_2 = 1;
+            }
+            else if (this._max > 10)
+            {
+                _loc_2 = 2;
+            }
+            setTitleText("DIF: " + Number(_objs[param1].dif).toFixed(_loc_2), "DEA: " + Number(_objs[param1].dea).toFixed(_loc_2), "MACD: " + Number(_objs[param1].bar).toFixed(_loc_2));
+            return;
+        }// end function
+
+        override public function interactiveEnd() : void
+        {
+            this._dif.interactiveEnd();
+            this._dea.interactiveEnd();
+            this._bar.interactiveEnd();
+            return;
+        }// end function
+
+        override public function setDefaultText() : void
+        {
+            var _loc_1:* = _objs.length - 1;
+            var _loc_2:uint = 3;
+            if (this._max > 1000)
+            {
+                _loc_2 = 1;
+            }
+            else if (this._max > 10)
+            {
+                _loc_2 = 2;
+            }
+            setTitleText("DIF: " + Number(_objs[_loc_1].dif).toFixed(_loc_2), "DEA: " + Number(_objs[_loc_1].dea).toFixed(_loc_2), "MACD: " + Number(_objs[_loc_1].bar).toFixed(_loc_2));
+            return;
+        }// end function
+
+        override public function draw(param1:uint = 24) : void
+        {
+            this._dif.clear(true);
+            this._dea.clear(true);
+            this._bar.clear(true);
+            var _loc_2:* = _objs.length;
+            var _loc_3:* = _cfg.KW / _loc_2;
+            if (_loc_2 < _cfg.NK)
+            {
+                _loc_3 = _cfg.KW / _cfg.NK;
+            }
+            var _loc_4:* = _loc_3 / 2;
+            var _loc_5:* = (_cfg.hindicator - 10) * this._max / (this._max - this._min);
+            var _loc_6:uint = 0;
+            while (_loc_6 < _loc_2)
+            {
+                
+                if (_loc_6 == 0)
+                {
+                    this._dif.moveTo(_loc_4, _objs[_loc_6].dify);
+                    this._dea.moveTo(_loc_4, _objs[_loc_6].deay);
+                }
+                else
+                {
+                    this._dif.lineTo(_loc_4, _objs[_loc_6].dify);
+                    this._dea.lineTo(_loc_4, _objs[_loc_6].deay);
+                }
+                if (_objs[_loc_6].bary <= _loc_5)
+                {
+                    this._bar.lineStyle(1, this.CUP, 1);
+                }
+                else
+                {
+                    this._bar.lineStyle(1, this.CDOWN, 1);
+                }
+                this._bar.moveTo(_loc_4, _loc_5);
+                this._bar.lineTo(_loc_4, _objs[_loc_6].bary);
+                _loc_4 = _loc_4 + _loc_3;
+                _loc_6 = _loc_6 + 1;
+            }
+            return;
+        }// end function
+
+        override public function calcObjs(param1:uint, param2:uint) : void
+        {
+            var _loc_4:Number = NaN;
+            var _loc_5:Number = NaN;
+            var _loc_10:Object = null;
+            var _loc_3:* = param2 - param1;
+            while (_objs.length > _loc_3)
+            {
+                
+                _objs.pop();
+            }
+            while (_objs.length < _loc_3)
+            {
+                
+                _objs.push({});
+            }
+            this._max = -10000000;
+            this._min = 10000000;
+            var _loc_6:* = param1;
+            while (_loc_6 < param2)
+            {
+                
+                _loc_10 = _objs[_loc_6 - param1];
+                _loc_10.dif = this._difs[_loc_6];
+                _loc_10.dea = this._deas[_loc_6];
+                _loc_10.bar = 2 * (this._difs[_loc_6] - this._deas[_loc_6]);
+                _loc_4 = Math.min(_loc_10.dif, _loc_10.dea, _loc_10.bar);
+                _loc_5 = Math.max(_loc_10.dif, _loc_10.dea, _loc_10.bar);
+                if (this._min > _loc_4)
+                {
+                    this._min = _loc_4;
+                }
+                if (this._max < _loc_5)
+                {
+                    this._max = _loc_5;
+                }
+                _loc_6 = _loc_6 + 1;
+            }
+            this._max = Math.max(Math.abs(this._max), Math.abs(this._min));
+            this._min = -this._max;
+            var _loc_7:* = this._max - this._min;
+            var _loc_8:* = _cfg.hindicator - 10;
+            _loc_6 = 0;
+            while (_loc_6 < _loc_3)
+            {
+                
+                _objs[_loc_6].dify = _loc_8 * (this._max - _objs[_loc_6].dif) / _loc_7;
+                _objs[_loc_6].deay = _loc_8 * (this._max - _objs[_loc_6].dea) / _loc_7;
+                _objs[_loc_6].bary = _loc_8 * (this._max - _objs[_loc_6].bar) / _loc_7;
+                _loc_6 = _loc_6 + 1;
+            }
+            var _loc_9:uint = 3;
+            if (this._max > 1000)
+            {
+                _loc_9 = 1;
+            }
+            else if (this._max > 10)
+            {
+                _loc_9 = 2;
+            }
+            setLeftText(this._min, this._max, 3, _loc_9);
+            return;
+        }// end function
+
+        private function calcEMA(param1:Number, param2:Number, param3:uint) : Number
+        {
+            return (param3 - 1) * param1 / (param3 + 1) + param2 * 2 / (param3 + 1);
+        }// end function
+
+    }
+}

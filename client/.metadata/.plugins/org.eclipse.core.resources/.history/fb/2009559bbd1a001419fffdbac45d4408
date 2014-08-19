@@ -1,0 +1,190 @@
+﻿package hsuan
+{
+    import flash.display.*;
+    import flash.events.*;
+    import flash.text.*;
+
+    public class ButtonBar extends Sprite
+    {
+        private var _selectedBtnColor:uint;
+        private var _btnArr:Array;
+        private var _selectedShpae:Shape;
+        private var _btnH:uint;
+        private var _fontSize:uint;
+        protected var _type:String;
+        private var _btnW:uint;
+        public var pressedBtn:String;
+        protected var _cfg:Config;
+        private var _mainBgColor:uint;
+        private var _msOverShape:Shape;
+        private var _msOverColor:uint;
+        private var _isEnabled:Boolean = false;
+
+        public function ButtonBar(param1:String = null, ... args)
+        {
+            this._cfg = Config.getInstance();
+            this._type = param1;
+            this._mainBgColor = args[0] || 13490924;
+            this._selectedBtnColor = args[1] || 10274302;
+            this._msOverColor = args[2] || 12047096;
+            this._fontSize = args[3] || 12;
+            this._btnH = args[4] || 20;
+            this._btnW = args[5] || 60;
+            this._btnArr = [];
+            this.addBtns();
+            this.initShape();
+            this.drawBg();
+            return;
+        }// end function
+
+        protected function onClk(event:MouseEvent) : void
+        {
+            if (!this._isEnabled)
+            {
+                return;
+            }
+            var _loc_2:* = Math.floor(this.mouseX / this._btnW);
+            this.moveShape(_loc_2);
+            this.pressedBtn = this._btnArr[_loc_2];
+            dispatchEvent(new Event(Event.SELECT));
+            return;
+        }// end function
+
+        private function newShape(param1:uint) : Shape
+        {
+            var _loc_2:* = new Shape();
+            _loc_2.graphics.beginFill(param1);
+            _loc_2.graphics.drawRect(1, 0, (this._btnW - 1), this._btnH);
+            _loc_2.graphics.endFill();
+            return _loc_2;
+        }// end function
+
+        protected function onOver(event:MouseEvent) : void
+        {
+            this.addChildAt(this._msOverShape, 0);
+            this.addChildAt(this._selectedShpae, 0);
+            var _loc_2:* = Math.floor(this.mouseX / this._btnW);
+            if (_loc_2 >= this._btnArr.length)
+            {
+                _loc_2 = this._btnArr.length - 1;
+            }
+            var _loc_3:* = _loc_2 * this._btnW;
+            if (Math.abs(this._msOverShape.x - _loc_3) > 1)
+            {
+                this._msOverShape.x = _loc_3;
+            }
+            this._msOverShape.y = 0;
+            return;
+        }// end function
+
+        protected function moveShape(param1:uint) : void
+        {
+            var _loc_2:* = param1 * this._btnW;
+            this._selectedShpae.x = _loc_2;
+            this._msOverShape.x = _loc_2;
+            return;
+        }// end function
+
+        protected function addBtns() : void
+        {
+            return;
+        }// end function
+
+        protected function addNewBtn(param1:String, param2:String, param3:Boolean = false) : void
+        {
+            var _loc_4:* = this._btnArr.length;
+            var _loc_5:* = this.newTxtField(param1, this._fontSize, this._cfg.LB_COLOR, param3);
+            this.newTxtField(param1, this._fontSize, this._cfg.LB_COLOR, param3).x = _loc_4 * this._btnW;
+            this.addChild(_loc_5);
+            this._btnArr[this._btnArr.length] = param2;
+            return;
+        }// end function
+
+        private function newTxtField(param1:String = null, param2:uint = 10, param3:uint = 0, param4:Boolean = false) : TextField
+        {
+            var _loc_5:* = new TextField();
+            new TextField().defaultTextFormat = new TextFormat("arial", param2, param3, param4, null, null, null, null, "center");
+            _loc_5.width = this._btnW;
+            _loc_5.height = this._btnH;
+            _loc_5.mouseEnabled = false;
+            if (param1)
+            {
+                _loc_5.text = param1;
+            }
+            return _loc_5;
+        }// end function
+
+        protected function reset() : void
+        {
+            while (this.numChildren)
+            {
+                
+                removeChildAt(0);
+                delete this[this._btnArr.shift()];
+            }
+            return;
+        }// end function
+
+        protected function drawBg() : void
+        {
+            var _loc_1:* = this._btnArr.length;
+            var _loc_2:* = this._btnW * _loc_1;
+            this.graphics.clear();
+            this.graphics.lineStyle(0, 16777215, 1, false, "none");
+            this.graphics.beginFill(this._mainBgColor);
+            this.graphics.drawRect(-1, -1, (_loc_2 + 1), this._btnH + 2);
+            this.graphics.endFill();
+            var _loc_3:uint = 1;
+            while (_loc_3 < _loc_1)
+            {
+                
+                this.graphics.moveTo(this._btnW * _loc_3, 0);
+                this.graphics.lineTo(this._btnW * _loc_3, this._btnH);
+                _loc_3 = _loc_3 + 1;
+            }
+            return;
+        }// end function
+
+        protected function onOut(event:MouseEvent) : void
+        {
+            if (contains(this._msOverShape))
+            {
+                removeChild(this._msOverShape);
+            }
+            return;
+        }// end function
+
+        protected function initShape() : void
+        {
+            this._selectedShpae = this.newShape(this._selectedBtnColor);
+            this._msOverShape = this.newShape(this._msOverColor);
+            this.addChildAt(this._selectedShpae, 0);
+            this.addChildAt(this._msOverShape, 0);
+            if (this._btnArr.length == 1)
+            {
+                return;
+            }
+            this.buttonMode = true;
+            if (!this.hasEventListener(MouseEvent.MOUSE_UP))
+            {
+                this.addEventListener(MouseEvent.MOUSE_UP, this.onClk);
+            }
+            if (!this.hasEventListener(MouseEvent.MOUSE_MOVE))
+            {
+                this.addEventListener(MouseEvent.MOUSE_MOVE, this.onOver);
+            }
+            if (!this.hasEventListener(MouseEvent.MOUSE_OUT))
+            {
+                this.addEventListener(MouseEvent.MOUSE_OUT, this.onOut);
+            }
+            return;
+        }// end function
+
+        public function functionable(param1:Boolean = false) : void
+        {
+            this._isEnabled = param1;
+            return;
+        }// end function
+
+    }
+}

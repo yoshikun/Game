@@ -1,0 +1,60 @@
+﻿package com.ui
+{
+    import flash.display.*;
+    import flash.events.*;
+    import flash.net.*;
+    import flash.text.*;
+
+    public class CharacterNotice extends Sprite
+    {
+        private var _cfg:Config;
+
+        public function CharacterNotice(param1:String)
+        {
+            var status:* = param1;
+            this._cfg = Config.getInstance();
+            var loader:* = new Loader();
+            loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function (event:IOErrorEvent) : void
+            {
+                event.target.removeEventListener(event.type, arguments.callee);
+                return;
+            }
+            );
+            loader.x = 50;
+            loader.y = this._cfg.viewH * 0.5 - 99;
+            loader.load(new URLRequest("http://www.sinaimg.cn/cj/hsuan/img/sinacharacter.png"));
+            addChild(loader);
+            var tip:* = new TextField();
+            tip.autoSize = "left";
+            tip.defaultTextFormat = new TextFormat("微软雅黑", 20, 7480064, true);
+            var tipStr:String;
+            switch(status)
+            {
+                case "0":
+                default:
+                {
+                    tipStr = tipStr + "没有记录";
+                    break;
+                }
+                case "3":
+                {
+                    tipStr = tipStr + "现在还未上市";
+                    break;
+                }
+                case "":
+                {
+                    tipStr = tipStr + "已退市";
+                    break;
+                }
+            }
+            var _loc_3:* = tipStr + "！";
+            tipStr = tipStr + "！";
+            tip.text = _loc_3;
+            tip.x = 180;
+            tip.y = this._cfg.viewH * 0.5;
+            addChild(tip);
+            return;
+        }
+
+    }
+}

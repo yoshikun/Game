@@ -1,0 +1,1330 @@
+﻿package com.sina.finance.ui
+{
+    import assets.*;
+    import com.evts.*;
+    import com.sina.finance.data.*;
+    import com.ui.*;
+    import com.ui.dayKNews.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.geom.*;
+    import flash.text.*;
+    import stock.com.ui.elements.config.*;
+    import stock.com.ui.elements.xpainting.*;
+
+    public class DisplayMgr extends UIMgr
+    {
+        private var _backgroundMgr:BackgroundManager;
+        public var barController:BarController;
+        private var _loading:Loading;
+        private var _overprintBtn:OverprintBtn;
+        private var _sinaLogo:SinaBigLogo;
+        private var _lineMgr:LineMgr;
+        private var _fsBtn:FSBtn;
+        private var _shareBtn:ShareMainBtn;
+        private var _myContextMenu:MyContextMenu;
+        private var _selectionMgrBg:Sprite;
+        private var _newsPanel:DayKNews;
+        private var _shareTo:ShareTo;
+        private var _txtPrint:TextField;
+        private var _stockTitle:StockTitle;
+        private var _menuTip:TextField;
+        private var _FloaterSwitch:FloaterBtn;
+        private var _compareMgr:CompareMgr;
+        private const _TIP_W:uint = 120;
+        private var _tmFromYorK:int = -1;
+        private var _setBtn:CfgPanel;
+        private var _restoreMark:int = -1;
+        private var _xpainting:Xpainting;
+        private var _drawIconTip:Sprite;
+        private var _selectionMgr:SelectionMgr;
+        private var _infoTip:InfoTip;
+        private var _disabledDrawIcon:BtnMcDisabledDrawTool;
+        private var _isDividend:Boolean = false;
+        private var _currentDatas:Array;
+        private var _isInitUi:Boolean = true;
+        private var _interactiveMgr:InteractiveMgr;
+        private var _techChartMgr:TechChartMgr;
+
+        public function DisplayMgr(param1:DataMgr)
+        {
+            this._shareTo = ShareTo.getInstance();
+            this._menuTip = new TextField();
+            super(param1);
+            _isTType = true;
+            this.locateLoadingSign();
+            this._loading.showOn();
+            this.initDataMgr();
+            return;
+        }
+
+        private function initSinaLogo() : void
+        {
+            if (!this._sinaLogo)
+            {
+                this._sinaLogo = new SinaBigLogo(_dataMgr.tdata.hq ? (_dataMgr.tdata.hq.name) : (""), _dataMgr.symbol);
+                var _loc_1:Number = 0.7;
+                this._sinaLogo.scaleY = 0.7;
+                this._sinaLogo.scaleX = _loc_1;
+                this._sinaLogo.visible = _cfg.directToId < 2;
+                addChild(this._sinaLogo);
+            }
+            this._sinaLogo.x = _cfg.posX + _cfg.viewW - 84;
+            this._sinaLogo.y = _cfg.mainMenuBarY - 3;
+            return;
+        }
+
+        private function initXPaint() : void
+        {
+            var _loc_1:* = new Rectangle(_cfg.posX, _cfg.posY, _cfg.KW, _cfg.hMTV);
+            var _loc_2:* = Xpainting.CNASTOCK;
+            var _loc_3:* = new CNXPaintingConfig();
+            _loc_3.XpaintingPanelXPos = 0;
+            _loc_3.XpaintingPanelYPos = 0;
+            _loc_3.XpaintingSwitchButtonXPos = _cfg.viewW - 35;
+            _loc_3.XpaintingSwitchButtonYPos = _cfg.posY + _cfg.hMain + _cfg.hTimeLb + 120;
+            this._xpainting = new Xpainting(super.parent as Sprite, _loc_1, _loc_3, _loc_2);
+            return;
+        }
+
+        private function initInteractiveMgr() : void
+        {
+            if (!this._interactiveMgr)
+            {
+                this._interactiveMgr = new InteractiveMgr(_dataMgr);
+                this._interactiveMgr.globalDragHandler = this.globalDragHandler;
+                this._interactiveMgr.visible = !(_cfg.directToId >= 2 || _cfg.initTDate);
+                this._interactiveMgr.y = _cfg.posY;
+                _cfg.interactLayer = this._interactiveMgr;
+                addChild(this._interactiveMgr);
+            }
+            this._interactiveMgr.x = _cfg.posX;
+            return;
+        }
+
+        public function dbClkHandle(param1:uint, param2:Boolean = false) : void
+        {
+            var _loc_3:Array = null;
+            var _loc_4:Date = null;
+            var _loc_5:uint = 0;
+            if (_cfg.dbClkCmd == "fs" && !param2)
+            {
+                this.goFullScreen(null);
+            }
+            else
+            {
+                if (_isTType && _id != 3 || stage.focus is TextField)
+                {
+                    return;
+                }
+                this._tmFromYorK = _id;
+                _loc_3 = _isTType ? (_dataMgr.tdata.tdataObj.datas) : (_dataMgr.kdata.kdataObj.datas);
+                if (param1 >= _loc_3.length)
+                {
+                    param1 = _loc_3.length - 1;
+                }
+                _loc_4 = _dataTool.cloneDate(_loc_3[param1].date);
+                if (_loc_4.fullYear < 2008)
+                {
+                    this._tmFromYorK = -1;
+                    this.everyTErrFunc(_cfg.TIP_2008);
+                    return;
+                }
+                _loc_5 = 1;
+                while (_loc_5 < _dataMgr.cdatas.length)
+                {
+                    
+                    _dataMgr.deleteCompare(TDataBase(_dataMgr.cdatas[_loc_5]).hq.symbol);
+                    _loc_5 = _loc_5 + 1;
+                }
+                this._compareMgr.removeOthers();
+                if (this.contains(this._compareMgr))
+                {
+                    removeChild(this._compareMgr);
+                }
+                _dataMgr.cdatas.splice(1);
+                this.barController.hideTmBtn(false, true);
+                this._selectionMgr.resetSelection(0, false);
+                this.set2SelectionSetting();
+                this.barController.showTmMode();
+                this.showEveryT(_loc_4);
+            }
+            return;
+        }
+
+        private function onDataMgrFatalErr(event:DataMgrEvent) : void
+        {
+            event.target.removeEventListener(DataMgrEvent.FATAL_ERR, this.onDataMgrFatalErr);
+            this._loading.showOff();
+            addChild(new CharacterNotice("0"));
+            return;
+        }
+
+        private function continueLoadReK(event:DataMgrEvent) : void
+        {
+            _dataMgr.removeEventListener(DataMgrEvent.DAYKED, this.continueLoadReK);
+            this.onTypeSelect(null);
+            return;
+        }
+
+        private function dayKLoaded(event:DataMgrEvent) : void
+        {
+            var _loc_2:Boolean = false;
+            _dataMgr.removeEventListener(DataMgrEvent.DAYKED, this.dayKLoaded);
+            if (event.kParam != DataMgrEvent.NO_HQ && this._overprintBtn)
+            {
+                this._overprintBtn.isFunctional = true;
+            }
+            if (_cfg.directToId >= 2)
+            {
+                _loc_2 = _cfg.directToId == 24 || _cfg.directToId == 168 || _cfg.directToId == 720;
+                this._selectionMgr.resetSelection(_cfg.directToId, true, _loc_2 ? (_cfg.reK) : (-1));
+            }
+            else if (_cfg.initTDate)
+            {
+                this.barController.toHistoryT(_dataTool.dateStr2dateObj(_cfg.initTDate));
+            }
+            else if (/[abn]/.test(_cfg.stockType))
+            {
+                if (this._overprintBtn)
+                {
+                    this._overprintBtn.setState(true);
+                }
+            }
+            return;
+        }
+
+        private function onTypeSelect(event:Event) : void
+        {
+            this.barController.exitTmMode();
+            this.set2SelectionSetting();
+            this._myContextMenu.showOrHideReKItems(false);
+            _cfg.reDirection = "";
+            var _loc_2:Boolean = false;
+            if (_isTType)
+            {
+                _loc_2 = true;
+            }
+            else
+            {
+                if ((_cfg.stockType == "a" || _cfg.stockType == "b") && (_id == 24 || _id == 168 || _id == 720))
+                {
+                    this._isDividend = this._restoreMark >= 1;
+                }
+                else
+                {
+                    this._isDividend = false;
+                }
+                if (!this._isDividend && _dataMgr.kdata && _dataMgr.kdata.kdataState["k" + _id])
+                {
+                    _loc_2 = true;
+                }
+                else if (this._isDividend)
+                {
+                    _cfg.reDirection = this._restoreMark == 1 ? ("f") : ("b");
+                    if (_dataMgr.kdata && _dataMgr.kdata.kdataState["k" + _id + _cfg.reDirection])
+                    {
+                        _loc_2 = true;
+                    }
+                    else if (_dataMgr.kdata && _dataMgr.kdata.kdataState["k" + _id])
+                    {
+                        this._loading.showOn();
+                        _dataMgr.loadRestoreKDatas(_id, this._restoreMark, this.dispathTypeIdSelectEvent);
+                    }
+                    else
+                    {
+                        this._loading.showOn();
+                        _dataMgr.addEventListener(DataMgrEvent.DAYKED, this.continueLoadReK);
+                    }
+                }
+                else
+                {
+                    this._loading.showOn();
+                    if (_id == 5 || _id == 15 || _id == 30 || _id == 60)
+                    {
+                        _dataMgr.callMinK(_id, this.dispathTypeIdSelectEvent);
+                    }
+                    else
+                    {
+                        _dataMgr.addEventListener(DataMgrEvent.DAYKED, this.dayked);
+                    }
+                }
+            }
+            if (_loc_2)
+            {
+                this.dispathTypeIdSelectEvent();
+            }
+            return;
+        }
+
+        private function calcCDatas() : void
+        {
+            var _loc_4:TDataBase = null;
+            var _loc_1:Number = 0;
+            var _loc_2:Number = 0;
+            var _loc_3:* = _dataMgr.cdatas.length;
+            var _loc_5:uint = 0;
+            while (_loc_5 < _loc_3)
+            {
+                
+                _loc_4 = _dataMgr.cdatas[_loc_5];
+                _loc_1 = isNaN(_loc_4.tdataObj.minPercent) ? (_loc_1) : (Math.min(_loc_1, _loc_4.tdataObj.minPercent));
+                _loc_2 = isNaN(_loc_4.tdataObj.maxPercent) ? (_loc_2) : (Math.max(_loc_2, _loc_4.tdataObj.maxPercent));
+                _loc_5 = _loc_5 + 1;
+            }
+            _dataMgr.cdataPercents = this._getComparePct(_loc_1, _loc_2);
+            _loc_5 = 0;
+            while (_loc_5 < _loc_3)
+            {
+                
+                TDataBase(_dataMgr.cdatas[_loc_5]).tdataObj.setPercentPoses(_loc_1, _loc_2);
+                _loc_5 = _loc_5 + 1;
+            }
+            this._backgroundMgr.setPopGrid(_dataMgr.tdata.tdataObj.days, true, false);
+            return;
+        }
+
+        private function initCompareMgr() : void
+        {
+            if (!this._compareMgr)
+            {
+                this._compareMgr = new CompareMgr(_dataMgr.tdata.hq ? (_dataMgr.tdata.hq.name) : (""), _dataMgr.symbol, _dataMgr.cdatas);
+                this._compareMgr.addEventListener(DeleteCompareEvent.DELETE, this.onCompareDelete, true);
+            }
+            this._compareMgr.y = _cfg.posY + _cfg.hMTV + _cfg.hindicator;
+            return;
+        }
+
+        private function initFsBtn() : void
+        {
+            if (!this._fsBtn)
+            {
+                this._fsBtn = new FSBtn();
+                this._fsBtn.addEventListener(MouseEvent.CLICK, this.goFullScreen);
+                addChild(this._fsBtn);
+            }
+            this._fsBtn.x = _cfg.posX + _cfg.TW + _cfg.GAP_MAIN_BTN;
+            this._fsBtn.y = _cfg.posY + _cfg.hMain + _cfg.hTimeLb;
+            return;
+        }
+
+        private function initTitle() : void
+        {
+            if (_cfg.paramArr[1] != true)
+            {
+                return;
+            }
+            if (!this._stockTitle)
+            {
+                this._stockTitle = new StockTitle(_dataMgr);
+                addChildAt(this._stockTitle, 0);
+            }
+            return;
+        }
+
+        override public function interactiveTo(param1:uint) : void
+        {
+            if (this._lineMgr)
+            {
+                this._lineMgr.interactiveTo(param1);
+            }
+            if (this._techChartMgr && (!_isTType || _id == 5 || _id == 1))
+            {
+                this._techChartMgr.interactiveTo(param1);
+            }
+            return;
+        }
+
+        private function initMainMenubar() : void
+        {
+            if (!this._selectionMgr)
+            {
+                this._selectionMgr = new SelectionMgr(_dataMgr);
+                this._selectionMgr.addEventListener(Event.SELECT, this.onTypeSelect);
+                this._selectionMgr.visible = !(_cfg.directToId >= 2 || _cfg.initTDate);
+            }
+            this._selectionMgr.x = _cfg.posX - 39;
+            this._selectionMgr.y = _cfg.mainMenuBarY;
+            if (_dataMgr.initCompleted)
+            {
+                this.showSelectionMgr();
+            }
+            return;
+        }
+
+        private function dayked(event:DataMgrEvent) : void
+        {
+            _dataMgr.removeEventListener(DataMgrEvent.DAYKED, this.dayked);
+            this.dispathTypeIdSelectEvent();
+            return;
+        }
+
+        private function initMenuBg() : void
+        {
+            if (!this._selectionMgrBg)
+            {
+                this._selectionMgrBg = new Sprite();
+                this._menuTip.textColor = 11184810;
+                this._menuTip.autoSize = "left";
+                this._menuTip.text = "视图初始化...（若长时间未响应，请刷新页面重试）";
+                this._menuTip.y = 4;
+                this._selectionMgrBg.addChild(this._menuTip);
+            }
+            this._selectionMgrBg.graphics.clear();
+            this._selectionMgrBg.graphics.beginFill(_cfg.BG_COLOR);
+            this._selectionMgrBg.graphics.lineStyle(0, 14476768);
+            this._selectionMgrBg.graphics.drawRect(0, 0, (_cfg.viewW - 1), 27);
+            this._selectionMgrBg.graphics.endFill();
+            this._selectionMgrBg.x = _cfg.posX - _cfg.ORI_POX_X;
+            this._selectionMgrBg.y = _cfg.mainMenuBarY - 6;
+            addChildAt(this._selectionMgrBg, 0);
+            return;
+        }
+
+        private function initTechChartMgr() : void
+        {
+            if (!this._techChartMgr)
+            {
+                this._techChartMgr = new TechChartMgr(_dataMgr);
+                this._techChartMgr.visible = !(_cfg.directToId >= 2 || _cfg.initTDate);
+                addChild(this._techChartMgr);
+            }
+            this._techChartMgr.x = _cfg.posX;
+            this._techChartMgr.y = _cfg.posY + _cfg.hMTV;
+            return;
+        }
+
+        private function onTDataInit(event:Event) : void
+        {
+            if (this._isInitUi)
+            {
+                this._isInitUi = false;
+                this.initMouseMenu();
+                this.initTxtWaterprint();
+                if (_dataMgr.tdata.tdataObj)
+                {
+                    this._currentDatas = _dataMgr.tdata.tdataObj.datas;
+                }
+                this.initUi();
+                _dataMgr.addEventListener(DataMgrEvent.DAYKED, this.dayKLoaded);
+                if (_cfg.directToId >= 2 || _cfg.initTDate)
+                {
+                }
+                else
+                {
+                    _id = 1;
+                    this.dispathTypeIdSelectEvent();
+                }
+            }
+            else
+            {
+                this.showSelectionMgr();
+                if (_cfg.directToId < 2)
+                {
+                    _id = 5;
+                    if (_cfg.initTDate)
+                    {
+                        return;
+                    }
+                    this.dispathTypeIdSelectEvent();
+                }
+            }
+            return;
+        }
+
+        private function onCompareDelete(event:DeleteCompareEvent = null) : void
+        {
+            if (!event)
+            {
+                this._compareMgr.removeOthers();
+                _dataMgr.cdatas.splice(1);
+                if (this.contains(this._compareMgr))
+                {
+                    removeChild(this._compareMgr);
+                }
+                this._backgroundMgr.setPopGrid(1, false, false);
+                this.dispathTypeIdSelectEvent();
+                this.barController.hideTmBtn(false);
+                this.showOrHideExtraBtns(true);
+                return;
+            }
+            var _loc_2:uint = 1;
+            while (_loc_2 < _dataMgr.cdatas.length)
+            {
+                
+                if (TDataBase(_dataMgr.cdatas[_loc_2]).hq.symbol == event.symbol)
+                {
+                    _dataMgr.cdatas.splice(_loc_2, 1);
+                    _dataMgr.deleteCompare(event.symbol);
+                    this._compareMgr.init();
+                    if (_dataMgr.cdatas.length == 1)
+                    {
+                        if (this.contains(this._compareMgr))
+                        {
+                            removeChild(this._compareMgr);
+                        }
+                        this._backgroundMgr.setPopGrid(_dataMgr.tdata.tdataObj.days, false, false);
+                        this._interactiveMgr.setTypeId(_isTType, _id);
+                        this.barController.hideTmBtn(false);
+                        this.showOrHideExtraBtns(true);
+                    }
+                    else
+                    {
+                        this.dispathTypeIdSelectEvent(true);
+                        this.calcCDatas();
+                    }
+                    this._lineMgr.selectRangleReset();
+                    this._interactiveMgr.selectRangleReset();
+                    this._techChartMgr.dealWithER();
+                    return;
+                }
+                _loc_2 = _loc_2 + 1;
+            }
+            return;
+        }
+
+        private function set2SelectionSetting() : void
+        {
+            _id = this._selectionMgr.id;
+            _isTType = this._selectionMgr.isTType;
+            this.barController.is5T = this._selectionMgr.is5T;
+            this._restoreMark = this._selectionMgr.restoreMark;
+            return;
+        }
+
+        private function dispathTypeIdSelectEvent(param1:Boolean = false) : void
+        {
+            this._tmFromYorK = -1;
+            this.updateXPaintingShowMode();
+            this._shareBtn.setTypeId(_isTType, _id, this._selectionMgr.is5T);
+            this._shareTo.setTypeId(_isTType, _id, !this._selectionMgr.is5T);
+            this._techChartMgr.setTypeId(_isTType, _id);
+            this.barController.setTypeId(_isTType, _id);
+            this._lineMgr.setTypeId(_isTType, _id);
+            this._interactiveMgr.setTypeId(_isTType, _id);
+            var _loc_2:* = _isTType ? (_cfg.posY) : (_cfg.yMainLine);
+            this._interactiveMgr.y = _isTType ? (_cfg.posY) : (_cfg.yMainLine);
+            this._lineMgr.y = _loc_2;
+            this._myContextMenu.showOrHideReKItems(false);
+            if ((_cfg.stockType == "a" || _cfg.stockType == "b") && (_id == 24 || _id == 168 || _id == 720))
+            {
+                this._myContextMenu.showOrHideReKItems(true);
+            }
+            if (!param1)
+            {
+                this._lineMgr.selectRangleReset();
+                this._interactiveMgr.selectRangleReset();
+            }
+            if (_isTType && _dataMgr.comparing)
+            {
+                addChild(this._compareMgr);
+                this.adjustLayerOrder();
+            }
+            else if (this.contains(this._compareMgr))
+            {
+                removeChild(this._compareMgr);
+            }
+            this.showHidedUis();
+            this._loading.showOff();
+            return;
+        }
+
+        private function initMbBtn() : void
+        {
+            if (!this._shareBtn)
+            {
+                this._shareBtn = new ShareMainBtn(_dataMgr.tdata.hq ? (_dataMgr.tdata.hq.name) : (""), _dataMgr.symbol);
+                addChild(this._shareBtn);
+            }
+            return;
+        }
+
+        private function initPreferenceBtn() : void
+        {
+            if (!this._setBtn)
+            {
+                this._setBtn = new CfgPanel();
+                this._setBtn.addEventListener(SettingEvent.NEW_SET, this.newSet);
+            }
+            return;
+        }
+
+        private function initLineMgr() : void
+        {
+            if (!this._lineMgr)
+            {
+                this._lineMgr = new LineMgr(_dataMgr);
+                this._lineMgr.y = _cfg.posY;
+                addChild(this._lineMgr);
+            }
+            this._lineMgr.x = _cfg.posX;
+            return;
+        }
+
+        private function initTxtWaterprint() : void
+        {
+            if (!this._txtPrint)
+            {
+                this._txtPrint = new TextField();
+                this._txtPrint.autoSize = "left";
+                this._txtPrint.defaultTextFormat = new TextFormat("arial", 14, 10724259, true);
+                this._txtPrint.text = (_dataMgr.tdata.hq ? (_dataMgr.tdata.hq.name) : ("")) + "(" + _dataMgr.symbol + ")";
+                addChild(this._txtPrint);
+            }
+            this._txtPrint.y = _cfg.viewH;
+            return;
+        }
+
+        private function _onOverTEvt(event:DataMgrEvent) : void
+        {
+            switch(event.overprintBtnState)
+            {
+                case "on":
+                default:
+                {
+                    this._loading.showOff();
+                    this.barController.update(true);
+                    break;
+                }
+                case :
+                {
+                    if (this._overprintBtn)
+                    {
+                        this._overprintBtn.setState(false, false);
+                    }
+                    break;
+                    break;
+                }
+            }
+            return;
+        }
+
+        private function locateLoadingSign() : void
+        {
+            if (!this._loading)
+            {
+                this._loading = new Loading();
+                addChild(this._loading);
+            }
+            this._loading.x = (_cfg.posX + _cfg.TW - this._loading.width) * 0.5;
+            this._loading.y = (_cfg.viewH - this._loading.height) * 0.5;
+            return;
+        }
+
+        private function adjustLayerOrder() : void
+        {
+            if (this._setBtn.isShowing)
+            {
+                addChild(this._shareBtn);
+                addChild(this._setBtn);
+            }
+            else
+            {
+                addChild(this._setBtn);
+                addChild(this._shareBtn);
+            }
+            return;
+        }
+
+        private function overDisabledDrawIcon(event:MouseEvent) : void
+        {
+            this._drawIconTip.x = this._disabledDrawIcon.x - this._TIP_W - 15;
+            this._drawIconTip.y = this._disabledDrawIcon.y;
+            this._drawIconTip.visible = true;
+            return;
+        }
+
+        private function initMouseMenu() : void
+        {
+            this._myContextMenu = MyContextMenu.getInstance(_dataMgr.tdata.hq ? (_dataMgr.tdata.hq.name) : (""));
+            this._myContextMenu.symbol = _dataMgr.symbol;
+            this._myContextMenu.theStage = this.stage;
+            this._myContextMenu.rightMenuFunc = this.rightMenuFunc;
+            this.parent.contextMenu = this._myContextMenu.menu;
+            return;
+        }
+
+        private function initRangeHandler() : void
+        {
+            if (!this.barController)
+            {
+                this.barController = new BarController(_dataMgr);
+                this.barController.useable = _dataMgr.initCompleted;
+                _cfg.barCtrl = this.barController;
+                this.barController.visible = !(_cfg.directToId >= 2 || _cfg.initTDate);
+                addChild(this.barController);
+            }
+            this.barController.x = _cfg.posX;
+            this.barController.y = _cfg.posY + _cfg.hMTV + _cfg.hindicator + _cfg.H_TECH_BTN;
+            return;
+        }
+
+        private function initDrawTip() : void
+        {
+            this._drawIconTip = new Sprite();
+            this._drawIconTip.graphics.lineStyle(0, 14797730);
+            this._drawIconTip.graphics.beginFill(16775888);
+            this._drawIconTip.graphics.drawRoundRect(0, 0, this._TIP_W, 47, 5);
+            this._drawIconTip.graphics.moveTo(this._TIP_W, 7);
+            this._drawIconTip.graphics.lineTo(this._TIP_W + 9, 10);
+            this._drawIconTip.graphics.lineTo(this._TIP_W, 14);
+            this._drawIconTip.graphics.lineStyle(0, 16775888);
+            this._drawIconTip.graphics.endFill();
+            var _loc_1:* = new TextField();
+            _loc_1.defaultTextFormat = new TextFormat("arial", 12);
+            _loc_1.text = "画图工具仅在K线图状态下有效";
+            _loc_1.width = this._TIP_W - 5;
+            _loc_1.wordWrap = true;
+            _loc_1.height = 47;
+            _loc_1.x = 5;
+            _loc_1.y = 6;
+            this._drawIconTip.addChild(_loc_1);
+            this._drawIconTip.visible = false;
+            addChild(this._drawIconTip);
+            return;
+        }
+
+        private function showSelectionMgr() : void
+        {
+            if (!contains(this._selectionMgr))
+            {
+                addChild(this._selectionMgr);
+            }
+            if (this._menuTip && this._menuTip.parent.contains(this._menuTip))
+            {
+                this._menuTip.parent.removeChild(this._menuTip);
+                this._menuTip = null;
+            }
+            return;
+        }
+
+        public function barControllerCallBack(param1:uint, param2:uint, param3:Boolean = false) : void
+        {
+            var _loc_4:uint = 0;
+            var _loc_5:Date = null;
+            var _loc_6:uint = 0;
+            var _loc_7:uint = 0;
+            var _loc_8:Array = null;
+            var _loc_9:Boolean = false;
+            var _loc_10:Array = null;
+            var _loc_11:TDataBase = null;
+            var _loc_12:String = null;
+            if (_isTType)
+            {
+                _loc_4 = param2 - param1;
+                if (_id == 5)
+                {
+                    if (_dataMgr.tdata.datas_5)
+                    {
+                        _loc_5 = _dataMgr.tdata.datas_5[param1][0].date;
+                    }
+                    if (!_loc_5)
+                    {
+                        _loc_5 = _dataMgr.tdata.hq.date;
+                    }
+                }
+                else if (_id == 3)
+                {
+                    if (_loc_4 == 1)
+                    {
+                        _loc_4 = 365;
+                    }
+                    else if (_loc_4 == 2)
+                    {
+                        _loc_4 = 665;
+                    }
+                    else if (_loc_4 == 3)
+                    {
+                        _loc_4 = 965;
+                    }
+                    _loc_5 = _dataMgr.tdata.datas_3[Math.floor(param1 * _dataMgr.tdata.datas_3.length / 3)].date;
+                }
+                _loc_8 = [];
+                _loc_9 = _dataMgr.tdata.isLates5();
+                if (_loc_9 && _dataMgr.isShowingFloatT)
+                {
+                    _loc_6 = 0;
+                    _loc_7 = _dataMgr.overTArr.length;
+                    while (_loc_6 < _loc_7)
+                    {
+                        
+                        _loc_11 = _dataMgr.overTArr[_loc_6];
+                        if (_loc_11.datas_5)
+                        {
+                            _loc_8[_loc_8.length] = _loc_11;
+                        }
+                        _loc_6 = _loc_6 + 1;
+                    }
+                }
+                _loc_10 = _loc_9 && !_dataMgr.comparing ? (_loc_8.concat(_dataMgr.tdata)) : (_dataMgr.cdatas);
+                _loc_6 = 0;
+                _loc_7 = _loc_10.length;
+                while (_loc_6 < _loc_7)
+                {
+                    
+                    TDataBase(_loc_10[_loc_6]).calcDataObj(_loc_4, _loc_5);
+                    _loc_6 = _loc_6 + 1;
+                }
+                if (_dataMgr.comparing)
+                {
+                    this.calcCDatas();
+                }
+                else if (_loc_9 && _loc_8.length > 0)
+                {
+                    this._calcFloatT();
+                }
+                _loc_4 = param2 - param1;
+                this._backgroundMgr.setPopGrid(_loc_4, _dataMgr.comparing, false);
+            }
+            else
+            {
+                if (!_dataMgr.kdata)
+                {
+                    return;
+                }
+                _loc_12 = "k" + _id + (this._isDividend ? (_cfg.reDirection) : (""));
+                _dataMgr.kdata.calcDataObj(_loc_12, param1, param2);
+                this._backgroundMgr.setPopGrid(1, false, true);
+            }
+            if (!param3)
+            {
+                this._lineMgr.selectRangleReset();
+                this._interactiveMgr.selectRangleReset();
+            }
+            this._techChartMgr.redraw(param1, param2);
+            this._showHideOverprintBtn();
+            return;
+        }
+
+        override public function interactiveEnd() : void
+        {
+            if (this._lineMgr)
+            {
+                this._lineMgr.interactiveEnd();
+            }
+            if (this._techChartMgr && (!_isTType || _id == 5 || _id == 1))
+            {
+                this._techChartMgr.interactiveEnd();
+            }
+            return;
+        }
+
+        private function onCompareAdded(event:Event) : void
+        {
+            this._loading.showOff();
+            if (!this._currentDatas)
+            {
+                return;
+            }
+            if (!_isTType)
+            {
+                this._selectionMgr.resetSelection();
+                this.set2SelectionSetting();
+            }
+            this.barController.exitTmMode(false, true);
+            this.barController.hideTmBtn(true);
+            this.dispathTypeIdSelectEvent(true);
+            this.calcCDatas();
+            this._lineMgr.selectRangleReset();
+            this._interactiveMgr.selectRangleReset();
+            this._techChartMgr.dealWithER();
+            this._compareMgr.init();
+            this.showOrHideExtraBtns(false);
+            return;
+        }
+
+        private function _showHideOverprintBtn() : void
+        {
+            if (!this._overprintBtn)
+            {
+                return;
+            }
+            if (!/[abn]/.test(_cfg.stockType))
+            {
+                this._overprintBtn.visible = false;
+            }
+            else
+            {
+                this._overprintBtn.visible = _isTType && _dataMgr.cdatas.length == 1 && _dataMgr.tdata.isLates5();
+            }
+            return;
+        }
+
+        private function newSet(event:SettingEvent) : void
+        {
+            _dataMgr.kdata.calcMAAll();
+            this._lineMgr.newSet();
+            this.barController.update(true);
+            if (!_isTType)
+            {
+                this._FloaterSwitch.check();
+            }
+            return;
+        }
+
+        private function onDataMgrErrLoading(event:DataMgrEvent) : void
+        {
+            if (!this._infoTip)
+            {
+                this._infoTip = new InfoTip();
+                addChild(this._infoTip);
+            }
+            this._infoTip.showTip(event.errTxt);
+            this._loading.showOff();
+            return;
+        }
+
+        private function configXPaint() : void
+        {
+            var _loc_1:* = new Rectangle(_cfg.posX, _cfg.posY + _cfg.MA_TXT_H + 1, _cfg.KW, _cfg.hMTV - 14);
+            var _loc_2:* = new CNXPaintingConfig();
+            _loc_2.XpaintingPanelXPos = 0;
+            _loc_2.XpaintingPanelYPos = 0;
+            _loc_2.XpaintingSwitchButtonXPos = _cfg.posX + _cfg.KW + _cfg.GAP_MAIN_BTN;
+            _loc_2.XpaintingSwitchButtonYPos = _cfg.posY + _cfg.hMain + _cfg.hTimeLb + _cfg.iconBtnOffsetY + _cfg.GAP_ICON_BTN * 3;
+            if (!this._xpainting)
+            {
+                this._xpainting = new Xpainting(super.parent as Sprite, _loc_1, _loc_2, Xpainting.CNASTOCK);
+            }
+            else
+            {
+                this._xpainting.resize(_loc_1, _loc_2);
+            }
+            return;
+        }
+
+        private function initDisabledDrawIcon() : void
+        {
+            if (!this._disabledDrawIcon)
+            {
+                this.initDrawTip();
+                this._disabledDrawIcon = new BtnMcDisabledDrawTool();
+                this._disabledDrawIcon.addEventListener(MouseEvent.MOUSE_OVER, this.overDisabledDrawIcon);
+                this._disabledDrawIcon.addEventListener(MouseEvent.MOUSE_OUT, this.outDisabledDrawIcon);
+            }
+            this._disabledDrawIcon.x = _cfg.posX + _cfg.KW + _cfg.GAP_MAIN_BTN;
+            this._disabledDrawIcon.y = _cfg.posY + _cfg.hMain + _cfg.hTimeLb + _cfg.iconBtnOffsetY + _cfg.GAP_ICON_BTN * 3;
+            return;
+        }
+
+        private function _getComparePct(param1:Number, param2:Number, param3:uint = 13) : Array
+        {
+            var _loc_4:Array = [];
+            var _loc_5:* = (param2 - param1) / (param3 - 1);
+            var _loc_6:* = Math.ceil(param2 / _loc_5);
+            var _loc_7:uint = 0;
+            while (_loc_7 < param3)
+            {
+                
+                _loc_4[_loc_4.length] = _loc_5 * _loc_6;
+                _loc_6 = _loc_6 - 1;
+                _loc_7 = _loc_7 + 1;
+            }
+            return _loc_4;
+        }
+
+        override public function resize() : void
+        {
+            this.locateLoadingSign();
+            this.initTxtWaterprint();
+            this.initUi();
+            this._backgroundMgr.resize();
+            this._shareBtn.resize();
+            this._setBtn.resize();
+            this.configXPaint();
+            this._selectionMgr.resize();
+            this._interactiveMgr.resize();
+            this.barController.resize();
+            this._techChartMgr.resize();
+            this._compareMgr.resize();
+            if (this._stockTitle)
+            {
+                this._stockTitle.x = _cfg.posX - _cfg.ORI_POX_X;
+                this._stockTitle.resize();
+            }
+            return;
+        }
+
+        private function showHidedUis() : void
+        {
+            if (_dataMgr.initCompleted)
+            {
+                this._selectionMgr.visible = true;
+            }
+            var _loc_1:Boolean = true;
+            this._interactiveMgr.visible = true;
+            var _loc_1:* = _loc_1;
+            this._sinaLogo.visible = _loc_1;
+            var _loc_1:* = _loc_1;
+            this._techChartMgr.visible = _loc_1;
+            var _loc_1:* = _loc_1;
+            this.barController.visible = _loc_1;
+            this._backgroundMgr.visible = _loc_1;
+            return;
+        }
+
+        private function initUi() : void
+        {
+            this.initTitle();
+            this.initBackgroundMgr();
+            this.initLineMgr();
+            this.initTechChartMgr();
+            this.initRangeHandler();
+            this.initCompareMgr();
+            this.initInteractiveMgr();
+            addChild(this._loading);
+            this.initMenuBg();
+            this.initMainMenubar();
+            this.initSinaLogo();
+            if (/[abn]/.test(_cfg.stockType))
+            {
+                this._initOverprintBtn();
+            }
+            this.initFsBtn();
+            this.initMbBtn();
+            this.initPreferenceBtn();
+            if (!this._xpainting)
+            {
+                this.configXPaint();
+                ScreenShot.fileName = _dataMgr.symbol;
+            }
+            this.initDisabledDrawIcon();
+            this.initFloaterSwitcher();
+            this.updateXPaintingShowMode();
+            return;
+        }
+
+        private function showOrHideExtraBtns(param1:Boolean) : void
+        {
+            var _loc_2:* = param1;
+            this._FloaterSwitch.visible = param1;
+            var _loc_2:* = _loc_2;
+            this._setBtn.visible = _loc_2;
+            var _loc_2:* = _loc_2;
+            this._xpainting.visible = _loc_2;
+            this._disabledDrawIcon.visible = _loc_2;
+            if (param1)
+            {
+                this._FloaterSwitch.visible = _cfg.viewH > 415;
+                this._disabledDrawIcon.visible = _cfg.viewH > 344;
+            }
+            this._shareBtn.placeIcon(param1);
+            this._fsBtn.y = _cfg.posY + _cfg.hMain + _cfg.hTimeLb + _cfg.iconBtnOffsetY + (param1 ? (0) : (_cfg.GAP_ICON_BTN * 3));
+            this._showHideOverprintBtn();
+            return;
+        }
+
+        private function _calcFloatT() : void
+        {
+            var _loc_4:TDataBase = null;
+            var _loc_1:Number = 0;
+            var _loc_2:Number = 0;
+            var _loc_3:* = _dataMgr.overTArr.concat(_dataMgr.tdata);
+            var _loc_5:* = _loc_3.length;
+            var _loc_6:uint = 0;
+            while (_loc_6 < _loc_5)
+            {
+                
+                _loc_4 = _loc_3[_loc_6];
+                _loc_1 = isNaN(_loc_4.tdataObj.minPercent) ? (_loc_1) : (Math.min(_loc_1, _loc_4.tdataObj.minPercent));
+                _loc_2 = isNaN(_loc_4.tdataObj.maxPercent) ? (_loc_2) : (Math.max(_loc_2, _loc_4.tdataObj.maxPercent));
+                _loc_6 = _loc_6 + 1;
+            }
+            _loc_6 = 0;
+            _loc_5 = _dataMgr.overTArr.length;
+            while (_loc_6 < _loc_5)
+            {
+                
+                TDataBase(_dataMgr.overTArr[_loc_6]).tdataObj.setPercentPoses(_loc_1, _loc_2, _cfg.hMain);
+                _loc_6 = _loc_6 + 1;
+            }
+            _dataMgr.tdata.tdataObj.setPctAndPrice(_loc_1, _loc_2);
+            return;
+        }
+
+        private function _initOverprintBtn() : void
+        {
+            var idx:String;
+            var indexSymbol:String;
+            if (!this._overprintBtn)
+            {
+                idx = _dataMgr.symbol.substr(0, 2);
+                this._overprintBtn = new OverprintBtn(idx);
+                if (idx == "sh")
+                {
+                    indexSymbol;
+                }
+                else if (idx == "sz")
+                {
+                    indexSymbol;
+                }
+                this._overprintBtn.addEventListener(DataMgrEvent.OVERPRINT, function (event:DataMgrEvent) : void
+            {
+                if (_overprintBtn.toPrint)
+                {
+                    if (indexSymbol)
+                    {
+                        _loading.showOn();
+                        _dataMgr.newFloatT(indexSymbol);
+                    }
+                }
+                else
+                {
+                    _loading.showOff();
+                    _dataMgr.isShowingFloatT = false;
+                    barController.update(true);
+                }
+                return;
+            }
+            );
+                addChild(this._overprintBtn);
+            }
+            this._overprintBtn.x = _cfg.viewW - this._overprintBtn.W;
+            this._overprintBtn.y = _cfg.posY - 24;
+            return;
+        }
+
+        private function globalDragHandler(param1:Number) : void
+        {
+            if (!_isTType)
+            {
+                this.barController.globalDrag(param1);
+            }
+            return;
+        }
+
+        public function showDayKNews(param1:Date, param2:Array) : void
+        {
+            if (!this._newsPanel)
+            {
+                this._newsPanel = new DayKNews(_dataMgr.symbol, _dataMgr.tdata.hq ? (_dataMgr.tdata.hq.name) : (""), param2);
+            }
+            addChild(this._newsPanel);
+            this._newsPanel.loadNews(param1);
+            return;
+        }
+
+        private function initDataMgr() : void
+        {
+            _dataMgr.addEventListener(Event.INIT, this.onTDataInit);
+            _dataMgr.addEventListener(Event.ADDED, this.onCompareAdded);
+            _dataMgr.addEventListener(DataMgrEvent.ERR_LOADING, this.onDataMgrErrLoading);
+            _dataMgr.addEventListener(DataMgrEvent.FATAL_ERR, this.onDataMgrFatalErr);
+            _dataMgr.addEventListener(DataMgrEvent.INDICATOR, this.onIndicator);
+            _dataMgr.addEventListener(DataMgrEvent.NEWDATE, function (event:Event) : void
+            {
+                onCompareDelete(null);
+                return;
+            }
+            );
+            _dataMgr.addEventListener(DataMgrEvent.LOADING, function (event:Event) : void
+            {
+                _loading.showOn();
+                _myContextMenu.showOrHideReKItems(false);
+                return;
+            }
+            );
+            _dataMgr.addEventListener(DataMgrEvent.UPDATE, function (event:Event) : void
+            {
+                barController.update();
+                if (_stockTitle)
+                {
+                    _stockTitle.update();
+                }
+                return;
+            }
+            );
+            _dataMgr.addEventListener(DataMgrEvent.FLOAT_T_LOADED, this._onOverTEvt);
+            return;
+        }
+
+        private function initBackgroundMgr() : void
+        {
+            if (!this._backgroundMgr)
+            {
+                this._backgroundMgr = new BackgroundManager();
+                this._backgroundMgr.setPopGrid(1, false, _cfg.directToId >= 5);
+                this._backgroundMgr.visible = !(_cfg.directToId >= 2 || _cfg.initTDate);
+                addChild(this._backgroundMgr);
+            }
+            return;
+        }
+
+        public function goFullScreen(event:MouseEvent, param2:Boolean = false) : void
+        {
+            if (!stage)
+            {
+                return;
+            }
+            if (stage.displayState == "fullScreen")
+            {
+                stage.displayState = "normal";
+            }
+            else
+            {
+                if (param2)
+                {
+                    return;
+                }
+                stage.displayState = "fullScreen";
+                _cfg.sendStatistic("fullscreen.html?type=" + (event ? ("button") : ("doubleclick")));
+            }
+            return;
+        }
+
+        private function outDisabledDrawIcon(event:MouseEvent) : void
+        {
+            this._drawIconTip.visible = false;
+            return;
+        }
+
+        private function initFloaterSwitcher() : void
+        {
+            if (!this._FloaterSwitch)
+            {
+                this._FloaterSwitch = new FloaterBtn();
+            }
+            this._FloaterSwitch.x = _cfg.posX + _cfg.KW + _cfg.GAP_MAIN_BTN;
+            this._FloaterSwitch.y = _cfg.posY + _cfg.hMain + _cfg.hTimeLb + _cfg.iconBtnOffsetY + _cfg.GAP_ICON_BTN * 4;
+            return;
+        }
+
+        private function onIndicator(event:DataMgrEvent) : void
+        {
+            var _loc_2:int = 0;
+            var _loc_3:int = 0;
+            var _loc_4:String = null;
+            if (this._loading.isShowing)
+            {
+                return;
+            }
+            switch(event.indicatorType)
+            {
+                case "forward":
+                default:
+                {
+                    break;
+                }
+                case :
+                {
+                    break;
+                    break;
+                }
+            }
+            if (UrlHashDecoder.ALL_NAMES_REG.test(event.indicatorType))
+            {
+            }
+            else if (TechChartMgr.ALL_TECH_NAME_REG.test(event.indicatorType))
+            {
+                if (_isTType)
+                {
+                }
+            }
+            return;
+        }
+
+        private function updateXPaintingShowMode() : void
+        {
+            addChild(this._FloaterSwitch);
+            addChild(this._xpainting);
+            this._FloaterSwitch.check(!_isTType);
+            if (!_isTType)
+            {
+                this.showOrHideExtraBtns(true);
+                if (contains(this._disabledDrawIcon))
+                {
+                    removeChild(this._disabledDrawIcon);
+                }
+            }
+            else
+            {
+                if (this._xpainting && this._xpainting.parent)
+                {
+                    this._xpainting.parent.removeChild(this._xpainting);
+                }
+                addChild(this._disabledDrawIcon);
+                this.showOrHideExtraBtns(_dataMgr.cdatas.length <= 1);
+            }
+            this.adjustLayerOrder();
+            return;
+        }
+
+        public function showEveryT(param1:Date, param2:Boolean = true) : void
+        {
+            var _loc_4:uint = 0;
+            var _loc_5:uint = 0;
+            this.interactiveEnd();
+            if (_id == 3)
+            {
+                this._tmFromYorK = 3;
+                this._selectionMgr.resetSelection();
+                this.set2SelectionSetting();
+            }
+            if (param1 >= _dataMgr.tdata.latest5[0][0].date)
+            {
+                _dataMgr.tdata.datas_5 = _dataMgr.tdata.latest5;
+                _loc_4 = 0;
+                _loc_5 = _dataMgr.tdata.latest5.length;
+                while (_loc_4 < _loc_5)
+                {
+                    
+                    if (_dataMgr.tdata.latest5[_loc_4][0].date >= param1)
+                    {
+                        _dataMgr.tdata.tDataState["t5l"] = _loc_4;
+                        _dataMgr.tdata.tDataState["t5r"] = _loc_4 + 1;
+                        break;
+                    }
+                    _loc_4 = _loc_4 + 1;
+                }
+                this.dispathTypeIdSelectEvent();
+                return;
+            }
+            var _loc_3:* = "t" + param1.fullYear + "-" + (param1.month + 1);
+            if (_dataMgr.tdata.everyT[_loc_3])
+            {
+                _dataMgr.makeNewT5Arr(param1, _dataMgr.tdata.everyT[_loc_3], param2);
+                this.dispathTypeIdSelectEvent();
+            }
+            else
+            {
+                this._loading.showOn();
+                _dataMgr.loadEveryTData(param1, this.dispathTypeIdSelectEvent, this.everyTErrFunc);
+            }
+            _cfg.sendStatistic("fenshi.html?type=history");
+            return;
+        }
+
+        private function everyTErrFunc(param1:String) : void
+        {
+            this._loading.showOff();
+            this.barController.showTipOnDateSel(param1);
+            if (this._tmFromYorK > 0)
+            {
+                this._selectionMgr.resetSelection(this._tmFromYorK);
+                this.set2SelectionSetting();
+                this._tmFromYorK = -1;
+            }
+            return;
+        }
+
+        private function rightMenuFunc(param1:String) : void
+        {
+            switch(param1)
+            {
+                case _cfg.HIDE_MASK_NO_FS_CMD:
+                {
+                    this.goFullScreen(null, true);
+                    break;
+                }
+                default:
+                {
+                    this._selectionMgr.resetSelection(_id, true, int(param1));
+                    break;
+                    break;
+                }
+            }
+            return;
+        }
+
+    }
+}

@@ -1,0 +1,72 @@
+﻿package com.ui
+{
+    import flash.display.*;
+    import flash.text.*;
+
+    public class ExtMark extends Sprite
+    {
+        private var _cfg:Config;
+        private var _priceStr:String;
+        private var _dateStr:String;
+        private var _txt:TextField;
+        public var index:uint;
+        private var _tf:TextFormat;
+
+        public function ExtMark(param1:int, param2:Date, param3:Number, param4:Number, param5:Number, param6:Boolean = true)
+        {
+            this._cfg = Config.getInstance();
+            this._tf = new TextFormat("arial", 11, 0, true);
+            this.index = param1;
+            this._dateStr = "(" + param2.fullYear + "." + (param2.month + 1) + "." + param2.date + ")";
+            this._priceStr = param5.toFixed(2);
+            this.buttonMode = true;
+            var _loc_7:Boolean = false;
+            if (param3 >= 370)
+            {
+                _loc_7 = true;
+            }
+            var _loc_8:* = param6 ? (param4 > 35 ? (-10) : (0)) : (param4 < this._cfg.hReal - 10 ? (5) : (0));
+            var _loc_9:int = 15;
+            if (_loc_7)
+            {
+                _loc_9 = -_loc_9;
+            }
+            var _loc_10:* = new Shape();
+            new Shape().graphics.moveTo(param3, param4);
+            _loc_10.graphics.lineStyle(0, 7829367);
+            _loc_10.graphics.lineTo(param3 + _loc_9, param4 + _loc_8);
+            addChild(_loc_10);
+            this._txt = new TextField();
+            this._txt.border = true;
+            this._txt.borderColor = 7829367;
+            this._txt.selectable = false;
+            this._txt.defaultTextFormat = this._tf;
+            this._txt.autoSize = "left";
+            this._txt.text = this._priceStr;
+            this._txt.x = param3 + _loc_9;
+            if (_loc_7)
+            {
+                this._txt.x = this._txt.x - this._txt.width;
+            }
+            this._txt.y = param6 ? (param4 + _loc_8 - this._txt.height / 2) : (param4 - 8 + _loc_8);
+            addChild(this._txt);
+            return;
+        }// end function
+
+        public function showDate(param1:Boolean = true) : void
+        {
+            if (param1)
+            {
+                this._txt.text = this._priceStr + " " + this._dateStr;
+                this._txt.background = true;
+            }
+            else
+            {
+                this._txt.text = this._priceStr;
+                this._txt.background = false;
+            }
+            return;
+        }// end function
+
+    }
+}

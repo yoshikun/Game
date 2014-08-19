@@ -1,0 +1,88 @@
+﻿package com.ui
+{
+    import com.sina.finance.ui.*;
+    import flash.display.*;
+    import flash.events.*;
+    import flash.net.*;
+
+    public class SinaBigLogo extends Sprite
+    {
+        private var _logo:Sprite;
+        private var _cfg:Config;
+        private var _n:String;
+        private var _character:MovieClip;
+        private var _eye:MovieClip;
+        private var _symbol:String = "sh000001";
+        private var _wb:ShareTo;
+
+        public function SinaBigLogo(param1:String, param2:String)
+        {
+            this._cfg = Config.getInstance();
+            this._wb = ShareTo.getInstance();
+            this._n = param1;
+            this._symbol = param2;
+            this._character = new SinaCharacter();
+            this._eye = new SinaEye();
+            this._eye.x = this._character.width * 0.2;
+            this._eye.y = 2;
+            this._eye.gotoAndStop(1);
+            this._character.y = this._character.height;
+            this._logo = new Sprite();
+            this._logo.addChild(this._character);
+            this._logo.addChild(this._eye);
+            this._logo.mouseEnabled = false;
+            var _loc_3:Number = 0.6;
+            this._eye.alpha = 0.6;
+            this._character.alpha = _loc_3;
+            addChild(this._logo);
+            if (!this._cfg.dataFromJs)
+            {
+                this._logo.buttonMode = true;
+                this._logo.mouseEnabled = true;
+                this._logo.graphics.moveTo(0, 0);
+                this._logo.graphics.beginFill(0, 0);
+                this._logo.graphics.drawRect(0, 0, this._logo.width, this._logo.height);
+                this._logo.graphics.endFill();
+                this._logo.addEventListener(MouseEvent.MOUSE_OVER, this.onMsOver);
+                this._logo.addEventListener(MouseEvent.MOUSE_OUT, this.onMsOut);
+                this._logo.addEventListener(MouseEvent.CLICK, this.onMsClick);
+            }
+            return;
+        }// end function
+
+        private function onMsOver(event:MouseEvent) : void
+        {
+            var _loc_2:int = 1;
+            this._eye.alpha = 1;
+            this._character.alpha = _loc_2;
+            this._eye.play();
+            return;
+        }// end function
+
+        private function onMsOut(event:MouseEvent) : void
+        {
+            var _loc_2:Number = 0.6;
+            this._eye.alpha = 0.6;
+            this._character.alpha = _loc_2;
+            this._eye.gotoAndStop(1);
+            return;
+        }// end function
+
+        private function onMsClick(event:MouseEvent) : void
+        {
+            var _loc_2:String = null;
+            if (this._cfg.isExternal)
+            {
+                _loc_2 = /[gz]/.test(this._cfg.stockType) ? (this._cfg.BOND_URL.replace("$symbol", this._symbol)) : (this._cfg.FINANCE_URL + this._symbol + "/nc.shtml");
+                navigateToURL(new URLRequest(this._cfg.getStatUrl(_loc_2)), "_blank");
+            }
+            else
+            {
+                DisplayMgr(this.parent).goFullScreen(null, true);
+                this._wb.send(stage, this._n, this._symbol);
+            }
+            return;
+        }// end function
+
+    }
+}
