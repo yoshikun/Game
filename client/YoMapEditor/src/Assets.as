@@ -24,6 +24,12 @@ package
 		 */		
 		[Embed(source="images/curs/roadHinder.png")]
 		public static const CursorRoadHinder:Class;
+		
+		/**
+		 * 点击设置建筑路点后的鼠标图片 
+		 */		
+		[Embed(source="images/curs/roadBuilding.png")]
+		public static const CursorRoadBuilding:Class;
 
 		public function Assets()
 		{

@@ -22,7 +22,7 @@
 					Alert.show("请输入目录名称！");
 				}else{
 					var e:MapEditorEvent = new MapEditorEvent(MapEditorEvent.NEW_IMAGELIB_SUBMIT);
-					e.newName = newName.text;
+					e.data = newName.text;
 					dispatchEvent(e);
 				}
 			}

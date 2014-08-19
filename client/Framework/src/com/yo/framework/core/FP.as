@@ -4,10 +4,19 @@ package com.yo.framework.core
 
 	public class FP
 	{
+		/**
+		 * 主舞台 
+		 */		
 		public static var stage:Stage;
 		
+		/**
+		 * 舞台宽 
+		 */		
 		public static var width:uint;
 		
+		/**
+		 * 舞台高 
+		 */		
 		public static var height:uint;
 		
 		/**

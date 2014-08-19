@@ -7,6 +7,7 @@ package com.heptafish.mapeditor.layers
 	public class DragRect extends UIComponent
 	{
 		protected var rect:Sprite = new Sprite();
+		
 		public function DragRect():void{
 			init();
 		}

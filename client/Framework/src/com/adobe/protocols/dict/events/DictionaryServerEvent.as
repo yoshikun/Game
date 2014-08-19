@@ -48,12 +48,12 @@ package com.adobe.protocols.dict.events
 		
 		public function set servers(servers:Array):void
 		{
-			this._servers = servers;
+			_servers = servers;
 		}
 		
 		public function get servers():Array
 		{
-			return this._servers;
+			return _servers;
 		}
 		
 		public override function clone():Event

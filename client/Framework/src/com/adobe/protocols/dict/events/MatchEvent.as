@@ -48,12 +48,12 @@ package com.adobe.protocols.dict.events
 		
 		public function set matches(matches:Array):void
 		{
-			this._matches = matches;
+			_matches = matches;
 		}
 		
 		public function get matches():Array
 		{
-			return this._matches;
+			return _matches;
 		}
 		
 		public override function clone():Event

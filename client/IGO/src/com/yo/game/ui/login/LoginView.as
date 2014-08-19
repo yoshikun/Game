@@ -6,7 +6,7 @@ package com.yo.game.ui.login
 	import com.yo.framework.mvc.core.BaseView;
 	import com.yo.framework.mvc.interfaces.IModel;
 	import com.yo.game.core.GlobalEvent;
-	import com.yo.game.core.GlobalEventDispather;
+	import com.yo.game.core.GlobalEventDispatcher;
 	
 	import flash.display.MovieClip;
 	import flash.display.SimpleButton;
@@ -39,6 +39,7 @@ package com.yo.game.ui.login
 			
 			_accountTf = _asset["accountTf"];
 			_accountTf.text = SharedObjectManager.instance.getProperty("account");
+			
 			_passwordTf = _asset["passwordTf"];
 			_passwordTf.displayAsPassword = true;
 		}
@@ -51,7 +52,7 @@ package com.yo.game.ui.login
 		protected function __loginBtnClick(event:MouseEvent):void
 		{
 			getData();
-			GlobalEventDispather.dispatchEvent(GlobalEvent.LOGIN_BTN_CLICK);
+			GlobalEventDispatcher.dispatchEvent(GlobalEvent.LOGIN_BTN_CLICK);
 		}
 		
 		private function getData():void
@@ -63,7 +64,7 @@ package com.yo.game.ui.login
 		protected function __registBtnClick(event:MouseEvent):void
 		{
 			getData();
-			GlobalEventDispather.dispatchEvent(GlobalEvent.REGIST_BTN_CLICK);
+			GlobalEventDispatcher.dispatchEvent(GlobalEvent.REGIST_BTN_CLICK);
 		}
 		
 		override public function show():void{
@@ -79,21 +80,15 @@ package com.yo.game.ui.login
 		override public function dispose():void{
 			super.dispose();
 			
-			this.removeChildren();
-			
-			if(_loginBtn){
+			if(_loginBtn)
+			{
 				_loginBtn.removeEventListener(MouseEvent.CLICK, __loginBtnClick);
 				_loginBtn = null;
 			}
-			if(_registBtn){
+			if(_registBtn)
+			{
 				_registBtn.removeEventListener(MouseEvent.CLICK, __registBtnClick);
 				_registBtn = null;
-			}
-			if(_asset){
-				if(_asset.parent){
-					_asset.parent.removeChild(this);
-				}
-				_asset = null;
 			}
 		}
 	}

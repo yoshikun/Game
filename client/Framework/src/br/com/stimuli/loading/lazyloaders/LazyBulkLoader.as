@@ -45,7 +45,7 @@ package br.com.stimuli.loading.lazyloaders{
          */
         override public function start(numConnections : int = -1):void {
             if (numConnections > 0){
-                this._numConnections = numConnections;
+                _numConnections = numConnections;
             }
             lazy_loader::_lazyLoader = new URLLoader(lazy_loader::_lazyTheURL);
             lazy_loader::_lazyLoader.addEventListener(Event.COMPLETE, lazy_loader::_lazyOnComplete, false, 0, true);

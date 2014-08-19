@@ -9,30 +9,17 @@ package com.heptafish.mapeditor.utils
 	
 	public class HeptaFishXmlWriter extends EventDispatcher
 	{
-        private var _urlStr:String;
-        private var _file:File;
-        private var _xml:XML;
-        private var _fileStream:FileStream;
-        
-		public function HeptaFishXmlWriter(tgareXml:XML,url:String)
+		public function HeptaFishXmlWriter(model:MapModel, url:String)
 		{
-			_xml = new XML();
-            _urlStr = File.applicationDirectory.nativePath;
-            _xml = tgareXml;
-            _file = new File();
-            _urlStr = _urlStr.replace(/\\/g, "/");
-            _file = _file.resolvePath(_urlStr + url);
-            _fileStream = new FileStream();
-            return;
+            url = File.applicationDirectory.nativePath.replace(/\\/g, "/") + url;
+			
+            var file:File = new File(url);
+            var fileStream:FileStream = new FileStream();
+			
+			var xml:XML = MapEditorUtils.getMapXml(model);
+			fileStream.openAsync(file, FileMode.WRITE);
+			fileStream.writeUTFBytes(xml);
+			Alert.show("地图文件写入成功！\n保存路径：" + file.nativePath);
 		}
-		
-		 public function writeFun() : void
-        {
-            _fileStream.openAsync(_file, FileMode.WRITE);
-            _fileStream.writeUTFBytes(_xml);
-            Alert.show("地图文件写入成功！\n保存路径：" + _file.nativePath);
-            return;
-        }
-
 	}
 }

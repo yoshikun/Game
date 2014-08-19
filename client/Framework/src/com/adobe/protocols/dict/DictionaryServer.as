@@ -39,22 +39,22 @@ package com.adobe.protocols.dict
 
 		public function set server(server:String):void
 		{
-			this._server = server;
+			_server = server;
 		}
 		
 		public function get server():String
 		{
-			return this._server;
+			return _server;
 		}
 
 		public function set description(description:String):void
 		{
-			this._description = description;
+			_description = description;
 		}
 		
 		public function get description():String
 		{
-			return this._description;
+			return _description;
 		}
 	}
 }

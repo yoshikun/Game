@@ -395,7 +395,7 @@ package br.com.stimuli.loading {
             }
             _allLoaders[name] = this;
             if (numConnections > 0){
-                this._numConnections = numConnections;
+                _numConnections = numConnections;
             }
             this.logLevel = logLevel;
             _name = name;

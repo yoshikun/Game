@@ -1,0 +1,4 @@
+<map mapName="name" mapWidth="60" mapHeight="30" loadType="0" sliceWidth="60" sliceHeight="30" preloadX="2" preloadY="2" roadType="0">
+  <floor tileWidth="60" tileHeight="30" row="2" col="1">0,0</floor>
+  <items/>
+</map>

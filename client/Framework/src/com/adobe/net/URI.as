@@ -550,18 +550,18 @@ package com.adobe.net
 		 */
 		public function copyURI(uri:URI) : void
 		{
-			this._scheme = uri._scheme;
-			this._authority = uri._authority;
-			this._username = uri._username;
-			this._password = uri._password;
-			this._port = uri._port;
-			this._path = uri._path;
-			this._query = uri._query;
-			this._fragment = uri._fragment;
-			this._nonHierarchical = uri._nonHierarchical;
+			_scheme = uri._scheme;
+			_authority = uri._authority;
+			_username = uri._username;
+			_password = uri._password;
+			_port = uri._port;
+			_path = uri._path;
+			_query = uri._query;
+			_fragment = uri._fragment;
+			_nonHierarchical = uri._nonHierarchical;
 		
-			this._valid = uri._valid;
-			this._relative = uri._relative;
+			_valid = uri._valid;
+			_relative = uri._relative;
 		}
 		
 		
@@ -591,7 +591,7 @@ package com.adobe.net
 		 */
 		public function isValid() : Boolean
 		{ 
-			return this._valid;
+			return _valid;
 		}
 		
 		
@@ -602,7 +602,7 @@ package com.adobe.net
 		 */
 		public function isAbsolute() : Boolean
 		{ 
-			return !this._relative;
+			return !_relative;
 		}
 		
 		
@@ -614,7 +614,7 @@ package com.adobe.net
 		 */
 		public function isRelative() : Boolean
 		{ 
-			return this._relative;
+			return _relative;
 		}
 		
 		
@@ -796,12 +796,12 @@ package com.adobe.net
 		}
 		public function set path(pathStr:String) : void
 		{	
-			this._path = URI.fastEscapeChars(pathStr, URI.URIpathExcludedBitmap);
+			_path = URI.fastEscapeChars(pathStr, URI.URIpathExcludedBitmap);
 		
-			if (this._scheme == UNKNOWN_SCHEME)
+			if (_scheme == UNKNOWN_SCHEME)
 			{
 				// We set the path.  This is a valid URI now.
-				this._scheme = "";
+				_scheme = "";
 			}
 		
 			// Only hierarchical URI's can have a path.
@@ -1042,7 +1042,7 @@ package com.adobe.net
 		{
 			// Schemes are never case sensitive.  Ignore case.
 			scheme = scheme.toLowerCase();
-			return (this._scheme == scheme);
+			return (_scheme == scheme);
 		}
 
 
@@ -1136,7 +1136,7 @@ package com.adobe.net
 		
 		
 			// We need the raw query string, no unescaping.
-			queryStr = this._query;
+			queryStr = _query;
 			
 			pairs = queryStr.split('&');
 			for each (pair in pairs)

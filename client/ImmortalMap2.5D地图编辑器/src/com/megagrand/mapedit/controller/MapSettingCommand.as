@@ -136,7 +136,7 @@ package com.megagrand.mapedit.controller
 			mapProxy.mapVO.px = px;
 			mapProxy.mapVO.py = py;
 			sceneMapMediator.initTileGameLayer(this.img,px,py);
-			if(this._fileData)
+			if(_fileData)
 			{
 				//加载写入的信息
 				MapAssetsManager.getInstance().sourceLoader(_fileData);
@@ -181,7 +181,7 @@ package com.megagrand.mapedit.controller
 			fileStream.readBytes( fileData, 0, fileStream.bytesAvailable );
 			fileStream.close();
 			
-			this._fileData = fileData;
+			_fileData = fileData;
 		}
 		/**打开图片控制器*/		
 		private function btnOpenImgHandler(event :MouseEvent):void

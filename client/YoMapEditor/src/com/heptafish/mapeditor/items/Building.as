@@ -1,5 +1,6 @@
 package com.heptafish.mapeditor.items
 {
+	import com.heptafish.mapeditor.layers.RoadPointLayer;
 	import com.heptafish.mapeditor.utils.ImageLoader;
 	import com.heptafish.mapeditor.utils.MapEditorConstant;
 	
@@ -10,54 +11,60 @@ package com.heptafish.mapeditor.items
 	
 	public class Building extends BaseDisplayObject
 	{
-		public var id:int;
-		public var _bitMap:Bitmap;//显示图像
-		private var _configXml:XML;//配置
-		public var init:Boolean = false;
+		private var _bitmap:Bitmap;
+		
 		private var _imageLoader:ImageLoader;
 		
-		public function Building(pid:* = null)
+		private var _info:BuildingInfo;
+		
+		private var _roadPointLayer:RoadPointLayer; //路点层
+		
+		public function Building()
 		{
-			this.id = pid;
+			initView();
 		}
 		
-		public function setBitMap(bitMapData:BitmapData):void{
-			_bitMap = new Bitmap(bitMapData);
-			addChild(_bitMap);
+		private function initView():void
+		{
+			_bitmap = new Bitmap();
+			this.addChild(_bitmap);
+			
+			_roadPointLayer = new RoadPointLayer();
+			this.addChild(_roadPointLayer);
+			
+			_imageLoader = new ImageLoader();
+			_imageLoader.addEventListener(Event.COMPLETE, __imageLoaded);
 		}
 		
-		public function reset(bitMapData:BitmapData,configXml:XML):void{
-			if(numChildren > 0)
-				removeChildAt(0);
-			_bitMap = new Bitmap(bitMapData);
-			addChild(_bitMap);
-			_configXml = configXml.copy();
+		public function update():void
+		{
+			if(_info){
+				_bitmap.bitmapData = _info.bitmapData;
+				_roadPointLayer.drawWalkableBuilding(_info.hinder, _info.originX, _info.originY, true, _info.cellWidth, _info.cellHeight);
+			}
+			else
+			{
+				
+			}
 		}
 		
-		public function get configXml():XML{
-			return _configXml;//.copy();
-		}
-		public function set configXml(configXml:XML):void{
-			_configXml = configXml.copy();
-		}
-		public function imageLoaded(evet:Event):void{
-//			var file:File = File(evet.target);
-//			_bitMap = HeptaFishImageUtils.ByteArrayToBitmap(file.data);
-//			file.removeEventListener(Event.COMPLETE,this.imageLoaded);
-			_bitMap = new Bitmap(_imageLoader.data);
-			addChild(_bitMap);
-			_imageLoader.removeEventListener(Event.COMPLETE,imageLoaded);
-			_imageLoader = null;
-//			HeptaFishGC.gc();
+		public function __imageLoaded(evet:Event):void{
+			_bitmap.bitmapData = _imageLoader.data
 		}
 		
 		public function loadImage():void{
-			_imageLoader = new ImageLoader();
-			_imageLoader.addEventListener(Event.COMPLETE,imageLoaded);
-			//trace();
-			_imageLoader.load(File(MapEditorConstant.LIB_HOME.resolvePath(String(_configXml.@file[0]))).nativePath);
+			_imageLoader.load(MapEditorConstant.LIB_HOME.resolvePath(_info.id).nativePath);
 		}
-		
 
+		public function get info():BuildingInfo
+		{
+			return _info;
+		}
+
+		public function set info(value:BuildingInfo):void
+		{
+			_info = value;
+			update();
+		}
 	}
 }

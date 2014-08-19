@@ -20,12 +20,12 @@ package com.yo.framework.manager.layer
 		/**
 		 * 游戏层 
 		 */		
-		private var _layers:Array;
+		public var layers:Vector.<GameLayer>;
 		
 		/**
 		 * 层数量 
 		 */		
-		private const COUNT:int = 9;
+		public const COUNT:int = 9;
 		
 		public function LayerManager()
 		{
@@ -33,27 +33,31 @@ package com.yo.framework.manager.layer
 		
 		public function setup(game:Game):void{
 			_container = new Sprite();
-			_layers = [];
+			layers = new Vector.<GameLayer>();
 			
 			for (var i:int = 0; i < COUNT; i++) 
 			{
-				var layer:Layer = new Layer();
+				var layer:GameLayer = new GameLayer();
+				layer.index = i;
+				layer.mouseEnabled = false;
+				layer.cacheAsBitmap = true;
 				_container.addChild(layer);
-				_layers.push(layer);
+				layers.push(layer);
 			}
 			game.addChild(_container);
 		}
 		
-		public function getLayer(index:int):Layer{
-			return _layers[index];
+		public function getLayer(index:int):GameLayer{
+			return layers[index];
 		}
 		
 		public function clear():void{
-			var len:int = _layers.length;
+			var len:int = layers.length;
 			for (var i:int = 0; i < len; i++) 
 			{
-				var layer:Layer = _layers[i];
-				if(i != Layer.UI){
+				var layer:GameLayer = layers[i];
+				if(i != GameLayer.UI)
+				{
 					layer.removeChildren();
 				}
 			}
@@ -61,7 +65,8 @@ package com.yo.framework.manager.layer
 
 		public static function get instance():LayerManager
 		{
-			if(!_instance){
+			if(!_instance)
+			{
 				_instance = new LayerManager();
 			}
 			return _instance;

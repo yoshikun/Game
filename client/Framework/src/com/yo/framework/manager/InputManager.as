@@ -62,7 +62,6 @@ package com.yo.framework.manager
 		
 		protected function __doubleClickHandler(e:MouseEvent):void
 		{
-			trace("double");
 		}
 		
 		protected function __rightClickHandler(e:MouseEvent):void
@@ -157,7 +156,7 @@ package com.yo.framework.manager
 			return _mouseY;
 		}
 		
-		public function keyDown(key:int):int
+		public function keyDown(key:int):Boolean
 		{
 			return keyStatus[key];
 		}

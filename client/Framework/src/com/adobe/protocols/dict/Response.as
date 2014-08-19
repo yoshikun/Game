@@ -40,32 +40,32 @@ package com.adobe.protocols.dict
 
 		public function set code(code:uint):void
 		{
-			this._code = code;
+			_code = code;
 		}
 
 		public function set headerText(headerText:String):void
 		{
-			this._headerText = headerText;
+			_headerText = headerText;
 		}
 
 		public function set body(body:String):void
 		{
-			this._body = body;
+			_body = body;
 		}
 
 		public function get code():uint
 		{
-			return this._code;
+			return _code;
 		}
 
 		public function get headerText():String
 		{
-			return this._headerText;
+			return _headerText;
 		}
 
 		public function get body():String
 		{
-			return this._body;
+			return _body;
 		}
 	}
 }

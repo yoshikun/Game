@@ -2,6 +2,16 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="com.yo.mvc.core.BaseComponent"/>
+    <classEntry path="com.yo.framework.objects.IRenderer"/>
+    <classEntry path="com.yo.framework.objects.IEntity"/>
+    <classEntry path="com.yo.framework.objects.IAnimator"/>
+    <classEntry path="com.yo.framework.objects.Animation"/>
+    <classEntry path="com.yo.framework.objects.BitmapAnimation"/>
+    <classEntry path="com.yo.framework.objects.SpriteSheet"/>
+    <classEntry path="com.yo.framework.mvc.interfaces.IVisible"/>
+    <classEntry path="com.yo.framework.manager.scene.IScene"/>
+    <classEntry path="com.yo.framework.objects.animator.BitmapAnimator"/>
+    <classEntry path="com.yo.framework.objects.animator.MovieClipAnimator"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

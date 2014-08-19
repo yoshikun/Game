@@ -13,6 +13,8 @@ package com.yo.game.core
 		
 		public static const REGIST_BTN_CLICK:String = "registBtnClick";
 		
+		public static const DECODE_COMPLETE:String = "decode_complete";
+		
 		private var _data:Object;
 		
 		public function GlobalEvent(type:String, data:Object = null)

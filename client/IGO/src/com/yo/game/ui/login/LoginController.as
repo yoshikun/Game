@@ -5,16 +5,16 @@ package com.yo.game.ui.login
 	import com.yo.framework.manager.resource.ResourceManager;
 	import com.yo.framework.mvc.core.BaseController;
 	import com.yo.framework.net.ProtocolEvent;
-	import com.yo.game.core.Config;
+	import com.yo.game.core.Global;
 	import com.yo.game.core.GlobalEvent;
-	import com.yo.game.core.GlobalEventDispather;
-	import com.yo.game.enum.State;
+	import com.yo.game.core.GlobalEventDispatcher;
+	import com.yo.game.enum.SceneName;
 	import com.yo.game.net.NetManager;
 	import com.yo.game.net.Protocol;
 	import com.yo.game.net.request.login.LoginGateRequest;
 	import com.yo.game.net.response.login.LoginGateResponse;
-	import com.yo.game.net.response.login.LoginResponse;
-	import com.yo.game.scene.SceneManager;
+	import com.yo.game.net.response.login.SelectRoleInfoResponse;
+	import com.yo.game.scene.GameSceneManager;
 	
 	import flash.events.Event;
 	
@@ -28,10 +28,17 @@ package com.yo.game.ui.login
 		override protected function initEvent():void{
 			super.initEvent();
 			
-			GlobalEventDispather.addEventListener(GlobalEvent.LOGIN_BTN_CLICK, __loginBtnClick);
+			GlobalEventDispatcher.addEventListener(GlobalEvent.LOGIN_BTN_CLICK, __loginBtnClick);
 			
 			NetManager.instance.addEventListener(Event.CONNECT, __connect);
 			NetManager.instance.addEventListener(Protocol.LOGIN_GATE, __loginGateResponse);
+			NetManager.instance.addEventListener(Protocol.SELECT_ROLE_INFO, __selectRoleInfoResponse);
+		}
+		
+		private function __selectRoleInfoResponse(e:ProtocolEvent):void
+		{
+			var r:SelectRoleInfoResponse = e.response as SelectRoleInfoResponse;
+			
 		}
 		
 		override protected function init():void{
@@ -39,6 +46,9 @@ package com.yo.game.ui.login
 			show();
 		}
 		
+		/**
+		 * 点击登录
+		 */		
 		private function __loginBtnClick(e:GlobalEvent):void
 		{
 			requestConnect();
@@ -49,8 +59,8 @@ package com.yo.game.ui.login
 		 */		
 		private function requestConnect():void
 		{
-			Log.getLog(this).debug("开始连接 " +　Config.host + ":" + Config.port);
-			NetManager.instance.connect(Config.host, Config.port);	
+			Log.getLog(this).debug("开始连接 " +　Global.host + ":" + Global.port);
+			NetManager.instance.connect(Global.host, Global.port);	
 		}
 		
 		/**
@@ -62,7 +72,7 @@ package com.yo.game.ui.login
 			switch(r.result){
 				case 0:
 					Log.getLog(this).debug("登陆成功");
-					SceneManager.instance.changeState(State.LOAD_SCENE);
+					GameSceneManager.instance.changeScene(SceneName.LOAD_SCENE);
 					break;
 				case 1:
 					break;
@@ -92,26 +102,31 @@ package com.yo.game.ui.login
 			NetManager.instance.send(r);
 		}
 		
-		override protected function initModel():void{
+		override protected function initModel():void
+		{
 			_model = new LoginModel();
 		}
 		
-		override protected function initView():void{
+		override protected function initView():void
+		{
 			super.initView();
 			_view = new LoginView(_model);
 		}
-		override protected function loadResource():void{
+		override protected function loadResource():void
+		{
 			loadResourceName("Login");
 		}
 		
-		public function get model():LoginModel{
+		public function get model():LoginModel
+		{
 			return _model as LoginModel;
 		}
 		
-		override public function dispose():void{
+		override public function dispose():void
+		{
 			super.dispose();
 			
-			GlobalEventDispather.removeEventListener(GlobalEvent.LOGIN_BTN_CLICK, __loginBtnClick);
+			GlobalEventDispatcher.removeEventListener(GlobalEvent.LOGIN_BTN_CLICK, __loginBtnClick);
 			
 			NetManager.instance.removeEventListener(Event.CONNECT, __connect);
 			NetManager.instance.removeEventListener(Protocol.LOGIN_GATE, __loginGateResponse);

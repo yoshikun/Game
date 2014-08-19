@@ -13,17 +13,12 @@
 			
 			import mx.managers.PopUpManager;
 			
-			private var serverFlag:String           = Global.serverFlag;
-			private var version:String              = Global.version;
-			
-			[Bindable]
-			private var versionStr:String = "MapEditor V" + Global.versionNo;
-			
 			private var urlLoader:URLLoader  = new URLLoader();
 			
 			private function initPanel(evet:Event):void{
 				newVersion.visible = false;
-				if(Global.running == false){
+				if(Global.running == false)
+				{
 					checkVersion();
 				}
 				
@@ -39,12 +34,10 @@
 			 * 验证版本
 			 */
 			private function checkVersion():void{
-				var date:Date      = new Date();
-				var dateStr:String = serverFlag;
-				var rand:Number    = Math.random();
+				var date:Date = new Date();
+				var rand:Number = Math.random();
 				
-				var urlStr:String  = "http://stat.eb163.com/me/mapeditorstat.php?ver=" + version + "&date=" + dateStr + "&rand=" + rand;
-				
+				var urlStr:String  = "http://fxgox.php?ver=" + Global.version + "&date=" + Global.date + "&rand=" + rand;
 				var urlRequest:URLRequest = new URLRequest(urlStr);
 				
                 urlLoader.addEventListener(Event.COMPLETE, onURLLoaderCompleteHandler);
@@ -109,15 +102,15 @@
 	<mx:Fade alphaFrom="0" alphaTo="1" duration="100" id="showEffect" />
 	<mx:Rotate duration="1500" originX="{logo.width/2+1.5}" originY="{logo.height/2+4}" id="imageShow" />
 
-	<mx:Text x="266" y="66" text="{versionStr}" height="35" fontFamily="Times New Roman" fontSize="20" color="#32B1CC"/>
-	<mx:Text x="185" y="154" text="技术开发： iiacm、baiyu" fontFamily="Times New Roman" fontSize="12" height="21"/>
-	<mx:Text x="185" y="125" text="策划：小超" fontFamily="Times New Roman" fontSize="12"/>
-	<mx:Text x="185" y="185" text="技术支持：" fontFamily="Times New Roman" fontSize="12"/>
+	<mx:Text x="185" y="66" width="121" height="35" color="#32B1CC" fontFamily="Times New Roman"
+			 fontSize="26" text="MapEditor"/>
+	<mx:Text x="185" y="154" text="美术支持： seki" fontFamily="Times New Roman" fontSize="12" height="21"/>
+	<mx:Text x="185" y="125" text="策划支持： yoshikun" fontFamily="Times New Roman" fontSize="12"/>
+	<mx:Text x="185" y="185" text="技术支持： yoshikun" fontFamily="Times New Roman" fontSize="12"/>
 	<mx:Image id="logo" creationCompleteEffect="{imageShow}" source="@Embed(source='images/icons/logo120.png')" y="86" x="38"/>
-	<mx:Text x="185" y="62" text="EB"  height="35" fontFamily="Georgia" fontSize="24" color="#006699" width="38"/>
-	<mx:Text x="217" y="64" text="163"  height="35" fontFamily="Times New Roman" fontSize="24" color="#FF6600"/>
-	<mx:Text x="185" y="214" text="帮助&amp;反馈：" fontFamily="Times New Roman" fontSize="12"/>
-	<mx:LinkButton x="245" y="211" label="http://www.9ria.com/"  click="clickToUrl('http://www.9ria.com/')" fontSize="12" fontFamily="Times New Roman"/>
-	<mx:LinkButton x="345" y="182" label="http://www.9ria.com/"  click="clickToUrl('http://www.9ria.com/')" fontSize="12" fontFamily="Times New Roman"/>
+	<mx:Text x="185" y="214" text="帮助反馈：" fontFamily="Times New Roman" fontSize="12"/>
+	<mx:LinkButton x="245" y="211" width="142" label="http://www.9ria.com/"
+				   click="clickToUrl('http://www.9ria.com/')" fontFamily="Times New Roman"
+				   fontSize="12" fontWeight="normal" textAlign="left"/>
 	<mx:Text id="newVersion" selectable="true" x="185" y="243" width="292" height="109" htmlText="{Global.news}" />
 </mx:Panel>

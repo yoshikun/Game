@@ -4,8 +4,8 @@ package com.yo.game.ui.createRole
 	import com.yo.framework.manager.ui.UIManager;
 	import com.yo.framework.mvc.core.BaseView;
 	import com.yo.framework.mvc.interfaces.IModel;
-	import com.yo.game.enum.State;
-	import com.yo.game.scene.SceneManager;
+	import com.yo.game.enum.SceneName;
+	import com.yo.game.scene.GameSceneManager;
 	
 	import flash.display.MovieClip;
 	import flash.display.SimpleButton;
@@ -39,7 +39,7 @@ package com.yo.game.ui.createRole
 		
 		private function __enterBtnClick(e:MouseEvent):void
 		{
-			SceneManager.instance.changeState(State.CITY_SCENE);
+			GameSceneManager.instance.changeScene(SceneName.CITY_SCENE);
 		}
 		
 		override public function show():void{

@@ -1,5 +1,6 @@
 package com.yo.game.scene
 {
+	import com.yo.framework.scene.GameScene;
 	import com.yo.game.ui.createRole.CreateRoleController;
 
 	public class CreateRoleScene extends GameScene

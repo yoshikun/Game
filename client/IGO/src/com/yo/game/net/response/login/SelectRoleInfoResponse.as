@@ -36,7 +36,8 @@ package com.yo.game.net.response.login
                 selectUserInfo.nickName = p.readMultiByte(32, "utf-8");
                 selectUserInfo.country = p.readUnsignedShort();
                 selectUserInfo.level = p.readUnsignedShort();
-                selectUserInfo.face = p.readUnsignedByte();
+                selectUserInfo.sex = p.readUnsignedByte();
+                selectUserInfo.career = p.readUnsignedByte();
                 selectUserInfo.bitmask = p.readUnsignedInt();
                 infoList.push(selectUserInfo);
             }

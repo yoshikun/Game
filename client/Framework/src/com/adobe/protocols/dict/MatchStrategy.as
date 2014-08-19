@@ -39,28 +39,28 @@ package com.adobe.protocols.dict
 
 		public function MatchStrategy(name:String, description:String)
 		{
-			this._name = name;
-			this._description = description;
+			_name = name;
+			_description = description;
 		}
 
 		public function set name(name:String):void
 		{
-			this._name = name;
+			_name = name;
 		}
 
 		public function get name():String
 		{
-			return this._name;
+			return _name;
 		}
 
 		public function set description(description:String):void
 		{
-			this._description = description;
+			_description = description;
 		}
 
 		public function get description():String
 		{
-			return this._description;
+			return _description;
 		}
 	}
 }

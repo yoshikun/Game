@@ -1,5 +1,8 @@
 package com.yo.framework.manager.resource
 {
+	import br.com.stimuli.loading.BulkLoader;
+	import br.com.stimuli.loading.loadingtypes.LoadingItem;
+	
 	import flash.events.Event;
 	import flash.system.ApplicationDomain;
 	import flash.system.Capabilities;
@@ -7,12 +10,14 @@ package com.yo.framework.manager.resource
 	import flash.system.SecurityDomain;
 	import flash.utils.Dictionary;
 	
-	import br.com.stimuli.loading.BulkLoader;
-	import br.com.stimuli.loading.loadingtypes.LoadingItem;
-	
 	public class ResourceManager
 	{
 		private static var _instance:ResourceManager;
+		
+		/**
+		 * 内嵌库数组 
+		 */
+		private var _resources:Dictionary = new Dictionary();
 		
 		/**
 		 * 资源路径配置 
@@ -29,7 +34,15 @@ package com.yo.framework.manager.resource
 		 */
 		private var _context:LoaderContext;
 		
+		/**
+		 * 上下文列表 
+		 */		
 		private var _contexts:Dictionary = new Dictionary();
+		
+		/**
+		 * 解析数据列表 
+		 */		
+		public var decodeList:Array = [];
 		
 		public function ResourceManager()
 		{
@@ -75,12 +88,14 @@ package com.yo.framework.manager.resource
 		 */		
 		public function start(loaderName:String, loadComplete:Function = null):void{
 			var loader:BulkLoader = getLoader(loaderName);
-			if(!loader.isRunning){
+			if(!loader.isRunning)
+			{
 				loader.start();
 			}
 			
 			loader.addEventListener(BulkLoader.COMPLETE, onAllComplete(loader, loadComplete));
-			if(loader._isAllDoneP()){
+			if(loader._isAllDoneP())
+			{
 				loader.dispatchEvent(new Event(BulkLoader.COMPLETE));
 			}
 		}
@@ -90,7 +105,8 @@ package com.yo.framework.manager.resource
 		 */		
 		private function onAllComplete(loader:BulkLoader, callback:Function):Function{
 			return function(e:Event):void{
-				if (callback != null){
+				if (callback != null)
+				{
 					callback(e);
 				}
 				loader.removeEventListener(BulkLoader.COMPLETE, arguments.callee);
@@ -102,7 +118,8 @@ package com.yo.framework.manager.resource
 		 */		
 		public function getLoader(loaderName:String):BulkLoader{
 			var loader:BulkLoader = BulkLoader.getLoader(loaderName);
-			if(!loader){
+			if(!loader)
+			{
 				loader = new BulkLoader(loaderName);
 			}
 			return loader;
@@ -112,7 +129,8 @@ package com.yo.framework.manager.resource
 		 * 获取资源 
 		 */        
 		public function getResource(resourceName:String, resourceType:String, loaderName:String = ""):*{
-			if(loaderName == ""){
+			if(loaderName == "")
+			{
 				loaderName = resourceName;
 			}
 			var id:String = getResourceId(resourceName, resourceType);
@@ -124,13 +142,16 @@ package com.yo.framework.manager.resource
 		/**
 		 * 获取loader内部资源 
 		 */        
-		public function getLoadingItem(resourceName:String, resourceType:String, loaderName:String = ""):LoadingItem{
-			if(loaderName == ""){
+		public function getLoadingItem(resourceName:String, resourceType:String, loaderName:String = ""):LoadingItem
+		{
+			if(loaderName == "")
+			{
 				loaderName = resourceName;
 			}
 			var loader:BulkLoader = getLoader(loaderName);
 			var item:LoadingItem;
-			if(loader){
+			if(loader)
+			{
 				var id:String = getResourceId(resourceName, resourceType);
 				item = loader.get(id);
 			}
@@ -144,7 +165,6 @@ package com.yo.framework.manager.resource
 		{
 			//获得资源标示符
 			var id:String = getResourceId(resourceName, resourceType);
-			
 			//获取资源配置路径
 			var url:String = getResourceUrl(resourceName, resourceType);
 			
@@ -172,6 +192,19 @@ package com.yo.framework.manager.resource
 				}
 				item.removeEventListener(Event.COMPLETE, arguments.callee);
 			}
+		}
+		
+		public function removeResource(resourceName:String, resourceType:String):void{
+			var id:String = getResourceId(resourceName, resourceType);
+			delete _resources[id];
+		}
+		
+		/**
+		 * 设置资源 
+		 */        
+		public function setResource(resourceName:String, resourceType:String, resource:Object):void{
+			var id:String = getResourceId(resourceName, resourceType);
+			_resources[id] = resource;
 		}
 		
 		/**
@@ -246,7 +279,9 @@ package com.yo.framework.manager.resource
 					return o;
 				}
 			}
-			catch(err:Error){
+			catch(err:Error)
+			{
+				
 			}
 			return null;
 		}
@@ -266,7 +301,9 @@ package com.yo.framework.manager.resource
 					return temp;
 				}
 			}
-			catch(err:Error){
+			catch(err:Error)
+			{
+				
 			}
 			return null;
 		}
@@ -276,13 +313,15 @@ package com.yo.framework.manager.resource
 		 */        
 		public function clearLoader(name:String):void{
 			var loader:BulkLoader = BulkLoader.getLoader(name);
-			if(loader){
+			if(loader)
+			{
 				loader.clear();
 			}
 		}
 		
 		public static function get instance():ResourceManager{
-			if(!_instance){
+			if(!_instance)
+			{
 				_instance = new ResourceManager();
 			}
 			return _instance;

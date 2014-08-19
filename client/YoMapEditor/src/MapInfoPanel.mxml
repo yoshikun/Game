@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InfoPanel xmlns="*" xmlns:mx="http://www.adobe.com/2006/mxml" width="320" height="326" creationComplete="creationComplete(event)" titleStyleName="panelTitle" title="地图信息">
+	<!-- 创建地图时显示的面板 -->
+	<mx:Script>
+		<![CDATA[
+			import com.heptafish.mapeditor.events.MapEditorEvent;
+			import com.heptafish.mapeditor.utils.MapEditorConstant;
+			
+			import mx.collections.ArrayCollection;
+			import mx.managers.PopUpManager;
+			
+			private var _file:File;
+			
+            private var _mapImageFilter:FileFilter = new FileFilter("Images","*.png;*.jpg;*.gif");
+            
+			[Bindable]
+			private var loadTypeList:ArrayCollection = new ArrayCollection();
+			
+			private var _model:MapModel;
+			
+			private function creationComplete(evet:Event):void
+			{
+				_file = File.applicationDirectory;
+				selectBtn.addEventListener(MouseEvent.CLICK, __selectBtnClickHandler);
+				autoBtn.addEventListener(MouseEvent.CLICK, __autoBtnClickHandler);
+				loadTypeList.addItem({label:"单一文件模式",data:"0"});
+				loadTypeList.addItem({label:"栅格切块模式",data:"1"});
+				loadTypeChange();
+//				mapName.setFocus();
+				update();
+			}
+			
+			private function __selectBtnClickHandler(evet:Event):void
+			{
+				_file.browseForOpen("选择图片文件", [_mapImageFilter]);
+                _file.addEventListener(Event.SELECT, __fileSelectHanlder);
+			}
+			
+			private function __fileSelectHanlder(evet:Event):void
+			{
+				mapFilePath.text = _file.nativePath;
+				mapName.text = _file.name.replace("." +　_file.extension, "");
+				update();
+			}
+			
+			private function __fileProgressHanlder(evet:Event):void
+			{
+				
+			}
+			
+			private function update():void
+			{
+				_model.path = mapFilePath.text;
+				_model.mapName = mapName.text;
+				_model.mapWidth = parseFloat(mapWidth.text);
+				_model.mapHeight = parseFloat(mapHeight.text);
+				_model.cellWidth = parseFloat(cellWidth.text);
+				_model.cellHeight = parseFloat(cellHeight.text);
+				_model.sliceWidth = parseFloat(sliceWidth.text);
+				_model.sliceHeight = parseFloat(sliceHeight.text);
+				_model.preloadX = parseFloat(preloadX.text);
+				_model.preloadY = parseFloat(preloadY.text);
+				_model.loadType = int(loadType.value);
+				_model.row = int(nodeRow.text);
+				_model.col = int(nodeCol.text);
+				
+				dispatchEvent(new MapEditorEvent(MapEditorEvent.MAP_INFO_CHNAGE));
+			}
+			
+			private function loadTypeChange():void
+			{
+				var flag:String = loadType.selectedItem.data;
+				if(flag == "0"){
+					sliceWidth.enabled  = false;
+					sliceHeight.enabled = false;
+					row.enabled = false;
+					col.enabled = false;
+					preloadX.enabled = false;
+					preloadY.enabled = false;
+					mapWidth.enabled = true;
+					mapHeight.enabled = true;
+				}else{
+					sliceWidth.enabled  = true;
+					sliceHeight.enabled = true;
+					row.enabled = true;
+					col.enabled = true;
+					preloadX.enabled = true;
+					preloadY.enabled = true;
+					mapWidth.enabled = false;
+					mapHeight.enabled = false;
+				}
+				changeSlice();
+			}
+			
+			private function changeSlice():void
+			{
+				mapWidth.text = String(int(sliceWidth.text)*int(col.text));
+				mapHeight.text = String(int(sliceHeight.text)*int(row.text));
+			}
+			
+			public function closeForm():void
+			{
+				selectBtn.removeEventListener(MouseEvent.CLICK,__selectBtnClickHandler);
+				PopUpManager.removePopUp(this);
+			}
+
+			public function get model():MapModel
+			{
+				return _model;
+			}
+
+			public function set model(value:MapModel):void
+			{
+				_model = value;
+			}
+
+			protected function __autoBtnClickHandler(e:MouseEvent):void
+			{
+				if(_model.bitmapData)
+				{
+					mapWidth.text = _model.bitmapData.width.toString();
+					mapHeight.text = _model.bitmapData.height.toString();
+					update();
+				}
+			}
+			
+		]]>
+	</mx:Script>
+
+	<mx:Fade alphaFrom="1" alphaTo="0" duration="100" id="removeEffect" />
+	<mx:Fade alphaFrom="0" alphaTo="1" duration="100" id="showEffect" />
+	<mx:Rotate duration="1500" id="imageShow" />
+	
+	<mx:Label x="6" y="9" width="66" text="地图名称："/>
+	<mx:Label x="6" y="44" width="66" text="地图宽度："/>
+	<mx:Label x="166" y="44" width="66" text="地图高度："/>
+	<mx:Label x="6" y="80" width="66" text="格子宽度："/>
+	<mx:Label x="166" y="80" width="66" text="格子高度："/>
+	<mx:Label x="6" y="259" width="66" text="路点行数："/>
+	<mx:Label x="166" y="259" width="66" text="路点列数："/>
+	<mx:Label x="6" y="145" width="66" text="加载模式："/>
+	<mx:Label x="6" y="115" width="66" text="地图文件："/>
+	<mx:TextInput id="mapName" x="68" y="7" width="160" tabIndex="1" text="name"/>
+	<mx:Button id="autoBtn" x="237" y="7" label="自动" fontWeight="normal" tabIndex="2"/>
+	<mx:TextInput id="mapWidth" x="68" y="42" width="62" tabIndex="3" text="{String(int(sliceWidth.text)*int(col.text))}" restrict="0-9" change="update()"/>
+	<mx:TextInput id="mapHeight" x="228" y="42" width="62" tabIndex="4" text="{String(int(sliceHeight.text)*int(row.text))}" restrict="0-9" change="update()"/>
+	<mx:TextInput id="cellWidth" x="68" y="78" width="62" tabIndex="5" text="60" restrict="0-9" change="update()"/>
+	<mx:TextInput id="cellHeight" x="228" y="78" width="62" tabIndex="6" text="30" restrict="0-9" change="update()"/>
+	
+	<mx:TextInput x="68" y="112" width="160" id="mapFilePath" tabIndex="7" enabled="false"/>
+	
+	<mx:Button id="selectBtn" x="237" y="112" label="选择" fontWeight="normal" tabIndex="8"/>
+	<mx:ComboBox id="loadType" x="68" y="143" change="{loadTypeChange()}"
+				 dataProvider="{loadTypeList}" fontWeight="normal" tabIndex="9"></mx:ComboBox>
+	<mx:Label x="6" y="175" width="66" text="栅格宽度："/>
+	<mx:Label x="166" y="175" width="66" text="栅格高度："/>
+	<mx:TextInput id="sliceWidth" tabIndex="10" x="68"  y="173" width="62" change="update()" restrict="0-9" maxChars="9" text="60"/>
+	<mx:TextInput id="sliceHeight" tabIndex="11" x="228"  y="173" width="62" change="update()" restrict="0-9" maxChars="9" text="30"/>
+	<mx:Label x="166" y="203" width="66" text="栅格行数："/>
+	<mx:Label x="6" y="203" width="66" text="栅格列数："/>
+	<mx:TextInput id="row" tabIndex="13" width="62" x="228" y="201" change="update()" restrict="0-9" maxChars="9" text="1" />
+	<mx:TextInput id="col" tabIndex="12" width="62" x="68" y="201" change="update()" restrict="0-9" maxChars="9" text="1" />
+	<mx:Label text="加载行数：" x="166" y="231" width="66"/>
+	<mx:Label x="6" y="231" width="66" text="加载列数："/>
+	<mx:TextInput id="preloadX" tabIndex="15" width="62" x="228" y="229" restrict="0-9" maxChars="9" text="2" change="update()"/>
+	<mx:TextInput id="preloadY" tabIndex="14" width="62" x="68" y="229" restrict="0-9" maxChars="9" text="2" change="update()"/>
+	<mx:Label id="nodeRow" x="68" y="259" width="63.5" text="{Math.floor(Number(this.mapHeight.text) / Number(this.cellHeight.text))*2}"/>
+	<mx:Label id="nodeCol" x="228" y="259" width="63.5" text="{Math.round(Number(this.mapWidth.text) / Number(this.cellWidth.text))}"/>
+</InfoPanel>

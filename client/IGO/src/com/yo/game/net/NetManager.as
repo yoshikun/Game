@@ -3,7 +3,7 @@ package com.yo.game.net
 	import com.yo.framework.logger.Log;
 	import com.yo.framework.net.ByteSocket;
 	import com.yo.framework.net.IRequest;
-	import com.yo.game.core.Config;
+	import com.yo.game.core.Global;
 	
 	import flash.events.Event;
 
@@ -50,7 +50,7 @@ package com.yo.game.net
 		private static function __closeHandler(event:Event):void
 		{
 			var str:String = "断开链接";
-			switch(Config.loginState){
+			switch(Global.loginState){
 				case 2:
 					str = "你的账号在其他地方登录";
 					break;
