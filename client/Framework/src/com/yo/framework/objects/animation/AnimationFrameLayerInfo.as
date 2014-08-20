@@ -19,7 +19,7 @@ package com.yo.framework.objects.animation
 		/**
 		 * 图素
 		 */		
-		public var texture:*;
+		public var texture:BitmapData;
 		
 		public function AnimationFrameLayerInfo()
 		{

@@ -7,6 +7,7 @@ package com.yo.game.objects
 	import com.yo.game.data.vo.EntityVo;
 	
 	import flash.display.DisplayObject;
+	import flash.geom.Vector3D;
 
 	public class EntityFactory
 	{
@@ -21,8 +22,10 @@ package com.yo.game.objects
 			var player:Player = new Player();
 			player.animator = new MovieClipAnimator(vo.name, vo.type);
 			player.animator.play("idle");
-			player.renderer = new BitmapRenderer();
+			player.renderer = new BitmapRenderer(player.animator);
 			player.vo = vo;
+			player.renderer.x = 150;
+			player.renderer.y = 150;
 			scene.addEntity(player);
 			scene.addChild(player.renderer as DisplayObject, GameLayer.OBJECT);
 			return player;

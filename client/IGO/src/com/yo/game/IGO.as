@@ -13,7 +13,7 @@ package com.yo.game
 	
 	[Frame(factoryClass="com.yo.game.core.PreLoader")]
 	
-	[SWF(width="1000", height="600", frameRate="60", backgroundColor="#0")]
+	[SWF(width="1000", height="600", frameRate="30", backgroundColor="#0")]
 	public class IGO extends Game
 	{
 		public function IGO()
