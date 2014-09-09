@@ -23,26 +23,29 @@ package com.yo.framework.objects.animation
 		}
 		
 		public function update():void {
-			var nowFrameIndex:int = Math.min(_info.totalFrames - 1, int(_costTime / _info.delay));
-			
-			currentFrameIndex = nowFrameIndex;
-			
-			if(_costTime < _totalTime)
+			if(_info)
 			{
-				_costTime += FP.elapsed;
+				var nowFrameIndex:int = Math.min(_info.totalFrames - 1, int(_costTime / _info.delay));
+				
+				currentFrameIndex = nowFrameIndex;
+				
+				if(_costTime < _totalTime)
+				{
+					_costTime += FP.elapsed;
+				}
+				
+				if(_costTime >= _totalTime)
+				{
+					if(!_info.loop)
+					{
+						end();
+					}
+					else
+					{
+						resume();
+					}
+				}
 			}
-			
-			if(_costTime >= _totalTime)
-			{
-				if(!_info.loop)
-				{
-					end();
-				}
-				else
-				{
-					resume();
-				}
-			} 
 		}
 		
 		public function play():void

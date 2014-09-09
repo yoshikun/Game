@@ -72,20 +72,19 @@ package com.yo.framework.objects.animator
 					{
 						animationName = mc.currentLabel;
 						var animation:BitmapAnimation = getAnimation(animationName) as BitmapAnimation;
-						var info:AnimationInfo = new AnimationInfo();
-						info.totalFrames = totalFrames;
-						animation.info = info;
+						var animationInfo:AnimationInfo = new AnimationInfo();
+						animationInfo.totalFrames = totalFrames;
+						animation.info = animationInfo;
 						
 						totalFrames = 0;
 					}
 				}
 				
-				var len:int = mc.totalFrames;
 				for (var i:int = 0; i < len; i++) 
 				{
 					mc.gotoAndStop(i + 1);
 					
-					var info:AnimationFrameInfo = new AnimationFrameInfo();
+					var frameInfo:AnimationFrameInfo = new AnimationFrameInfo();
 					var bd:BitmapData = new BitmapData(mc.width, mc.height);
 					
 					advanceChild(mc, i);
@@ -98,9 +97,9 @@ package com.yo.framework.objects.animator
 					var m:Matrix = new Matrix();
 					m.translate(-bounds.x, -bounds.y);
 					bd.draw(mc, null, null, null, null, true);
-					info.texture = bd;
+					frameInfo.texture = bd;
 					
-					animation.frame.push(info);
+					animation.frame.push(frameInfo);
 				}
 			}
 		}
