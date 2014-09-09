@@ -3,6 +3,8 @@ package com.yo.framework.objects.animation
 	import com.yo.framework.core.FP;
 	import com.yo.framework.interfaces.IAnimation;
 	
+	import flash.display.BitmapData;
+	
 	public class Animation implements IAnimation
 	{
 		public var currentFrameIndex:int = 0;
@@ -12,8 +14,6 @@ package com.yo.framework.objects.animation
 		protected var _info:AnimationInfo;
 		
 		protected var _costTime:Number = 0.0;
-		
-		protected var _totalTime:Number = 0.0;
 		
 		protected var _frame:Vector.<AnimationFrameInfo>;
 		
@@ -29,12 +29,20 @@ package com.yo.framework.objects.animation
 				
 				currentFrameIndex = nowFrameIndex;
 				
+<<<<<<< HEAD
 				if(_costTime < _totalTime)
+=======
+				if(_costTime < _info.totalTime)
+>>>>>>> f792bdd4fc93d609646d6ac1690b50cbadf659db
 				{
 					_costTime += FP.elapsed;
 				}
 				
+<<<<<<< HEAD
 				if(_costTime >= _totalTime)
+=======
+				if(_costTime >= _info.totalTime)
+>>>>>>> f792bdd4fc93d609646d6ac1690b50cbadf659db
 				{
 					if(!_info.loop)
 					{
@@ -44,7 +52,11 @@ package com.yo.framework.objects.animation
 					{
 						resume();
 					}
+<<<<<<< HEAD
 				}
+=======
+				} 
+>>>>>>> f792bdd4fc93d609646d6ac1690b50cbadf659db
 			}
 		}
 		
@@ -58,14 +70,29 @@ package com.yo.framework.objects.animation
 		
 		public function resume():void
 		{
+			currentFrameIndex = 0;
+			_costTime = 0;
 		}
-		
+
 		public function stop():void
 		{
 		}
 		
 		public function end():void
 		{
+		}
+		
+		public function get resource():BitmapData
+		{
+			if(_frame.length > 0)
+			{
+				var info:AnimationFrameInfo = _frame[currentFrameIndex] as AnimationFrameInfo;
+				if(info)
+				{
+					return info.texture;
+				}
+			}
+			return null;
 		}
 		
 		public function dispose():void

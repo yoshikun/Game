@@ -16,7 +16,8 @@ package com.yo.framework.objects.animation
 			_spriteSheet = spriteSheet;
 		}
 		
-		override public function dispose():void {
+		override public function dispose():void
+		{
 			super.dispose();
 			if(_spriteSheet)
 			{

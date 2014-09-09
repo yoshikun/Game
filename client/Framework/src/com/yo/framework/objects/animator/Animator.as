@@ -30,6 +30,8 @@ package com.yo.framework.objects.animator
 		 */		
 		protected var _currentAnimationName:String;
 		
+		protected var _currentAnimation:IAnimation;
+		
 		public function Animator(name:String = "", type:String = "animation")
 		{
 			_name = name;
@@ -63,6 +65,7 @@ package com.yo.framework.objects.animator
 		public function play(animationName:String):void
 		{
 			_currentAnimationName = animationName;
+			_currentAnimation = getAnimation(_currentAnimationName);
 		}
 		
 		public function load():void
@@ -76,10 +79,9 @@ package com.yo.framework.objects.animator
 		
 		public function update():void
 		{
-			var animation:IAnimation = getAnimation(_currentAnimationName);
-			if(animation)
+			if(currentAnimation)
 			{
-				animation.update();
+				currentAnimation.update();
 			}
 		}
 		
@@ -105,6 +107,11 @@ package com.yo.framework.objects.animator
 		public function set animations(value:Vector.<IAnimation>):void
 		{
 			_animations = value;
+		}
+		
+		public function get currentAnimation():IAnimation
+		{
+			return _currentAnimation;
 		}
 	}
 }

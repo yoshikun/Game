@@ -2,6 +2,8 @@ package com.yo.framework.interfaces
 {
 	import com.yo.framework.mvc.interfaces.IDisposable;
 	import com.yo.framework.mvc.interfaces.IUpdateable;
+	
+	import flash.display.BitmapData;
 
 	public interface IAnimation extends IDisposable, IUpdateable
 	{
@@ -18,5 +20,7 @@ package com.yo.framework.interfaces
 		function stop():void;
 		
 		function end():void;
+		
+		function get resource():BitmapData;
 	}
 }

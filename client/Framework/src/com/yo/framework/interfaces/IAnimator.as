@@ -17,5 +17,7 @@ package com.yo.framework.interfaces
 		function getAnimation(animationName:String):IAnimation;
 		
 		function play(animationName:String):void;
+		
+		function get currentAnimation():IAnimation;
 	}
 }

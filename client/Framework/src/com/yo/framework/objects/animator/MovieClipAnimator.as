@@ -2,6 +2,7 @@ package com.yo.framework.objects.animator
 {
 	import br.com.stimuli.loading.loadingtypes.LoadingItem;
 	
+	import com.yo.framework.core.FP;
 	import com.yo.framework.interfaces.IAnimation;
 	import com.yo.framework.manager.resource.ResourceManager;
 	import com.yo.framework.objects.animation.AnimationFrameInfo;
@@ -27,6 +28,8 @@ package com.yo.framework.objects.animator
 		{
 			super.init();
 			
+			_animations = new Vector.<IAnimation>();
+			
 			load();
 		}
 		
@@ -34,6 +37,7 @@ package com.yo.framework.objects.animator
 		{
 			var animation:BitmapAnimation = new BitmapAnimation();
 			animation.name = animationName;
+			_animations.push(animation);
 			return animation;
 		}
 		
@@ -61,31 +65,61 @@ package com.yo.framework.objects.animator
 			var mc:MovieClip = item.content as MovieClip;
 			if(mc)
 			{
+				var animation:BitmapAnimation;
 				var totalFrames:int = 0;
 				var animationName:String = "";
+				
 				var len:int = mc.totalFrames;
 				for (var j:int = 0; j < len; j++) 
 				{
 					totalFrames++;
-					mc.gotoAndStop(j + 1);
 					if(animationName != mc.currentLabel)
 					{
+						if(animation)
+						{
+							//这里有问题
+							var animationInfo:AnimationInfo = new AnimationInfo();
+							animationInfo.totalFrames = totalFrames;
+							animationInfo.delay = 1 / 12;
+							animationInfo.totalTime = totalFrames * 1 / 12;
+							animationInfo.loop = true;
+							animation.info = animationInfo;
+						}
 						animationName = mc.currentLabel;
+<<<<<<< HEAD
 						var animation:BitmapAnimation = getAnimation(animationName) as BitmapAnimation;
 						var animationInfo:AnimationInfo = new AnimationInfo();
 						animationInfo.totalFrames = totalFrames;
 						animation.info = animationInfo;
 						
+=======
+>>>>>>> f792bdd4fc93d609646d6ac1690b50cbadf659db
 						totalFrames = 0;
+						
+						animation = getAnimation(animationName) as BitmapAnimation;
 					}
 				}
 				
 				for (var i:int = 0; i < len; i++) 
 				{
 					mc.gotoAndStop(i + 1);
+
+					totalFrames++;
+					if(animationName != mc.currentLabel)
+					{
+						animationName = mc.currentLabel;
+						
+						animation = getAnimation(animationName) as BitmapAnimation;
+						var animationInfo:AnimationInfo = new AnimationInfo();
+						totalFrames = 0;
+					}
 					
 					var frameInfo:AnimationFrameInfo = new AnimationFrameInfo();
+<<<<<<< HEAD
 					var bd:BitmapData = new BitmapData(mc.width, mc.height);
+=======
+					var bd:BitmapData = new BitmapData(mc.width, mc.height, true, 0x0);
+>>>>>>> f792bdd4fc93d609646d6ac1690b50cbadf659db
 					
 					advanceChild(mc, i);
 					var bounds:Rectangle = DisplayObjectUtil.getDisplayObjectRectangle(mc, true);
@@ -96,7 +130,11 @@ package com.yo.framework.objects.animator
 					bounds.height = Math.ceil(bounds.height);
 					var m:Matrix = new Matrix();
 					m.translate(-bounds.x, -bounds.y);
+<<<<<<< HEAD
 					bd.draw(mc, null, null, null, null, true);
+=======
+					bd.draw(mc, m, null, null, null, true);
+>>>>>>> f792bdd4fc93d609646d6ac1690b50cbadf659db
 					frameInfo.texture = bd;
 					
 					animation.frame.push(frameInfo);

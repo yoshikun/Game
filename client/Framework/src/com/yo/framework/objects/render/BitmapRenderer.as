@@ -6,6 +6,7 @@ package com.yo.framework.objects.render
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.MovieClip;
 	
 	public class BitmapRenderer extends Bitmap implements IRenderer
 	{
@@ -13,9 +14,10 @@ package com.yo.framework.objects.render
 		
 		private var _animator:IAnimator;
 		
-		public function BitmapRenderer(bitmapData:BitmapData=null, pixelSnapping:String="auto", smoothing:Boolean=false)
+		public function BitmapRenderer(animator:IAnimator)
 		{
-			super(bitmapData, pixelSnapping, smoothing);
+			super(null, "auto", false);
+			_animator = animator;
 		}
 		
 		public function dispose():void
@@ -24,6 +26,7 @@ package com.yo.framework.objects.render
 		
 		public function render():void
 		{
+			this.bitmapData = _animator.currentAnimation.resource;
 		}
 
 		public function get entity():IEntity

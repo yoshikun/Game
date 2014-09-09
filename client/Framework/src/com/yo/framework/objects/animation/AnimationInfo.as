@@ -55,6 +55,11 @@ package com.yo.framework.objects.animation
 		 */		
 		public var frames:Vector.<AnimationFrameInfo>;
 		
+		/**
+		 * 用于计算播放时间 
+		 */		
+		public var totalTime:Number;
+		
 		public function AnimationInfo(){
 			
 		}
