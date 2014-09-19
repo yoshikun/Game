@@ -30,6 +30,9 @@ endfunction
 
 " 设置ctrl+s映射
 imap <C-s> <Esc>:w<CR>
+nmap <C-s> <Esc>:w<CR>
+" 命令模式下回车是空行
+nmap <CR> o<Esc>
 " 显示行号
 set nu!
 " 不要备份文件
