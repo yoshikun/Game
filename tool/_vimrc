@@ -32,7 +32,13 @@ endfunction
 imap <C-s> <Esc>:w<CR>
 nmap <C-s> <Esc>:w<CR>
 " 命令模式下回车是空行
-nmap <CR> o<Esc>
+nmap <CR> o
+" 命令模式tab键
+nmap <tab> i<tab>
+" 设置5行跳转
+nmap <C-j> 5j
+" 设置5行向上
+nmap <C-k> 5k
 " 显示行号
 set nu!
 " 不要备份文件
@@ -47,3 +53,5 @@ set shiftwidth=4
 set nocompatible
 " 设置退格键
 set backspace=indent,eol,start
+" 设置搜索不区分大小写
+:set ignorecase
